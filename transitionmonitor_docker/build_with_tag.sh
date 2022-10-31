@@ -61,7 +61,7 @@ cleanup () {
 }
 trap cleanup EXIT
 
-url="git@github.com:2DegreesInvesting/"
+url="git@github.com:RMI-PACTA/"
 
 
 # test that SSH authentication to GitHub is possible

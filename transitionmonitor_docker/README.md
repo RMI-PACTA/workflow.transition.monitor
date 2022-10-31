@@ -29,11 +29,11 @@ versioning](https://semver.org), and you should choose a tag that
 follows in sequence from previously existing tags in the PACTA_analysis 
 and friends repos. You can see existing tags in the relevant repos
 here:\
-<https://github.com/2DegreesInvesting/PACTA_analysis/tags>\
-<https://github.com/2DegreesInvesting/create_interactive_report/tags>\
-<https://github.com/2DegreesInvesting/r2dii.climate.stress.test/tags>\
-<https://github.com/2DegreesInvesting/r2dii.stress.test.data/tags>\
-<https://github.com/2DegreesInvesting/pacta-data/tags>\
+<https://github.com/RMI-PACTA/PACTA_analysis/tags>\
+<https://github.com/RMI-PACTA/create_interactive_report/tags>\
+<https://github.com/RMI-PACTA/r2dii.climate.stress.test/tags>\
+<https://github.com/RMI-PACTA/r2dii.stress.test.data/tags>\
+<https://github.com/RMI-PACTA/pacta-data/tags>\
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.
 
@@ -100,7 +100,7 @@ push a branch `git push <remote> <tag>`, for example:
 
 ``` {.bash}
 cd /bound
-# If origin = https://github.com/2DegreesInvesting/PACTA_analysis
+# If origin = https://github.com/RMI-PACTA/PACTA_analysis
 git push origin 0.1.14
 ```
 

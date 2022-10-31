@@ -1,0 +1,9 @@
+default:
+    parameters:
+        portfolio_name: TestPortfolio_Input
+        investor_name: Test
+        peer_group: pensionfund
+        language: EN
+        project_code: GENERAL
+        holdings_date:
+            - 2021Q4

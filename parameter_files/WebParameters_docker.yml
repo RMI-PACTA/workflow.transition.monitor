@@ -1,0 +1,13 @@
+default:
+    paths:
+        project_location_ext: /bound/
+        data_location_ext: /pacta-data/2021Q4/
+        template_location: /create_interactive_report/
+        stress_test_location: /r2dii.climate.stress.test/
+        stress_test_data_location: /r2dii.stress.test.data/
+        user_data_location: /user_results/
+    parameters:
+        project_name: working_dir
+        twodii_internal: FALSE
+        new_data: FALSE
+

@@ -119,12 +119,12 @@ RUN Rscript -e "\
 COPY pacta-data /pacta-data
 COPY r2dii.stress.test.data /r2dii.stress.test.data
 COPY r2dii.climate.stress.test /r2dii.climate.stress.test
-COPY create_interactive_report /create_interactive_report
+COPY pacta.interactive.report /pacta.interactive.report
 COPY PACTA_analysis /bound
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \
-    && chmod -R a+rwX /create_interactive_report \
+    && chmod -R a+rwX /pacta.interactive.report \
     && chmod -R a+rwX /pacta-data \
     && chmod -R a+rwX /r2dii.climate.stress.test \
     && chmod -R a+rwX /r2dii.stress.test.data

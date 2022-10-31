@@ -117,17 +117,13 @@ RUN Rscript -e "\
 
 # copy in PACTA repos
 COPY pacta-data /pacta-data
-COPY r2dii.stress.test.data /r2dii.stress.test.data
-COPY r2dii.climate.stress.test /r2dii.climate.stress.test
 COPY pacta.interactive.report /pacta.interactive.report
 COPY PACTA_analysis /bound
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \
     && chmod -R a+rwX /pacta.interactive.report \
-    && chmod -R a+rwX /pacta-data \
-    && chmod -R a+rwX /r2dii.climate.stress.test \
-    && chmod -R a+rwX /r2dii.stress.test.data
+    && chmod -R a+rwX /pacta-data
 
 # set the build_version environment variable
 ARG image_tag

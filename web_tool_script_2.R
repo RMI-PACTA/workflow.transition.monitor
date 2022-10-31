@@ -1,4 +1,4 @@
-devtools::load_all(quiet = TRUE)
+library(pacta.portfolio.analysis)
 use_r_packages()
 
 cli::cli_h1("web_tool_script_2.R{get_build_version_msg()}")

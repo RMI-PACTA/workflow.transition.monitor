@@ -7,7 +7,7 @@ The tree of the docker container looks like this:
 
 ``` {.bash}
 /bound  # contents of PACTA_analysis
-/create_interactive_report
+/pacta.interactive.report
 /pacta-data
 /r2dii.climate.stress.test
 /r2dii.stress.test.data
@@ -30,7 +30,7 @@ follows in sequence from previously existing tags in the PACTA_analysis
 and friends repos. You can see existing tags in the relevant repos
 here:\
 <https://github.com/RMI-PACTA/PACTA_analysis/tags>\
-<https://github.com/RMI-PACTA/create_interactive_report/tags>\
+<https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
 <https://github.com/RMI-PACTA/r2dii.climate.stress.test/tags>\
 <https://github.com/RMI-PACTA/r2dii.stress.test.data/tags>\
 <https://github.com/RMI-PACTA/pacta-data/tags>\

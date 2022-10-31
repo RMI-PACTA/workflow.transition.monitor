@@ -34,7 +34,7 @@ fi
 if [ -z "${repos}" ]; then
     repos="\
         PACTA_analysis \
-        create_interactive_report \
+        pacta.interactive.report \
         r2dii.climate.stress.test \
         r2dii.stress.test.data \
         pacta-data \

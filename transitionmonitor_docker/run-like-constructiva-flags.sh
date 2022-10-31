@@ -12,7 +12,7 @@ usage() {
   # d for data
   echo "[-d <path to local pacta-data repo>] (default docker internal)" 1>&2
   # c for create
-  echo "[-c <path to local create_interactive_report repo>] (default docker internal)" 1>&2
+  echo "[-c <path to local pacta.interactive.report repo>] (default docker internal)" 1>&2
   # s for stresss test
   echo "[-s <path to local r2dii.climate.stress.test repo>] (default docker internal)" 1>&2
   # E because d is already taken for pacta-data
@@ -118,7 +118,7 @@ if [ -n "${data_repo}" ]; then
 fi
 
 if [ -n "${cir_repo}" ]; then
-  args+=(--mount "type=bind,source=${cir_repo},target=/create_interactive_report")
+  args+=(--mount "type=bind,source=${cir_repo},target=/pacta.interactive.report")
 fi
 
 if [ -n "${st_repo}" ]; then

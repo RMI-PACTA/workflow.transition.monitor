@@ -195,7 +195,6 @@ configs <-
 
 
 # Needed for testing only
-shock <- shock_year # this should come directly from the stress test.. 2030 based on current discussions in CHPA2020 case
 select_scenario_auto = scenario_auto
 select_scenario_other = scenario_other
 select_scenario_shipping = scenario_shipping
@@ -216,7 +215,7 @@ create_interactive_report(
   portfolio_name = portfolio_name,
   peer_group = peer_group,
   start_year = start_year,
-  shock = shock_year,
+  shock = 2030,
   select_scenario = select_scenario,
   select_scenario_auto = scenario_auto,
   select_scenario_shipping = scenario_shipping,

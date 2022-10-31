@@ -118,7 +118,7 @@ RUN Rscript -e "\
 # copy in PACTA repos
 COPY pacta-data /pacta-data
 COPY pacta.interactive.report /pacta.interactive.report
-COPY PACTA_analysis /bound
+COPY pacta.portfolio.analysis /bound
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \

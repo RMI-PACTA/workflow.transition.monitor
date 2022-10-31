@@ -33,7 +33,7 @@ fi
 
 if [ -z "${repos}" ]; then
     repos="\
-        PACTA_analysis \
+        pacta.portfolio.analysis \
         pacta.interactive.report \
         pacta-data \
         "

@@ -8,7 +8,7 @@ usage() {
   echo "[-u <userId>] (default 4)" 1>&2
   echo "[-m <docker image>] (default 2dii_pacta)" 1>&2
   # a for analysis
-  echo "[-a <path to local PACTA_analysis repo>] (default docker internal)" 1>&2
+  echo "[-a <path to local pacta.portfolio.analysis repo>] (default docker internal)" 1>&2
   # d for data
   echo "[-d <path to local pacta-data repo>] (default docker internal)" 1>&2
   # c for create

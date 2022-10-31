@@ -1,19 +1,19 @@
 # Description
 
 The Dockerfile in this directory creates an image containing a freshly
-cloned copy of PACTA_analysis and all the repositories it depends on.
+cloned copy of pacta.portfolio.analysis and all the repositories it depends on.
 
 The tree of the docker container looks like this:
 
 ``` {.bash}
-/bound  # contents of PACTA_analysis
+/bound  # contents of pacta.portfolio.analysis
 /pacta.interactive.report
 /pacta-data
 ```
 
 # Notes
 
-Note that PACTA_analysis and friends are not mounted but copied into the
+Note that pacta.portfolio.analysis and friends are not mounted but copied into the
 container, so they will be frozen in the state they are when you build
 the image.
 
@@ -24,10 +24,10 @@ You must have SSH authentication to your GitHub account setup to use this tool.
 Before running the script, you will need to choose the tag that you
 want to use for the release. You should use [semantic
 versioning](https://semver.org), and you should choose a tag that
-follows in sequence from previously existing tags in the PACTA_analysis 
+follows in sequence from previously existing tags in the pacta.portfolio.analysis 
 and friends repos. You can see existing tags in the relevant repos
 here:\
-<https://github.com/RMI-PACTA/PACTA_analysis/tags>\
+<https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
 <https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
 <https://github.com/RMI-PACTA/pacta-data/tags>\
 
@@ -75,7 +75,7 @@ image: `run-like-constructiva-flags.sh` and `run-all-tests.sh`
 
 To release a new version of the software, push all tags to GitHub. The
 tag you provide will affect the image, the repository containing the
-Dockerfile that builds the image (PACTA_analysis), and the pacta siblings repos. 
+Dockerfile that builds the image (pacta.portfolio.analysis), and the pacta siblings repos. 
 That consistent tag make the process reproducible.
 
 To push the tags, start the container with something like
@@ -96,7 +96,7 @@ push a branch `git push <remote> <tag>`, for example:
 
 ``` {.bash}
 cd /bound
-# If origin = https://github.com/RMI-PACTA/PACTA_analysis
+# If origin = https://github.com/RMI-PACTA/pacta.portfolio.analysis
 git push origin 0.1.14
 ```
 

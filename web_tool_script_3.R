@@ -215,7 +215,6 @@ create_interactive_report(
   portfolio_name = portfolio_name,
   peer_group = peer_group,
   start_year = start_year,
-  shock = 2030,
   select_scenario = select_scenario,
   select_scenario_auto = scenario_auto,
   select_scenario_shipping = scenario_shipping,
@@ -241,19 +240,15 @@ create_interactive_report(
   peers_bonds_results_portfolio = peers_bonds_results_portfolio,
   peers_equity_results_user = peers_equity_results_user,
   peers_bonds_results_user = peers_bonds_results_user,
-  equity_results_stress_test = empty_st_results(),
-  bonds_results_stress_test = empty_st_results(),
   dataframe_translations = dataframe_translations,
   js_translations = js_translations,
-  ipr_results_stress_test = empty_ipr_st_results(),
   display_currency = display_currency,
   currency_exchange_value = currency_exchange_value,
   header_dictionary = header_dictionary,
   sector_order = sector_order,
   equity_tdm = equity_tdm,
   bonds_tdm = bonds_tdm,
-  configs = configs,
-  failed_stress_test_run = TRUE
+  configs = configs
 )
 
 if(dir.exists(exec_summary_dir)){

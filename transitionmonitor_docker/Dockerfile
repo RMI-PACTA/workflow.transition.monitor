@@ -27,28 +27,19 @@ ARG PKG_DEPS="\
     countrycode \
     devtools \
     dplyr \
-    forcats \
     fs \
     ggplot2 \
     glue \
     here \
     jsonlite \
     knitr \
-    magrittr \
-    progress \
-    purrr \
     readr \
     rmarkdown \
     scales \
-    stringi \
     stringr \
     tibble \
     tidyr \
-    vctrs \
-    vroom \
     writexl \
-    yaml \
-    zoo \
     "
 RUN Rscript -e "\
     install.packages('remotes'); \

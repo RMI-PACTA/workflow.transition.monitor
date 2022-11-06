@@ -1,22 +1,22 @@
 default:
 
     paths:
-        data_location_ext: ../pacta-data/2020Q4/
+        data_location_ext: ../pacta-data/2021Q4/
 
     reporting:
-        project_report_name: swiss2022
+        project_report_name: PA2022CH
         display_currency: CHF
         currency_exchange_value: 1.09
 
     parameters:
-        timestamp: 2020Q4
-        dataprep_timestamp: 2020Q4_transitionmonitor
+        timestamp: 2021Q4
+        dataprep_timestamp: 2021Q4
         start_year: 2021
         horizon_year: 5
-        select_scenario: WEO2019_SDS
-        scenario_auto: ETP2017_B2DS
-        scenario_other: ETP2017_B2DS
-        scenario_shipping: ETP2017_B2DS
+        select_scenario: WEO2021_SDS
+        scenario_auto: WEO2021_NZE_2050
+        scenario_other: ETP2020_ETP_SDS
+        scenario_shipping: ETP2020_ETP_SDS
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 
@@ -44,11 +44,7 @@ default:
             - Hybrid
             - Electric
             - FuelCell
-            - Hybrid_HDV
-            - Electric_HDV
-            - FuelCell_HDV
-            - Dc-Electric Arc Furnace
-            - Ac-Electric Arc Furnace
+            - Electric Arc Furnace
         alignment_techs:
             - RenewablesCap
             - CoalCap
@@ -65,10 +61,11 @@ default:
         - Funds
 
     scenario_sources_list:
-        - ETP2017
-        - WEO2019
-        - WEO2020
-        - GECO2019
+        - ETP2020
+        - WEO2021
+        - GECO2021
+        - ISF2021
+        - IPR2021
 
     scenario_geography_list:
         - Global

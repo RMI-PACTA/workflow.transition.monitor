@@ -1,4 +1,4 @@
-devtools::load_all(path = "../pacta.portfolio.analysis")
+library(pacta.portfolio.analysis)
 use_r_packages()
 
 # pkgs needed for interactive report

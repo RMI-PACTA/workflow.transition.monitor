@@ -1,13 +1,17 @@
 # Description
 
 The Dockerfile in this directory creates an image containing a freshly
-cloned copy of pacta.portfolio.analysis and all the repositories it depends on.
+cloned copy of pacta.portfolio.analysis and all the repositories it depends 
+on. It also installs the relevant PACTA R packages from the repos that it
+copies in.
 
 The tree of the docker container looks like this:
 
 ``` {.bash}
 /bound  # contents of pacta.portfolio.analysis
+/pacta.executive.summary
 /pacta.interactive.report
+/pacta.portfolio.analysis
 /pacta-data
 ```
 
@@ -27,8 +31,9 @@ versioning](https://semver.org), and you should choose a tag that
 follows in sequence from previously existing tags in the pacta.portfolio.analysis 
 and friends repos. You can see existing tags in the relevant repos
 here:\
-<https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
+<https://github.com/RMI-PACTA/pacta.executive.summary/tags>\
 <https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
+<https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
 <https://github.com/RMI-PACTA/pacta-data/tags>\
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.
@@ -37,13 +42,19 @@ Run the build_with_tag.sh script, specifying a tag to assign to it.
 ./build_with_tag.sh -t 0.1.14
 ```
 
+NOTE: Currently the docker image WILL NOT BUILD without specifying a path to a data folder to mount. This is done via the `-d` argument:
+
+``` {.bash}
+./build_with_tag.sh -t 0.1.14 -d /home/azureuser/2021Q4
+```
+
 The default target platform architecture is "linux/x86_64", and that is **required** for the TM website, however, you may use the `-x` option to set an alternate target platform architecture explicitly. For example, you may desire to build for "linux/arm64" in order to do local testing on an M1 mac, which will run much faster than running tests through a "linux/x86_64" image through emulation. Example:
 
 ``` {.bash}
 ./build_with_tag.sh -t 0.1.14 -x "linux/arm64"
 ```
 
-Additionally, by default `./build_with_tag.sh` will *not* export the built image to a `*.tar.gz` file. Saving/exporting the docker image is a time consuming process, so it may make more sense to build the image (which will then automatically be loaded into your local loaded docker images), then do some testing, and only if you're sure it's working properly then export it to a `*.tar.gz` file with (replace `<tag>` with the appropriate version number) `docker save 2dii_pacta:<tag> | gzip -q > '$image_tar_gz'`. However, if you know you want to export the built docker image, you can do it all at once by adding the `-s` option like so:
+Additionally, by default `./build_with_tag.sh` will *not* export the built image to a `*.tar.gz` file. Saving/exporting the docker image is a time consuming process, so it may make more sense to build the image (which will then automatically be loaded into your local loaded docker images), then do some testing, and only if you're sure it's working properly then export it to a `*.tar.gz` file with (replace `<tag>` with the appropriate version number) `docker save rmi_pacta:<tag> | gzip -q > '$image_tar_gz'`. However, if you know you want to export the built docker image, you can do it all at once by adding the `-s` option like so:
 
 ``` {.bash}
 ./build_with_tag.sh -t 0.1.14 -s
@@ -52,7 +63,7 @@ Additionally, by default `./build_with_tag.sh` will *not* export the built image
 The script will:
 
 - clone the repos locally, only copying the current version of the files
-- build a `2dii_pacta:<tag>` and `2dii_pacta:latest` docker image (where `<tag>` is the tag you provided, e.g. `0.1.14`). The image builds from the Dockerfile in this directory, which will
+- build a `rmi_pacta:<tag>` and `rmi_pacta:latest` docker image (where `<tag>` is the tag you provided, e.g. `0.1.14`). The image builds from the Dockerfile in this directory, which will
 
   - use [`r-base:<version>`](https://hub.docker.com/_/r-base) as the base (where <version> is the R version specified in the Dockerfile)
   - install system dependencies
@@ -60,10 +71,11 @@ The script will:
   - install dependent TeX packages
   - install dependent R packages and system dependencies
   - copy in the freshly cloned repos
+  - install the appropriate PACTA R packages in the Docker image's R environment from the copied repos
   - make some necessary permissions changes
   - set the `build_version` environment variable with the specified tag
 
-If the build is successful, the new 2dii_pacta docker image will already be 
+If the build is successful, the new rmi_pacta docker image will already be 
 loaded in your local docker images.
 
 #  Testing
@@ -81,11 +93,11 @@ That consistent tag make the process reproducible.
 To push the tags, start the container with something like
 
 ``` {.bash}
-docker run --rm -ti -v "$HOME/.ssh":/root/.ssh 2dii_pacta:latest bash
+docker run --rm -ti -v "$HOME/.ssh":/root/.ssh rmi_pacta:latest bash
 ```
 
 This example starts an ephemeral container (`run --rm`) from the image
-`2dii_pacta:latest`, and creates a volume that makes your .ssh key
+`rmi_pacta:latest`, and creates a volume that makes your .ssh key
 available to the container (`-v "$HOME/.ssh":/root/.ssh`), which
 you'll need to interact with GitHub. If instead of ssh you use https
 protocol, you may omit the volume argument and provide your username and
@@ -105,7 +117,7 @@ git push origin 0.1.14
 That shared docker image can be loaded into the new machine with, for example:
 
 ``` {.bash}
-docker load --input 2dii_pacta_v0.1.14.tar.gz
+docker load --input rmi_pacta_v0.1.14.tar.gz
 ```
 
 The docker image can then be used as intended with a script such as...
@@ -124,7 +136,7 @@ docker run -ti \
   --memory-swappiness=0 \
   --mount type=bind,source=${userFolder},target=/bound/working_dir \
   --mount type=bind,readonly,source=${resultsFolder},target=/user_results \
-  2dii_pacta:latest \
+  rmi_pacta:latest \
   /bound/bin/run-r-scripts "$portfolio_name"
 ```
 

@@ -6,12 +6,12 @@ usage() {
   # t for tag
   echo "[-t <docker image tag>] (default latest)" 1>&2
   echo "[-u <userId>] (default 4)" 1>&2
-  echo "[-m <docker image>] (default 2dii_pacta)" 1>&2
-  # a for analysis
+  echo "[-m <docker image>] (default rmi_pacta)" 1>&2
+  # a for pacta.portfolio.analysis
   echo "[-a <path to local pacta.portfolio.analysis repo>] (default docker internal)" 1>&2
-  # d for data
+  # d for pacta-data
   echo "[-d <path to local pacta-data repo>] (default docker internal)" 1>&2
-  # c for create
+  # c for pacta.interactive.report
   echo "[-c <path to local pacta.interactive.report repo>] (default docker internal)" 1>&2
   # r for run
   echo "[-r <container command>] (default /bound/bin/run-r-scripts "portfolio name string")" 1>&2
@@ -72,7 +72,7 @@ if [ -z "${user_results}" ]; then
 fi
 
 if [ -z "${docker_image}" ]; then
-  docker_image="2dii_pacta"
+  docker_image="rmi_pacta"
 fi
 
 if [ -z "${docker_command}" ]; then

@@ -61,7 +61,7 @@ COPY pacta-data /pacta-data
 COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
-COPY pacta.portfolio.analysis /bound
+COPY pacta.tranistion.monitor /bound
 
 # install PACTA R packages
 RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"

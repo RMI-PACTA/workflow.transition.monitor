@@ -92,7 +92,7 @@ args=(
   "--pull=never"
   --network none
   --user 1000:1000
-  "--memory=8g"
+  "--memory=16g"
 )
 
 if [ "${target_platform}" != "linux/arm64" ]; then

@@ -8,7 +8,7 @@ copies in.
 The tree of the docker container looks like this:
 
 ``` {.bash}
-/bound  # contents of pacta.portfolio.analysis
+/bound  # contents of pacta.transition.monitor
 /pacta.executive.summary
 /pacta.interactive.report
 /pacta.portfolio.analysis

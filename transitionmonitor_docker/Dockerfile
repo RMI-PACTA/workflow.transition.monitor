@@ -7,12 +7,14 @@
 FROM rocker/r-ver:4.1.2
 
 # install system dependencies
+# nano is just for extra utility
 ARG SYS_DEPS="\
     git \
     libcurl4-openssl-dev \
     libssl-dev \
     openssh-client \
     wget \
+    nano \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $SYS_DEPS \

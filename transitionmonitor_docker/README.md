@@ -34,6 +34,7 @@ here:\
 <https://github.com/RMI-PACTA/pacta.executive.summary/tags>\
 <https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
 <https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
+<https://github.com/RMI-PACTA/pacta.transition.monitor/tags>\
 <https://github.com/RMI-PACTA/pacta-data/tags>\
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.

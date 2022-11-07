@@ -2,7 +2,7 @@ library(pacta.portfolio.analysis)
 use_r_packages()
 
 # pkgs needed for interactive report
-interactice_report_pkgs <- c("bookdown", "ggplot2", "scales", "writexl", "zoo")
+interactice_report_pkgs <- c("bookdown", "ggplot2", "scales", "writexl")
 invisible(lapply(interactice_report_pkgs, library, character.only = TRUE, warn.conflicts = FALSE))
 
 cli::cli_h1("web_tool_script_3.R{get_build_version_msg()}")

@@ -197,7 +197,6 @@ configs <-
 # Needed for testing only
 select_scenario_auto = scenario_auto
 select_scenario_other = scenario_other
-select_scenario_shipping = scenario_shipping
 twodi_sectors = sector_list
 repo_path = template_path
 file_name = "template.Rmd"
@@ -217,7 +216,6 @@ create_interactive_report(
   start_year = start_year,
   select_scenario = select_scenario,
   select_scenario_auto = scenario_auto,
-  select_scenario_shipping = scenario_shipping,
   select_scenario_other = scenario_other,
   portfolio_allocation_method = portfolio_allocation_method,
   scenario_geography = scenario_geography,

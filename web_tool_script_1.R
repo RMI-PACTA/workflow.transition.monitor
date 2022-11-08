@@ -72,6 +72,7 @@ portfolio <- process_raw_portfolio(
   portfolio_raw = portfolio_raw,
   fin_data = fin_data,
   fund_data = fund_data,
+  entity_info = entity_info,
   currencies = currencies,
   grouping_variables = grouping_variables,
   total_fund_list = total_fund_list,

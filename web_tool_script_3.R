@@ -195,7 +195,6 @@ configs <-
 
 
 # Needed for testing only
-select_scenario_auto = scenario_auto
 select_scenario_other = scenario_other
 twodi_sectors = sector_list
 repo_path = template_path

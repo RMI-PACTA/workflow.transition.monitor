@@ -23,6 +23,7 @@ RUN apt-get update \
 
 # install system dependencies for R packages
 ARG R_PKG_SYS_DEPS="\
+    libxt6 \
     pandoc \
     "
 RUN apt-get update \

@@ -8,7 +8,7 @@ copies in.
 The tree of the docker container looks like this:
 
 ``` {.bash}
-/bound  # contents of pacta.transition.monitor
+/bound  # contents of workflow.transition.monitor
 /pacta.executive.summary
 /pacta.interactive.report
 /pacta.portfolio.analysis
@@ -34,7 +34,7 @@ here:\
 <https://github.com/RMI-PACTA/pacta.executive.summary/tags>\
 <https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
 <https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
-<https://github.com/RMI-PACTA/pacta.transition.monitor/tags>\
+<https://github.com/RMI-PACTA/workflow.transition.monitor/tags>\
 <https://github.com/RMI-PACTA/pacta-data/tags>\
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.

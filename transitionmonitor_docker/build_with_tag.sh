@@ -39,7 +39,7 @@ if [ -z "${repos}" ]; then
         pacta.portfolio.analysis \
         pacta.interactive.report \
         pacta.executive.summary \
-        pacta.transition.monitor \
+        workflow.transition.monitor \
         "
 fi
 

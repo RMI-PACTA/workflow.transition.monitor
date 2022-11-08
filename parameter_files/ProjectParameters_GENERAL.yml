@@ -7,9 +7,8 @@ default:
 
     parameters:
         horizon_year: 5
-        select_scenario: WEO2021_SDS
-        scenario_auto: WEO2021_NZE_2050
-        scenario_other: ETP2020_ETP_SDS
+        select_scenario: WEO2021_NZE_2050
+        scenario_other: GECO2021_1.5C-Unif
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 

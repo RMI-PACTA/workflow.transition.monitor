@@ -7,17 +7,40 @@
 FROM rocker/r-ver:4.1.2
 
 # install system dependencies
+# nano only for utility, not needed for PACTA
 ARG SYS_DEPS="\
     git \
     libcurl4-openssl-dev \
     libssl-dev \
     openssh-client \
     wget \
-    nano `# only for utility, not needed for PACTA` \
+    nano \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $SYS_DEPS \
     && chmod -R a+rwX /root \
+    && rm -rf /var/lib/apt/lists/*
+
+# install system dependencies for R packages
+ARG R_PKG_SYS_DEPS="\
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libfribidi-dev \
+    libgit2-dev \
+    libharfbuzz-dev \
+    libicu-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libxml2-dev \
+    libxt6 \
+    make \
+    pandoc \
+    perl \
+    zlib1g-dev \
+    "
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
 # install R package dependencies

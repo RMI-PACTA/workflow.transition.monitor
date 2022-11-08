@@ -215,7 +215,6 @@ create_interactive_report(
   peer_group = peer_group,
   start_year = start_year,
   select_scenario = select_scenario,
-  select_scenario_auto = scenario_auto,
   select_scenario_other = scenario_other,
   portfolio_allocation_method = portfolio_allocation_method,
   scenario_geography = scenario_geography,

@@ -21,6 +21,17 @@ set_project_parameters(file.path(working_location, "parameter_files",paste0("Pro
 analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
 
 
+# quit if there's no relevant PACTA assets --------------------------------
+
+ total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
+ if (file.exists(total_portfolio_path)) {
+   total_portfolio <- readRDS(total_portfolio_path)
+   quit_if_no_pacta_relevant_data(total_portfolio)
+ } else {
+   warning("This is weird... the `total_portfolio.rds` file does not exist in the `30_Processed_inputs` directory.")
+ }
+
+
 # fix parameters ----------------------------------------------------------
 
 if(project_code == "PA2020FL"){

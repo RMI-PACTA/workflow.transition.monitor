@@ -50,22 +50,15 @@ if(project_code == "GENERAL"){
 # create interactive report -----------------------------------------------
 
 source(file.path(template_path, "create_interactive_report.R"))
-source(file.path(template_path, "create_executive_summary.R"))
 source(file.path(template_path, "useful_functions.R"))
 source(file.path(template_path, "export_environment_info.R"))
 
 report_name = select_report_template(project_report_name = project_report_name,
                                      language_select = language_select)
 
-exec_summary_name = select_exec_summary_template(project_report_name = project_report_name,
-                                                 language_select = language_select)
-
 template_dir <- paste0(template_path, report_name,"/_book/")
-exec_summary_dir <- paste0(template_path, exec_summary_name,"/")
-
 survey_dir <- path(user_results_path, project_code, "survey")
 real_estate_dir <- path(user_results_path, project_code, "real_estate")
-
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))){
@@ -87,6 +80,12 @@ if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rd
   emissions <- read_rds(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))
 }else{
   emissions <- empty_emissions_results()}
+
+if (file.exists(file.path(results_path, portfolio_name_ref_all, "total_portfolio.rds"))) {
+  total_portfolio <- read_rds(file.path(results_path, portfolio_name_ref_all, "total_portfolio.rds"))
+} else {
+  total_portfolio <- empty_portfolio_results()
+}
 
 # load equity portfolio data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"))) {
@@ -258,34 +257,59 @@ create_interactive_report(
   configs = configs
 )
 
-if(dir.exists(exec_summary_dir)){
-  create_executive_summary(
-    file_name = "template.Rmd",
-    exec_summary_dir = exec_summary_dir,
-    output_dir = output_dir,
-    language_select = language_select,
-    project_name = "working_dir",
+
+# create executive summary -----------------------------------------------------
+
+library(pacta.executive.summary)
+
+survey_dir <- file.path("..", user_results_path, project_code, "survey")
+real_estate_dir <- file.path("..", user_results_path, project_code, "real_estate")
+output_dir <- file.path(outputs_path, portfolio_name_ref_all)
+
+exec_summary_repo_path <- file.path("../pacta.executive.summary")
+exec_summary_template_path <- file.path(exec_summary_repo_path, paste0(project_code, "_", language_select, "_exec_summary/"))
+
+if(dir.exists(exec_summary_template_path)) {
+  data_aggregated_filtered <- prep_data_executive_summary(
     investor_name = investor_name,
     portfolio_name = portfolio_name,
     peer_group = peer_group,
     start_year = start_year,
-    select_scenario = scenario,
-    portfolio_allocation_method = portfolio_allocation_method,
-    scenario_geography = scenario_geography,
-    twodi_sectors = sector_list,
-    green_techs = green_techs,
-    tech_roadmap_sectors = tech_roadmap_sectors,
-    alignment_techs = alignment_techs,
+    scenario_source = "GECO2021",
+    scenario_selected = "1.5C-Unif",
+    scenario_geography = "Global",
+    equity_market = "GlobalMarket",
+    portfolio_allocation_method_equity = "portfolio_weight",
+    portfolio_allocation_method_bonds = "portfolio_weight",
+    green_techs = c("RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
+                    "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"),
     equity_results_portfolio = equity_results_portfolio,
     bonds_results_portfolio = bonds_results_portfolio,
-    peers_equity_results_portfolio = peers_equity_results_portfolio,
-    peers_bonds_results_portfolio = peers_bonds_results_portfolio,
-    peers_equity_results_user = peers_equity_results_user,
-    peers_bonds_results_user = peers_bonds_results_user
-
+    peers_equity_results_aggregated = peers_equity_results_portfolio,
+    peers_bonds_results_aggregated = peers_bonds_results_portfolio,
+    peers_equity_results_individual = peers_equity_results_user,
+    peers_bonds_results_individual = peers_bonds_results_user,
+    indices_equity_results_portfolio = indices_equity_results_portfolio,
+    indices_bonds_results_portfolio = indices_bonds_results_portfolio,
+    audit_file = audit_file,
+    emissions = emissions
   )
-}else{
 
+  render_executive_summary(
+    data = data_aggregated_filtered,
+    language = language_select,
+    output_dir = output_dir,
+    exec_summary_dir = exec_summary_template_path,
+    survey_dir = survey_dir,
+    real_estate_dir = real_estate_dir,
+    file_name = "template.Rmd",
+    investor_name = investor_name,
+    portfolio_name = portfolio_name,
+    peer_group = peer_group,
+    total_portfolio = total_portfolio,
+    scenario_selected = "1.5C-Unif"
+  )
+} else {
   es_dir <- file.path(output_dir, "executive_summary")
 
   if(!dir.exists(es_dir)){dir.create(es_dir, showWarnings = F, recursive = T)}

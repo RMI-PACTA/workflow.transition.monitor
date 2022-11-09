@@ -81,7 +81,7 @@ if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rd
 }else{
   emissions <- empty_emissions_results()}
 
-if (file.exists(file.path(results_path, portfolio_name_ref_all, "total_portfolio.rds"))) {
+if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"))) {
   total_portfolio <- read_rds(file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"))
 } else {
   total_portfolio <- empty_portfolio_results()

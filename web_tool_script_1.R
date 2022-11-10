@@ -119,9 +119,9 @@ if (inc_emission_factors) {
 emissions_totals <- calculate_average_portfolio_emissions(
   portfolio_total,
   entity_info,
-  company_emissions,
-  average_sector_intensity
-  )
+  entity_emission_intensities,
+  average_sector_emission_intensities
+)
 }
 
 

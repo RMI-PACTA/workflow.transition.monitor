@@ -26,10 +26,6 @@ create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, pro
 ######################################################################
 
 
-inc_emission_factors <- FALSE # FIXME: until emissions data is ready
-
-
-
 ####################
 #### DATA FILES ####
 ####################

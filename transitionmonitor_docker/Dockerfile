@@ -55,6 +55,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
+# install headless Chrome for R-pkg {chromote}
+RUN [ $(which google-chrome) ] || apt-get update \
+    && apt-get install -y --no-install-recommends gnupg curl \
+    && curl -fsSL -o /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && DEBIAN_FRONTEND='noninteractive' apt-get install -y --no-install-recommends /tmp/google-chrome.deb \
+    && rm -f /tmp/google-chrome.deb \
+    && rm -rf /var/lib/apt/lists/*
+
 # install R package dependencies
 ARG PKG_DEPS="\
     bookdown \

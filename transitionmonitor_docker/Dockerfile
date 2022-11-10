@@ -21,6 +21,18 @@ RUN apt-get update \
     && chmod -R a+rwX /root \
     && rm -rf /var/lib/apt/lists/*
 
+# install TeX system and fonts
+ARG TEX_APT="\
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    lmodern \
+    "
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends $TEX_APT \
+    && tlmgr init-usertree \
+    && rm -rf /var/lib/apt/lists/*
+
 # install system dependencies for R packages
 ARG R_PKG_SYS_DEPS="\
     libfontconfig1-dev \

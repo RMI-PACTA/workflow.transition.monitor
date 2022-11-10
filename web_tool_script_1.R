@@ -52,9 +52,9 @@ abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
 
 if (inc_emission_factors) {
-  average_sector_intensity <- readRDS(file.path(file_location, "average_sector_intensity.rds"))
+  average_sector_intensity <- readRDS(file.path(file_location, "iss_average_sector_emission_intensities.rds"))
 
-  company_emissions <- readRDS(file.path(file_location, "company_emissions.rds"))
+  company_emissions <- readRDS(file.path(file_location, "iss_company_emissions.rds"))
 }
 
 

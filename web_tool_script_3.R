@@ -21,6 +21,17 @@ set_project_parameters(file.path(working_location, "parameter_files",paste0("Pro
 analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
 
 
+# quit if there's no relevant PACTA assets --------------------------------
+
+ total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
+ if (file.exists(total_portfolio_path)) {
+   total_portfolio <- readRDS(total_portfolio_path)
+   quit_if_no_pacta_relevant_data(total_portfolio)
+ } else {
+   warning("This is weird... the `total_portfolio.rds` file does not exist in the `30_Processed_inputs` directory.")
+ }
+
+
 # fix parameters ----------------------------------------------------------
 
 if(project_code == "PA2020FL"){
@@ -247,37 +258,10 @@ create_interactive_report(
   configs = configs
 )
 
-if(dir.exists(exec_summary_dir)){
-  create_executive_summary(
-    file_name = "template.Rmd",
-    exec_summary_dir = exec_summary_dir,
-    output_dir = output_dir,
-    language_select = language_select,
-    project_name = "working_dir",
-    investor_name = investor_name,
-    portfolio_name = portfolio_name,
-    peer_group = peer_group,
-    start_year = start_year,
-    select_scenario = scenario,
-    portfolio_allocation_method = portfolio_allocation_method,
-    scenario_geography = scenario_geography,
-    twodi_sectors = sector_list,
-    green_techs = green_techs,
-    tech_roadmap_sectors = tech_roadmap_sectors,
-    alignment_techs = alignment_techs,
-    equity_results_portfolio = equity_results_portfolio,
-    bonds_results_portfolio = bonds_results_portfolio,
-    peers_equity_results_portfolio = peers_equity_results_portfolio,
-    peers_bonds_results_portfolio = peers_bonds_results_portfolio,
-    peers_equity_results_user = peers_equity_results_user,
-    peers_bonds_results_user = peers_bonds_results_user
+# create executive summary -----------------------------------------------
 
-  )
-}else{
+ es_dir <- file.path(output_dir, "executive_summary")
 
-  es_dir <- file.path(output_dir, "executive_summary")
-
-  if(!dir.exists(es_dir)){dir.create(es_dir, showWarnings = F, recursive = T)}
-  # this is required for the online tool to know that the process has been completed.
-  invisible(file.copy(file.path("data", "blank_pdf_do_not_delete.pdf"), es_dir))
-}
+ if(!dir.exists(es_dir)){dir.create(es_dir, showWarnings = F, recursive = T)}
+ # this is required for the online tool to know that the process has been completed.
+ invisible(file.copy(file.path("data", "blank_pdf_do_not_delete.pdf"), es_dir))

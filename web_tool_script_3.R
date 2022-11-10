@@ -267,33 +267,35 @@ real_estate_dir <- file.path("..", user_results_path, project_code, "real_estate
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 
 exec_summary_repo_path <- file.path("../pacta.executive.summary")
-exec_summary_template_path <- file.path(exec_summary_repo_path, paste0(project_code, "_", language_select, "_exec_summary/"))
+exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary/")
+exec_summary_template_path <- file.path(exec_summary_repo_path, exec_summary_template_name)
 
 if(dir.exists(exec_summary_template_path)) {
-  data_aggregated_filtered <- prep_data_executive_summary(
-    investor_name = investor_name,
-    portfolio_name = portfolio_name,
-    peer_group = peer_group,
-    start_year = start_year,
-    scenario_source = "GECO2021",
-    scenario_selected = "1.5C-Unif",
-    scenario_geography = "Global",
-    equity_market = "GlobalMarket",
-    portfolio_allocation_method_equity = "portfolio_weight",
-    portfolio_allocation_method_bonds = "portfolio_weight",
-    green_techs = c("RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
-                    "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"),
-    equity_results_portfolio = equity_results_portfolio,
-    bonds_results_portfolio = bonds_results_portfolio,
-    peers_equity_results_aggregated = peers_equity_results_portfolio,
-    peers_bonds_results_aggregated = peers_bonds_results_portfolio,
-    peers_equity_results_individual = peers_equity_results_user,
-    peers_bonds_results_individual = peers_bonds_results_user,
-    indices_equity_results_portfolio = indices_equity_results_portfolio,
-    indices_bonds_results_portfolio = indices_bonds_results_portfolio,
-    audit_file = audit_file,
-    emissions = emissions
-  )
+  data_aggregated_filtered <-
+    prep_data_executive_summary(
+      investor_name = investor_name,
+      portfolio_name = portfolio_name,
+      peer_group = peer_group,
+      start_year = start_year,
+      scenario_source = "GECO2021",
+      scenario_selected = "1.5C-Unif",
+      scenario_geography = "Global",
+      equity_market = "GlobalMarket",
+      portfolio_allocation_method_equity = "portfolio_weight",
+      portfolio_allocation_method_bonds = "portfolio_weight",
+      green_techs = c("RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
+                      "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"),
+      equity_results_portfolio = equity_results_portfolio,
+      bonds_results_portfolio = bonds_results_portfolio,
+      peers_equity_results_aggregated = peers_equity_results_portfolio,
+      peers_bonds_results_aggregated = peers_bonds_results_portfolio,
+      peers_equity_results_individual = peers_equity_results_user,
+      peers_bonds_results_individual = peers_bonds_results_user,
+      indices_equity_results_portfolio = indices_equity_results_portfolio,
+      indices_bonds_results_portfolio = indices_bonds_results_portfolio,
+      audit_file = audit_file,
+      emissions = emissions
+    )
 
   render_executive_summary(
     data = data_aggregated_filtered,
@@ -309,10 +311,14 @@ if(dir.exists(exec_summary_template_path)) {
     total_portfolio = total_portfolio,
     scenario_selected = "1.5C-Unif"
   )
+
 } else {
   es_dir <- file.path(output_dir, "executive_summary")
 
-  if(!dir.exists(es_dir)){dir.create(es_dir, showWarnings = F, recursive = T)}
+  if(!dir.exists(es_dir)) {
+    dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
+  }
+
   # this is required for the online tool to know that the process has been completed.
   invisible(file.copy(file.path("data", "blank_pdf_do_not_delete.pdf"), es_dir))
 }

@@ -265,6 +265,10 @@ library(pacta.executive.summary)
 survey_dir <- file.path("..", user_results_path, project_code, "survey")
 real_estate_dir <- file.path("..", user_results_path, project_code, "real_estate")
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
+es_dir <- file.path(output_dir, "executive_summary")
+if(!dir.exists(es_dir)) {
+  dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
+}
 
 exec_summary_repo_path <- file.path("../pacta.executive.summary")
 exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary/")
@@ -300,7 +304,7 @@ if(dir.exists(exec_summary_template_path)) {
   render_executive_summary(
     data = data_aggregated_filtered,
     language = language_select,
-    output_dir = output_dir,
+    output_dir = es_dir,
     exec_summary_dir = exec_summary_template_path,
     survey_dir = survey_dir,
     real_estate_dir = real_estate_dir,
@@ -313,12 +317,6 @@ if(dir.exists(exec_summary_template_path)) {
   )
 
 } else {
-  es_dir <- file.path(output_dir, "executive_summary")
-
-  if(!dir.exists(es_dir)) {
-    dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
-  }
-
   # this is required for the online tool to know that the process has been completed.
   invisible(file.copy(file.path("data", "blank_pdf_do_not_delete.pdf"), es_dir))
 }

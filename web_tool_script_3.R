@@ -313,7 +313,8 @@ if(dir.exists(exec_summary_template_path)) {
     portfolio_name = portfolio_name,
     peer_group = peer_group,
     total_portfolio = total_portfolio,
-    scenario_selected = "1.5C-Unif"
+    scenario_selected = "1.5C-Unif",
+    currency_exchange_value = currency_exchange_value
   )
 
 } else {

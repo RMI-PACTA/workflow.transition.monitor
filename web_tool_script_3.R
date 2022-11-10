@@ -262,8 +262,8 @@ create_interactive_report(
 
 library(pacta.executive.summary)
 
-survey_dir <- tools::file_path_as_absolute(file.path(user_results_path, project_code, "survey"))
-real_estate_dir <- tools::file_path_as_absolute(file.path(user_results_path, project_code, "real_estate"))
+survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
+real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real_estate"))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
 if(!dir.exists(es_dir)) {

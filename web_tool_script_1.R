@@ -48,9 +48,9 @@ abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
 
 if (inc_emission_factors) {
-  average_sector_intensity <- readRDS(file.path(file_location, "iss_average_sector_emission_intensities.rds"))
-
   company_emissions <- readRDS(file.path(file_location, "iss_company_emissions.rds"))
+
+  average_sector_intensity <- readRDS(file.path(file_location, "iss_average_sector_emission_intensities.rds"))
 }
 
 
@@ -115,8 +115,8 @@ if (inc_emission_factors) {
 emissions_totals <- calculate_average_portfolio_emissions(
   portfolio_total,
   entity_info,
-  average_sector_intensity,
-  company_emissions
+  company_emissions,
+  average_sector_intensity
   )
 }
 

@@ -26,10 +26,6 @@ create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, pro
 ######################################################################
 
 
-inc_emission_factors <- FALSE # FIXME: until emissions data is ready
-
-
-
 ####################
 #### DATA FILES ####
 ####################
@@ -52,9 +48,13 @@ abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
 
 if (inc_emission_factors) {
-  average_sector_intensity <- readRDS(file.path(file_location, "average_sector_intensity.rds"))
+  entity_emission_intensities <- readRDS(
+    file.path(file_location, "iss_entity_emission_intensities.rds")
+    )
 
-  company_emissions <- readRDS(file.path(file_location, "company_emissions.rds"))
+  average_sector_emission_intensities <- readRDS(
+    file.path(file_location, "iss_average_sector_emission_intensities.rds")
+    )
 }
 
 
@@ -116,10 +116,12 @@ portfolio_overview <- portfolio_summary(portfolio_total)
 audit_file <- create_audit_file(portfolio_total)
 
 if (inc_emission_factors) {
-emissions_totals <- calculate_average_portfolio_emissions(
-  portfolio_total,
-  comp_fin_data,
-  average_sector_intensity)
+  emissions_totals <- calculate_portfolio_financed_emissions(
+    portfolio_total,
+    entity_info,
+    entity_emission_intensities,
+    average_sector_emission_intensities
+  )
 }
 
 

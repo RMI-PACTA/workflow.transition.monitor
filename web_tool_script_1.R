@@ -116,12 +116,12 @@ portfolio_overview <- portfolio_summary(portfolio_total)
 audit_file <- create_audit_file(portfolio_total)
 
 if (inc_emission_factors) {
-emissions_totals <- calculate_average_portfolio_emissions(
-  portfolio_total,
-  entity_info,
-  entity_emission_intensities,
-  average_sector_emission_intensities
-)
+  emissions_totals <- calculate_average_portfolio_emissions(
+    portfolio_total,
+    entity_info,
+    entity_emission_intensities,
+    average_sector_emission_intensities
+  )
 }
 
 

@@ -14,7 +14,7 @@ setup_project()
 
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = fs::path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
@@ -56,9 +56,9 @@ source(file.path(template_path, "export_environment_info.R"))
 report_name = select_report_template(project_report_name = project_report_name,
                                      language_select = language_select)
 
-template_dir <- paste0(template_path, report_name,"/_book/")
-survey_dir <- path(user_results_path, project_code, "survey")
-real_estate_dir <- path(user_results_path, project_code, "real_estate")
+template_dir <- file.path(template_path, report_name, "_book")
+survey_dir <- file.path(user_results_path, project_code, "survey")
+real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))){
@@ -173,21 +173,21 @@ indices_equity_results_portfolio <- read_rds(file.path(analysis_inputs_path, "In
 indices_bonds_results_portfolio <- read_rds(file.path(analysis_inputs_path, "Indices_bonds_portfolio.rds"))
 
 dataframe_translations <- readr::read_csv(
-  path(template_path, "data/translation/dataframe_labels.csv"),
+  file.path(template_path, "data/translation/dataframe_labels.csv"),
   col_types = cols()
 )
 
 header_dictionary <- readr::read_csv(
-  path(template_path, "data/translation/dataframe_headers.csv"),
+  file.path(template_path, "data/translation/dataframe_headers.csv"),
   col_types = cols()
 )
 
 js_translations <- jsonlite::fromJSON(
-  txt = path(template_path, "data/translation/js_labels.json")
+  txt = file.path(template_path, "data/translation/js_labels.json")
 )
 
 sector_order <- readr::read_csv(
-  path(template_path, "data","sector_order","sector_order.csv"),
+  file.path(template_path, "data","sector_order","sector_order.csv"),
   col_types = cols()
 )
 
@@ -271,7 +271,7 @@ if(!dir.exists(es_dir)) {
 }
 
 exec_summary_repo_path <- file.path("../pacta.executive.summary")
-exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary/")
+exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary")
 exec_summary_template_path <- file.path(exec_summary_repo_path, exec_summary_template_name)
 
 if(dir.exists(exec_summary_template_path)) {

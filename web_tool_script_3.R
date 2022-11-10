@@ -262,17 +262,16 @@ create_interactive_report(
 
 library(pacta.executive.summary)
 
-survey_dir <- file.path("..", user_results_path, project_code, "survey")
-real_estate_dir <- file.path("..", user_results_path, project_code, "real_estate")
+survey_dir <- tools::file_path_as_absolute(file.path(user_results_path, project_code, "survey"))
+real_estate_dir <- tools::file_path_as_absolute(file.path(user_results_path, project_code, "real_estate"))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
 if(!dir.exists(es_dir)) {
   dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
 }
 
-exec_summary_repo_path <- file.path("../pacta.executive.summary")
 exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary")
-exec_summary_template_path <- file.path(exec_summary_repo_path, exec_summary_template_name)
+exec_summary_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
 
 if(dir.exists(exec_summary_template_path)) {
   data_aggregated_filtered <-
@@ -313,7 +312,8 @@ if(dir.exists(exec_summary_template_path)) {
     portfolio_name = portfolio_name,
     peer_group = peer_group,
     total_portfolio = total_portfolio,
-    scenario_selected = "1.5C-Unif"
+    scenario_selected = "1.5C-Unif",
+    currency_exchange_value = currency_exchange_value
   )
 
 } else {

@@ -1,0 +1,11 @@
+default:
+  output_dir: "/datadrive/PA2022CH_6"
+  data_path: "/datadrive/PA2022CH_2022-07-13"
+  project_code: "PA2022CH"
+  default_language: "EN"
+  project_prefix: "PA2022CH"
+  holdings_date: "2021Q4"
+  bogus_csvs_to_be_ignored: 
+  users_to_be_ignored:
+  - 135
+  - 38

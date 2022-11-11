@@ -83,8 +83,8 @@ yellow () {
   printf "\033[33m$1\033[0m\n"
 }
 
-userFolder="$working_dirs"/"$portfolioIdentifier"
-resultsFolder="$user_results"/"$userId"
+resultsFolder="$working_dirs"/"$portfolioIdentifier"
+userFolder="$user_results"/"$userId"
 
 args=(
   "--rm"
@@ -92,7 +92,7 @@ args=(
   "--pull=never"
   --network none
   --user 1000:1000
-  "--memory=16g"
+  # "--memory=16g"
 )
 
 if [ "${target_platform}" != "linux/arm64" ]; then
@@ -116,11 +116,15 @@ if [ -n "${cir_repo}" ]; then
 fi
 
 args+=(
-  --mount "type=bind,source=${userFolder},target=/bound/working_dir"
-  --mount "type=bind,readonly,source=${resultsFolder},target=/user_results"
+  --mount "type=bind,source=${resultsFolder},target=/bound/working_dir"
+  --mount "type=bind,readonly,source=${userFolder},target=/user_results"
 )
 args+=("$docker_image:$tag")
-args+=("$docker_command" "$portfolioIdentifier")
+if [ "$docker_command" = "bash" ]; then
+  args+=("$docker_command")
+else
+  args+=("$docker_command" "$portfolioIdentifier")
+fi
 
 if [ -n "${verbose}" ]; then
   yellow "docker run \\ "

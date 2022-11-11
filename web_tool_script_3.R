@@ -270,7 +270,7 @@ if(!dir.exists(es_dir)) {
   dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
 }
 
-exec_summary_template_name <- paste0(project_code, "_", language_select, "_exec_summary")
+exec_summary_template_name <- paste0(project_code, "_", tolower(language_select), "_exec_summary")
 exec_summary_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
 
 if(dir.exists(exec_summary_template_path)) {

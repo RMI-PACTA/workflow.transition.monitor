@@ -22,7 +22,7 @@ set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_n
 set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
-analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 # delete all results files within the current portfolio folder
 unlink(file.path(results_path, portfolio_name_ref_all, "*"), force = TRUE, recursive = TRUE)

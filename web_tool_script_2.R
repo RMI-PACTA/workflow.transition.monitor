@@ -142,6 +142,18 @@ if (file.exists(equity_input_file)) {
       }
     }
   }
+
+  rm(ald_scen_eq)
+  rm(ald_raw_eq)
+  rm(port_raw_all_eq)
+  rm(port_raw_eq)
+  rm(port_eq)
+  rm(port_pw_eq)
+  rm(port_own_eq)
+  rm(port_all_eq)
+  rm(company_pw_eq)
+  rm(company_own_eq)
+  rm(company_all_eq)
 }
 
 
@@ -247,6 +259,16 @@ if (file.exists(bonds_inputs_file)) {
       }
     }
   }
+
+  rm(ald_scen_cb)
+  rm(ald_raw_cb)
+  rm(port_raw_all_cb)
+  rm(port_raw_cb)
+  rm(port_cb)
+  rm(port_pw_cb)
+  rm(port_all_cb)
+  rm(company_pw_cb)
+  rm(company_all_cb)
 }
 
 

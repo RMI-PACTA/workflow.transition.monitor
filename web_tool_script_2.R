@@ -1,5 +1,6 @@
 library(pacta.portfolio.analysis)
-use_r_packages()
+library(cli)
+library(dplyr)
 
 cli::cli_h1("web_tool_script_2.R{get_build_version_msg()}")
 
@@ -16,7 +17,7 @@ working_location <- file.path(working_location)
 
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = fs::path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
 set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
@@ -50,7 +51,7 @@ if (file.exists(equity_input_file)) {
   ald_scen_eq <- get_ald_scen("Equity")
   ald_raw_eq <- get_ald_raw("Equity")
 
-  port_raw_all_eq <- read_rds(equity_input_file) %>%
+  port_raw_all_eq <- readRDS(equity_input_file) %>%
     mutate(id = as.character(id))
 
   list_investors_eq <- unique(port_raw_all_eq$investor_name)
@@ -157,7 +158,7 @@ if (file.exists(bonds_inputs_file)) {
   ald_scen_cb <- get_ald_scen("Bonds")
   ald_raw_cb <- get_ald_raw("Bonds")
 
-  port_raw_all_cb <- read_rds(bonds_inputs_file) %>%
+  port_raw_all_cb <- readRDS(bonds_inputs_file) %>%
     mutate(id = as.character(id))
 
   list_investors_cb <- unique(port_raw_all_cb$investor_name)

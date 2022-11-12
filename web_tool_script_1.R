@@ -1,5 +1,9 @@
 library(pacta.portfolio.analysis)
-use_r_packages()
+library(cli)
+library(dplyr)
+library(here)
+library(glue)
+library(jsonlite)
 
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
 
@@ -14,7 +18,7 @@ working_location <- file.path(working_location)
 
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = fs::path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 

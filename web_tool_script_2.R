@@ -259,8 +259,6 @@ if (file.exists(bonds_inputs_file)) {
     }
   }
 
-  rm(ald_scen_cb)
-  rm(ald_raw_cb)
   rm(port_raw_all_cb)
   rm(port_raw_cb)
   rm(port_cb)

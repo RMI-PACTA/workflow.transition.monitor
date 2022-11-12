@@ -47,9 +47,6 @@ if (file.exists(total_portfolio_path)) {
 equity_input_file <- file.path(proc_input_path, portfolio_name_ref_all, "equity_portfolio.rds")
 
 if (file.exists(equity_input_file)) {
-  ald_scen_eq <- get_ald_scen("Equity")
-  ald_raw_eq <- get_ald_raw("Equity")
-
   port_raw_all_eq <- read_rds(equity_input_file) %>%
     mutate(id = as.character(id))
 
@@ -66,7 +63,9 @@ if (file.exists(equity_input_file)) {
 
     port_eq <- calculate_weights(port_raw_eq, "Equity", grouping_variables)
 
+    ald_scen_eq <- get_ald_scen("Equity")
     port_eq <- merge_in_ald(port_eq, ald_scen_eq)
+    rm(ald_scen_eq)
 
     # Portfolio weight methodology
     port_pw_eq <- port_weight_allocation(port_eq)
@@ -88,7 +87,9 @@ if (file.exists(equity_input_file)) {
     port_all_eq <- bind_rows(port_pw_eq, port_own_eq)
 
     if (has_map) {
+      ald_raw_eq <- get_ald_raw("Equity")
       map_eq <- merge_in_geography(company_all_eq, ald_raw_eq)
+      rm(ald_raw_eq)
 
       map_eq <- aggregate_map_data(map_eq)
     }
@@ -143,8 +144,6 @@ if (file.exists(equity_input_file)) {
     }
   }
 
-  rm(ald_scen_eq)
-  rm(ald_raw_eq)
   rm(port_raw_all_eq)
   rm(port_raw_eq)
   rm(port_eq)
@@ -165,10 +164,6 @@ bonds_inputs_file <- file.path(proc_input_path, portfolio_name_ref_all, "bonds_p
 # portfolio_name <- file_names$portfolio_name
 
 if (file.exists(bonds_inputs_file)) {
-
-  ald_scen_cb <- get_ald_scen("Bonds")
-  ald_raw_cb <- get_ald_raw("Bonds")
-
   port_raw_all_cb <- read_rds(bonds_inputs_file) %>%
     mutate(id = as.character(id))
 
@@ -185,7 +180,9 @@ if (file.exists(bonds_inputs_file)) {
 
     port_cb <- calculate_weights(port_raw_cb, "Bonds", grouping_variables)
 
+    ald_scen_cb <- get_ald_scen("Bonds")
     port_cb <- merge_in_ald(port_cb, ald_scen_cb, id_col = "credit_parent_ar_company_id")
+    rm(ald_scen_cb)
 
     # Portfolio weight methodology
     port_pw_cb <- port_weight_allocation(port_cb)
@@ -201,7 +198,9 @@ if (file.exists(bonds_inputs_file)) {
 
     if (has_map) {
       if (data_check(company_all_cb)) {
+        ald_raw_cb <- get_ald_raw("Bonds")
         map_cb <- merge_in_geography(company_all_cb, ald_raw_cb)
+        rm(ald_raw_cb)
 
         map_cb <- aggregate_map_data(map_cb)
       }

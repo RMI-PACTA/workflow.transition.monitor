@@ -38,14 +38,6 @@ analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_tim
 
 # fix parameters ----------------------------------------------------------
 
-if(project_code == "PA2020FL"){
-  peer_group = case_when(
-    peer_group %in% c("other")~ "Others",
-    peer_group %in% c("bank", "assetmanager") ~ "Banks and Asset Managers",
-    peer_group %in% c("pensionfund", "insurance") ~ "Pension Funds and Insurances"
-  )
-}
-
 if(project_code == "GENERAL"){
   language_select = "EN"
 }

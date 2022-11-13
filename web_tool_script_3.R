@@ -290,7 +290,8 @@ if(dir.exists(exec_summary_template_path)) {
       indices_equity_results_portfolio = indices_equity_results_portfolio,
       indices_bonds_results_portfolio = indices_bonds_results_portfolio,
       audit_file = audit_file,
-      emissions = emissions
+      emissions_portfolio = emissions,
+      survey_dir = survey_dir
     )
 
   render_executive_summary(

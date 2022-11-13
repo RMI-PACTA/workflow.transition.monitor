@@ -25,7 +25,7 @@ set_project_parameters(file.path(working_location, "parameter_files",paste0("Pro
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 
-# quit if there's no relevant PACTA assets --------------------------------
+# quit if there's no relevant PACTA assets -------------------------------------
 
  total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
  if (file.exists(total_portfolio_path)) {
@@ -36,32 +36,19 @@ analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_tim
  }
 
 
-# fix parameters ----------------------------------------------------------
+# fix parameters ---------------------------------------------------------------
 
 if(project_code == "GENERAL"){
   language_select = "EN"
 }
 
 
-# create interactive report -----------------------------------------------
-
-source(file.path(template_path, "create_interactive_report.R"))
-source(file.path(template_path, "useful_functions.R"))
-source(file.path(template_path, "export_environment_info.R"))
-
-report_name = select_report_template(project_report_name = project_report_name,
-                                     language_select = language_select)
-
-template_dir <- file.path(template_path, report_name, "_book")
-survey_dir <- file.path(user_results_path, project_code, "survey")
-real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
-output_dir <- file.path(outputs_path, portfolio_name_ref_all)
+# load PACTA results -----------------------------------------------------------
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))){
   audit_file <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))
 }else{
   audit_file <- empty_audit_file()
-
 }
 
 # load portfolio overview
@@ -70,7 +57,6 @@ if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "overview_por
 } else {
   portfolio_overview <- empty_portfolio_overview()
 }
-
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))){
   emissions <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))
@@ -168,6 +154,20 @@ indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Ind
 
 indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_portfolio.rds"))
 
+
+# create interactive report ----------------------------------------------------
+
+source(file.path(template_path, "create_interactive_report.R"))
+source(file.path(template_path, "useful_functions.R"))
+source(file.path(template_path, "export_environment_info.R"))
+
+report_name = select_report_template(project_report_name = project_report_name,
+                                     language_select = language_select)
+
+template_dir <- file.path(template_path, report_name, "_book")
+survey_dir <- file.path(user_results_path, project_code, "survey")
+real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
+output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 dataframe_translations <- readr::read_csv(
   file.path(template_path, "data/translation/dataframe_labels.csv"),
   col_types = cols()
@@ -187,9 +187,7 @@ sector_order <- readr::read_csv(
   col_types = cols()
 )
 
-
-# combine config files to send to create_interactive_report() ------------------
-
+# combine config files to send to create_interactive_report()
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
 project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
 
@@ -198,7 +196,6 @@ configs <-
     portfolio_config = config::get(file = portfolio_config_path),
     project_config = config::get(file = project_config_path)
   )
-
 
 # Needed for testing only
 select_scenario_other = scenario_other

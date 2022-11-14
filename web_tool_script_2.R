@@ -1,6 +1,8 @@
-library(pacta.portfolio.analysis)
-library(cli)
-library(dplyr)
+suppressPackageStartupMessages({
+  library(pacta.portfolio.analysis)
+  library(cli)
+  library(dplyr)
+})
 
 cli::cli_h1("web_tool_script_2.R{get_build_version_msg()}")
 

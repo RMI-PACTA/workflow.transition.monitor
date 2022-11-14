@@ -1,9 +1,11 @@
-library(pacta.portfolio.analysis)
-library(cli)
-library(readr)
-library(jsonlite)
-library(config)
-library(fs)
+suppressPackageStartupMessages({
+  library(pacta.portfolio.analysis)
+  library(cli)
+  library(readr)
+  library(jsonlite)
+  library(config)
+  library(fs)
+})
 
 # pkgs needed for interactive report
 interactice_report_pkgs <- c("bookdown", "ggplot2", "scales", "writexl")

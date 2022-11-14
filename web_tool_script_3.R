@@ -47,87 +47,87 @@ if(project_code == "GENERAL"){
 
 # load PACTA results -----------------------------------------------------------
 
-readRDS_else <- function(filepath, alt_return = NULL) {
+readRDS_or_return_alt_data <- function(filepath, alt_return = NULL) {
   if (file.exists(filepath)) { return(readRDS(filepath)) }
   alt_return
 }
 
-audit_file <- readRDS_else(
+audit_file <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"),
   alt_return = empty_audit_file()
 )
 
-portfolio_overview <- readRDS_else(
+portfolio_overview <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"),
   alt_return = empty_portfolio_overview()
 )
 
-emissions <- readRDS_else(
+emissions <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"),
   alt_return = empty_emissions_results()
 )
 
-total_portfolio <- readRDS_else(
+total_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 
-equity_results_portfolio <- readRDS_else(
+equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 
-bonds_results_portfolio <- readRDS_else(
+bonds_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 
-equity_results_company <- readRDS_else(
+equity_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"),
   alt_return = empty_company_results()
 )
 
-bonds_results_company <- readRDS_else(
+bonds_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"),
   alt_return = empty_company_results()
 )
 
-equity_results_map <- readRDS_else(
+equity_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"),
   alt_return = empty_map_results()
 )
 
-bonds_results_map <- readRDS_else(
+bonds_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"),
   alt_return = empty_map_results()
 )
 
-equity_tdm <- readRDS_else(
+equity_tdm <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_tdm.rds"),
   alt_return = NULL
 )
 
-bonds_tdm <- readRDS_else(
+bonds_tdm <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_tdm.rds"),
   alt_return = NULL
 )
 
-peers_equity_results_portfolio <- readRDS_else(
+peers_equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")),
   alt_return = empty_portfolio_results()
 )
 
-peers_bonds_results_portfolio <- readRDS_else(
+peers_bonds_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio.rds")),
   alt_return = empty_portfolio_results()
 )
 
-peers_equity_results_user <- readRDS_else(
+peers_equity_results_user <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio_ind.rds")),
   alt_return = empty_portfolio_results()
 )
 
-peers_bonds_results_user <- readRDS_else(
+peers_bonds_results_user <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio_ind.rds")),
   alt_return = empty_portfolio_results()
 )

@@ -266,7 +266,9 @@ if(!dir.exists(es_dir)) {
 }
 
 exec_summary_template_name <- paste0(project_code, "_", tolower(language_select), "_exec_summary")
-exec_summary_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
+exec_summary_builtin_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
+invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))
+exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
 
 if(dir.exists(exec_summary_template_path)) {
   data_aggregated_filtered <-

@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
 
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "TestPortfolio_Input" }
+if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
 
 portfolio_root_dir <- "working_dir"
 

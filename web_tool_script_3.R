@@ -13,7 +13,7 @@ invisible(lapply(interactice_report_pkgs, library, character.only = TRUE, warn.c
 
 cli::cli_h1("web_tool_script_3.R{get_build_version_msg()}")
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "TestPortfolio_Input" }
+if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
 if (!exists("portfolio_root_dir")) { portfolio_root_dir <- "working_dir" }
 
 setup_project()

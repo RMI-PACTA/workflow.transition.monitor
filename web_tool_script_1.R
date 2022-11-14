@@ -1,10 +1,16 @@
-library(pacta.portfolio.analysis)
-use_r_packages()
+suppressPackageStartupMessages({
+  library(pacta.portfolio.analysis)
+  library(cli)
+  library(dplyr)
+  library(here)
+  library(glue)
+  library(jsonlite)
+})
 
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
 
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "TestPortfolio_Input" }
+if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
 
 portfolio_root_dir <- "working_dir"
 
@@ -14,20 +20,16 @@ working_location <- file.path(working_location)
 
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = fs::path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
-analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 # To save, files need to go in the portfolio specific folder, created here
 create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, project_location = project_location)
 ######################################################################
-
-
-inc_emission_factors <- FALSE # FIXME: until emissions data is ready
-
 
 
 ####################
@@ -46,15 +48,26 @@ total_fund_list <- readRDS(file.path(file_location, "total_fund_list.rds"))
 isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds"))
 
 fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
+
+#FIXME: Hack to remove unusable equity. Probably a more clever way to do this.
+fin_data <- filter(
+  fin_data,
+  !(asset_type == "Equity" & unit_share_price == 0)
+)
+
 entity_info <- readRDS(file.path(file_location, "entity_info.rds"))
 
 abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
 
 if (inc_emission_factors) {
-  average_sector_intensity <- readRDS(file.path(file_location, "average_sector_intensity.rds"))
+  entity_emission_intensities <- readRDS(
+    file.path(file_location, "iss_entity_emission_intensities.rds")
+    )
 
-  company_emissions <- readRDS(file.path(file_location, "company_emissions.rds"))
+  average_sector_emission_intensities <- readRDS(
+    file.path(file_location, "iss_average_sector_emission_intensities.rds")
+    )
 }
 
 
@@ -116,10 +129,12 @@ portfolio_overview <- portfolio_summary(portfolio_total)
 audit_file <- create_audit_file(portfolio_total)
 
 if (inc_emission_factors) {
-emissions_totals <- calculate_average_portfolio_emissions(
-  portfolio_total,
-  comp_fin_data,
-  average_sector_intensity)
+  emissions_totals <- calculate_portfolio_financed_emissions(
+    portfolio_total,
+    entity_info,
+    entity_emission_intensities,
+    average_sector_emission_intensities
+  )
 }
 
 

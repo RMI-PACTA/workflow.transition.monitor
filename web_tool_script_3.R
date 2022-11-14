@@ -1,5 +1,11 @@
-library(pacta.portfolio.analysis)
-use_r_packages()
+suppressPackageStartupMessages({
+  library(pacta.portfolio.analysis)
+  library(cli)
+  library(readr)
+  library(jsonlite)
+  library(config)
+  library(fs)
+})
 
 # pkgs needed for interactive report
 interactice_report_pkgs <- c("bookdown", "ggplot2", "scales", "writexl")
@@ -18,10 +24,10 @@ set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_n
 
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
-analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 
-# quit if there's no relevant PACTA assets --------------------------------
+# quit if there's no relevant PACTA assets -------------------------------------
 
  total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
  if (file.exists(total_portfolio_path)) {
@@ -32,99 +38,77 @@ analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_
  }
 
 
-# fix parameters ----------------------------------------------------------
-
-if(project_code == "PA2020FL"){
-  peer_group = case_when(
-    peer_group %in% c("other")~ "Others",
-    peer_group %in% c("bank", "assetmanager") ~ "Banks and Asset Managers",
-    peer_group %in% c("pensionfund", "insurance") ~ "Pension Funds and Insurances"
-  )
-}
+# fix parameters ---------------------------------------------------------------
 
 if(project_code == "GENERAL"){
   language_select = "EN"
 }
 
 
-# create interactive report -----------------------------------------------
-
-source(file.path(template_path, "create_interactive_report.R"))
-source(file.path(template_path, "useful_functions.R"))
-source(file.path(template_path, "export_environment_info.R"))
-
-report_name = select_report_template(project_report_name = project_report_name,
-                                     language_select = language_select)
-
-template_dir <- file.path(template_path, report_name, "_book")
-survey_dir <- file.path(user_results_path, project_code, "survey")
-real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
-output_dir <- file.path(outputs_path, portfolio_name_ref_all)
+# load PACTA results -----------------------------------------------------------
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))){
   audit_file <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"))
 }else{
   audit_file <- empty_audit_file()
-
 }
 
 # load portfolio overview
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"))) {
-  portfolio_overview <- read_rds(file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"))
+  portfolio_overview <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"))
 } else {
   portfolio_overview <- empty_portfolio_overview()
 }
 
-
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))){
-  emissions <- read_rds(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))
+  emissions <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"))
 }else{
   emissions <- empty_emissions_results()}
 
 if (file.exists(file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"))) {
-  total_portfolio <- read_rds(file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"))
+  total_portfolio <- readRDS(file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"))
 } else {
   total_portfolio <- empty_portfolio_results()
 }
 
 # load equity portfolio data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"))) {
-  equity_results_portfolio <- read_rds(file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"))
+  equity_results_portfolio <- readRDS(file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"))
 } else {
   equity_results_portfolio <- empty_portfolio_results()
 }
 
 # load bonds portfolio data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"))) {
-  bonds_results_portfolio <- read_rds(file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"))
+  bonds_results_portfolio <- readRDS(file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"))
 } else {
   bonds_results_portfolio <- empty_portfolio_results()
 }
 
 # load equity company data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"))) {
-  equity_results_company <- read_rds(file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"))
+  equity_results_company <- readRDS(file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"))
 } else {
   equity_results_company <- empty_company_results()
 }
 
 # load bonds company data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"))) {
-  bonds_results_company <- read_rds(file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"))
+  bonds_results_company <- readRDS(file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"))
 } else {
   bonds_results_company <- empty_company_results()
 }
 
 # load equity map data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"))) {
-  equity_results_map <- read_rds(file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"))
+  equity_results_map <- readRDS(file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"))
 } else {
   equity_results_map <- empty_map_results()
 }
 
 # load bonds map data
 if (file.exists(file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"))) {
-  bonds_results_map <- read_rds(file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"))
+  bonds_results_map <- readRDS(file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"))
 } else {
   bonds_results_map <- empty_map_results()
 }
@@ -145,33 +129,47 @@ if (file.exists(file.path(results_path, portfolio_name_ref_all, "Bonds_tdm.rds")
 
 # load peers results both individual and aggregate
 if (file.exists(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")))){
-  peers_equity_results_portfolio <- read_rds(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")))
+  peers_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")))
 }else{
   peers_equity_results_portfolio <- empty_portfolio_results()
 }
 
 if(file.exists(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio.rds")))){
-  peers_bonds_results_portfolio <- read_rds(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio.rds")))
+  peers_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio.rds")))
 }else{
   peers_bonds_results_portfolio <- empty_portfolio_results()
 }
 
 if (file.exists(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio_ind.rds")))){
-  peers_equity_results_user <- read_rds(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio_ind.rds")))
+  peers_equity_results_user <- readRDS(file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio_ind.rds")))
 }else{
   peers_equity_results_user <- empty_portfolio_results()
 }
 
 if(file.exists(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio_ind.rds")))){
-  peers_bonds_results_user <- read_rds(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio_ind.rds")))
+  peers_bonds_results_user <- readRDS(file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio_ind.rds")))
 }else{
   peers_bonds_results_user <- empty_portfolio_results()
 }
 
-indices_equity_results_portfolio <- read_rds(file.path(analysis_inputs_path, "Indices_equity_portfolio.rds"))
+indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_equity_portfolio.rds"))
 
-indices_bonds_results_portfolio <- read_rds(file.path(analysis_inputs_path, "Indices_bonds_portfolio.rds"))
+indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_portfolio.rds"))
 
+
+# create interactive report ----------------------------------------------------
+
+source(file.path(template_path, "create_interactive_report.R"))
+source(file.path(template_path, "useful_functions.R"))
+source(file.path(template_path, "export_environment_info.R"))
+
+report_name = select_report_template(project_report_name = project_report_name,
+                                     language_select = language_select)
+
+template_dir <- file.path(template_path, report_name, "_book")
+survey_dir <- file.path(user_results_path, project_code, "survey")
+real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
+output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 dataframe_translations <- readr::read_csv(
   file.path(template_path, "data/translation/dataframe_labels.csv"),
   col_types = cols()
@@ -191,9 +189,7 @@ sector_order <- readr::read_csv(
   col_types = cols()
 )
 
-
-# combine config files to send to create_interactive_report() ------------------
-
+# combine config files to send to create_interactive_report()
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
 project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
 
@@ -202,7 +198,6 @@ configs <-
     portfolio_config = config::get(file = portfolio_config_path),
     project_config = config::get(file = project_config_path)
   )
-
 
 # Needed for testing only
 select_scenario_other = scenario_other
@@ -297,7 +292,8 @@ if(dir.exists(exec_summary_template_path)) {
       indices_equity_results_portfolio = indices_equity_results_portfolio,
       indices_bonds_results_portfolio = indices_bonds_results_portfolio,
       audit_file = audit_file,
-      emissions = emissions
+      emissions_portfolio = emissions,
+      survey_dir = survey_dir
     )
 
   render_executive_summary(

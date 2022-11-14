@@ -1,5 +1,11 @@
-library(pacta.portfolio.analysis)
-use_r_packages()
+suppressPackageStartupMessages({
+  library(pacta.portfolio.analysis)
+  library(cli)
+  library(dplyr)
+  library(here)
+  library(glue)
+  library(jsonlite)
+})
 
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
 
@@ -14,12 +20,12 @@ working_location <- file.path(working_location)
 
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = fs::path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
-analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 # To save, files need to go in the portfolio specific folder, created here
 create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, project_location = project_location)

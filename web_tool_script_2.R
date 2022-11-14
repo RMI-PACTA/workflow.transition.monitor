@@ -50,7 +50,7 @@ if (file.exists(total_portfolio_path)) {
 equity_input_file <- file.path(proc_input_path, portfolio_name_ref_all, "equity_portfolio.rds")
 
 if (file.exists(equity_input_file)) {
-  port_raw_all_eq <- read_rds(equity_input_file) %>%
+  port_raw_all_eq <- readRDS(equity_input_file) %>%
     mutate(id = as.character(id))
 
   list_investors_eq <- unique(port_raw_all_eq$investor_name)
@@ -167,7 +167,7 @@ bonds_inputs_file <- file.path(proc_input_path, portfolio_name_ref_all, "bonds_p
 # portfolio_name <- file_names$portfolio_name
 
 if (file.exists(bonds_inputs_file)) {
-  port_raw_all_cb <- read_rds(bonds_inputs_file) %>%
+  port_raw_all_cb <- readRDS(bonds_inputs_file) %>%
     mutate(id = as.character(id))
 
   list_investors_cb <- unique(port_raw_all_cb$investor_name)

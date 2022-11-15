@@ -251,6 +251,12 @@ exec_summary_builtin_template_path <- system.file("extdata", exec_summary_templa
 invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))
 exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
 
+if(length(list.files(real_estate_dir)) > 0) {
+  real_estate_flag = TRUE
+} else {
+  real_estate_flag = FALSE
+}
+
 if(dir.exists(exec_summary_template_path)) {
   data_aggregated_filtered <-
     prep_data_executive_summary(

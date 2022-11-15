@@ -286,6 +286,7 @@ if(dir.exists(exec_summary_template_path)) {
     exec_summary_dir = exec_summary_template_path,
     survey_dir = survey_dir,
     real_estate_dir = real_estate_dir,
+    real_estate_flag = real_estate_flag,
     score_card_dir = score_card_dir,
     file_name = "template.Rmd",
     investor_name = investor_name,

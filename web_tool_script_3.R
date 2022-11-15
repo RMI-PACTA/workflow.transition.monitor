@@ -280,9 +280,7 @@ if(dir.exists(exec_summary_template_path)) {
     )
 
 
-  if(length(list.files(real_estate_dir))>0){
-    real_estate_flag = TRUE
-  }
+  real_estate_flag = (length(list.files(real_estate_dir)) > 0)
 
   render_executive_summary(
     data = data_aggregated_filtered,

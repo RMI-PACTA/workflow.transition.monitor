@@ -1,0 +1,8 @@
+#! /bin/bash
+
+# Set permissions so that new files can be deleted/overwritten outside docker
+umask 000
+
+cd ./bound
+
+Rscript --no-save --no-restore --no-site-file --no-environ web_tool_script_3.R "${1:-1234}"

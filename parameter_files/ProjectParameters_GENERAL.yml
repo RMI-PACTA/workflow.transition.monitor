@@ -1,11 +1,17 @@
 default:
 
+    paths:
+        data_location_ext: ../pacta-data/2021Q4/
+
     reporting:
         project_report_name: general
         display_currency: USD
         currency_exchange_value: 1
 
     parameters:
+        timestamp: 2021Q4
+        dataprep_timestamp: 2021Q4
+        start_year: 2021
         horizon_year: 5
         select_scenario: WEO2021_NZE_2050
         scenario_other: GECO2021_1.5C-Unif
@@ -36,11 +42,7 @@ default:
             - Hybrid
             - Electric
             - FuelCell
-            - Hybrid_HDV
-            - Electric_HDV
-            - FuelCell_HDV
-            - Dc-Electric Arc Furnace
-            - Ac-Electric Arc Furnace
+            - Electric Arc Furnace
         alignment_techs:
             - RenewablesCap
             - CoalCap

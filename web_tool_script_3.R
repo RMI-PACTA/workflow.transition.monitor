@@ -239,6 +239,7 @@ library(pacta.executive.summary)
 
 survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
 real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real_estate"))
+score_card_dir <- fs::path_abs(file.path(user_results_path, project_code, "score_card"))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
 if(!dir.exists(es_dir)) {
@@ -275,7 +276,7 @@ if(dir.exists(exec_summary_template_path)) {
       indices_bonds_results_portfolio = indices_bonds_results_portfolio,
       audit_file = audit_file,
       emissions_portfolio = emissions,
-      survey_dir = survey_dir
+      score_card_dir = score_card_dir
     )
 
   render_executive_summary(
@@ -285,6 +286,7 @@ if(dir.exists(exec_summary_template_path)) {
     exec_summary_dir = exec_summary_template_path,
     survey_dir = survey_dir,
     real_estate_dir = real_estate_dir,
+    score_card_dir = score_card_dir,
     file_name = "template.Rmd",
     investor_name = investor_name,
     portfolio_name = portfolio_name,

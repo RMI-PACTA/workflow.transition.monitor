@@ -279,6 +279,11 @@ if(dir.exists(exec_summary_template_path)) {
       score_card_dir = score_card_dir
     )
 
+
+  if(length(list.files(real_estate_dir))>0){
+    real_estate_flag = TRUE
+  }
+
   render_executive_summary(
     data = data_aggregated_filtered,
     language = language_select,

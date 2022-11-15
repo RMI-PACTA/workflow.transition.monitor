@@ -252,9 +252,9 @@ invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = 
 exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
 
 if(length(list.files(real_estate_dir)) > 0) {
-  real_estate_flag = TRUE
+  real_estate_flag <- TRUE
 } else {
-  real_estate_flag = FALSE
+  real_estate_flag <- FALSE
 }
 
 if(dir.exists(exec_summary_template_path)) {

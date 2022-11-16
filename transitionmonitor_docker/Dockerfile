@@ -91,8 +91,8 @@ COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY workflow.transition.monitor /bound
 
 # install PACTA R packages
-RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis')"
+RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary', dependencies = TRUE)"
+RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis', dependencies = TRUE)"
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \

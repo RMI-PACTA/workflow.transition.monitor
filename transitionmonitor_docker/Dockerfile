@@ -7,7 +7,6 @@
 FROM rocker/r-ver:4.1.2
 
 # install system dependencies
-# nano only for utility, not needed for PACTA
 ARG SYS_DEPS="\
     git \
     libcurl4-openssl-dev \

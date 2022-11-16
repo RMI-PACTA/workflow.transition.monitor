@@ -15,7 +15,6 @@ default:
 
     methodology:
         has_map: TRUE
-        has_sb: FALSE
         has_revenue: FALSE
         has_credit: FALSE
         inc_emissionfactors: TRUE

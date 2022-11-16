@@ -281,6 +281,8 @@ if(dir.exists(exec_summary_template_path)) {
 
 
   real_estate_flag = (length(list.files(real_estate_dir)) > 0)
+  # FIXME - force real_estate_flag to be FALSE until that section is ready
+  real_estate_flag <- FALSE
 
   render_executive_summary(
     data = data_aggregated_filtered,

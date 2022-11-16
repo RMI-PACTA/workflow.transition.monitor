@@ -14,7 +14,6 @@ ARG SYS_DEPS="\
     libssl-dev \
     openssh-client \
     wget \
-    nano \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $SYS_DEPS \

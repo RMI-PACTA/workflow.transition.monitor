@@ -15,7 +15,6 @@ ARG SYS_DEPS="\
     openssh-client \
     wget \
     nano \
-    vim \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $SYS_DEPS \

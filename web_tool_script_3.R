@@ -251,7 +251,7 @@ exec_summary_builtin_template_path <- system.file("extdata", exec_summary_templa
 invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))
 exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
 
-if(dir.exists(exec_summary_template_path)) {
+if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", "bank", "insurance", "pensionfund")) ) {
   data_aggregated_filtered <-
     prep_data_executive_summary(
       investor_name = investor_name,

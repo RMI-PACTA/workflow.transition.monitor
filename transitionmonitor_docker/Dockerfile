@@ -100,5 +100,7 @@ RUN chmod -R a+rwX /bound \
 # set the build_version environment variable
 ARG image_tag
 ENV build_version=$image_tag
+ARG head_hashes
+ENV head_hashes=$head_hashes
 
 RUN exit 0

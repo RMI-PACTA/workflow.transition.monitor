@@ -55,6 +55,7 @@ RUN apt-get update \
 
 # install R package dependencies
 ARG PKG_DEPS="\
+    benchmarkme \
     bookdown \
     cli \
     config \

@@ -138,6 +138,18 @@ done
 green "repos successfully cloned into temp directory\n"
 
 
+# grab hash of the HEAD for each repo
+head_hashes=()
+for repo in $repos
+do
+    head_hash=$(git -C "$repo" rev-parse --verify --short HEAD || exit 2)
+    head_hashes+=("'$repo: $head_hash'")
+    green "$(basename $repo) short hash of head is $head_hash"
+done
+head_hashes=$( printf '%s\n' "${head_hashes[@]}" )
+green "HEAD hash successfully captures for each repo\n"
+
+
 # set git tag in each repo and log
 for repo in $repos
 do
@@ -164,6 +176,7 @@ green "Building rmi_pacta Docker image...\n"
 
 docker build \
     --build-arg image_tag=$tag \
+    --build-arg head_hashes=$head_hashes \
     --platform $platform \
     --tag rmi_pacta:$tag \
     --tag rmi_pacta:latest \

@@ -36,6 +36,7 @@ ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2022/01/01/tlnet
 ARG TEX_DEPS="\
     geometry \
     mdframed \
+    multicol \
     needspace \ 
     xcolor \
     xparse \

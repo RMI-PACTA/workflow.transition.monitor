@@ -139,14 +139,13 @@ green "repos successfully cloned into temp directory\n"
 
 
 # grab hash of the HEAD for each repo
-head_hashes=()
+head_hashes=""
 for repo in $repos
 do
     head_hash=$(git -C "$repo" rev-parse --verify --short HEAD || exit 2)
-    head_hashes+=("'$repo: $head_hash'")
+    head_hashes="$repo:$head_hash,$head_hashes"
     green "$(basename $repo) short hash of head is $head_hash"
 done
-head_hashes=$( printf '%s\n' "${head_hashes[@]}" )
 green "HEAD hash successfully captures for each repo\n"
 
 

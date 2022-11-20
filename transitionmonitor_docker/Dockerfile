@@ -32,7 +32,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install TeX packages
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2022/01/01/tlnet
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2019/12/31/tlnet/
 ARG TEX_DEPS="\
     geometry \
     mdframed \

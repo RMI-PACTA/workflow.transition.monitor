@@ -31,6 +31,19 @@ RUN apt-get update \
     && tlmgr init-usertree \
     && rm -rf /var/lib/apt/lists/*
 
+# install TeX packages
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2022/01/01/tlnet
+ARG TEX_DEPS="\
+    geometry \
+    mdframed \
+    multicol \
+    needspace \ 
+    xcolor \
+    xparse \
+    zref \
+    "
+RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
+
 # install system dependencies for R packages
 ARG R_PKG_SYS_DEPS="\
     libfontconfig1-dev \

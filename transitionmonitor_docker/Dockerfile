@@ -41,17 +41,23 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-# install TeX system and fonts
- ARG TEX_APT="\
-     texlive-xetex \
-     texlive-fonts-recommended \
-     texlive-fonts-extra \
-     lmodern \
-     "
- RUN apt-get update \
-     && apt-get install -y --no-install-recommends $TEX_APT \
-     && tlmgr init-usertree \
-     && rm -rf /var/lib/apt/lists/*
+# install TeX system and tex packages
+ARG TEX_DEPS="\
+    geometry \
+    l3packages \
+    mdframed \
+    needspace \
+    tools \
+    xcolor \
+    zref \
+    "
+RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
+    zcat install-tl-unx.tar.gz | tar xf - && \
+    cd install-tl-*/ && \
+    perl ./install-tl --no-interaction --scheme=small --no-doc-install --no-src-install && \
+    PATH=/usr/local/texlive/2022/bin/x86_64-linux:$PATH && \
+    tlmgr init-usertree && \
+    tlmgr install $TEX_DEPS
 
 # install R package dependencies
 ARG PKG_DEPS="\
@@ -79,22 +85,6 @@ RUN Rscript -e "\
     install.packages('remotes'); \
     pkg_deps <- strsplit(trimws(gsub('[\\\]+', '', '$PKG_DEPS')), '[[:space:]]+')[[1]]; \
     remotes::install_cran(pkg_deps); \
-    "
-
-# install {tinytex} and TeX packages
-ARG TEX_DEPS="\
-    geometry \
-    mdframed \
-    multicol \
-    needspace \ 
-    xcolor \
-    xparse \
-    zref \
-    "
-RUN Rscript -e "\
-    tex_deps <- strsplit(trimws(gsub('[\\\]+', '', '$TEX_DEPS')), '[[:space:]]+')[[1]]; \
-    remotes::install_cran('tinytex'); \
-    tinytex::install_tinytex(extra_packages = tex_deps); \
     "
 
 # copy in PACTA repos

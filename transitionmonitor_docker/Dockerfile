@@ -82,7 +82,7 @@ ARG TEX_DEPS="\
 RUN Rscript -e "\
     tex_deps <- strsplit(trimws(gsub('[\\\]+', '', '$TEX_DEPS')), '[[:space:]]+')[[1]]; \
     remotes::install_cran('tinytex'); \
-    install_tinytex(extra_packages = tex_deps); \
+    tinytex::install_tinytex(extra_packages = tex_deps); \
     "
 
 # copy in PACTA repos

@@ -41,9 +41,22 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-# install TeX system and tex packages
+# install TeX system and fonts
+ARG TEX_APT="\
+  texlive-xetex \
+  texlive-fonts-recommended \
+  texlive-fonts-extra \
+  lmodern \
+  "
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends $TEX_APT \
+  && tlmgr init-usertree \
+  && rm -rf /var/lib/apt/lists/*
+
+# install tex package dependencies
 ARG TEX_DEPS="\
     geometry \
+    hyperref \
     l3packages \
     mdframed \
     needspace \
@@ -51,13 +64,7 @@ ARG TEX_DEPS="\
     xcolor \
     zref \
     "
-RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
-    zcat install-tl-unx.tar.gz | tar xf - && \
-    cd install-tl-*/ && \
-    perl ./install-tl --no-interaction --scheme=small --no-doc-install --no-src-install && \
-    PATH=/usr/local/texlive/2022/bin/x86_64-linux:$PATH && \
-    tlmgr init-usertree && \
-    tlmgr install $TEX_DEPS
+RUN tlmgr install $TEX_DEPS
 
 # install R package dependencies
 ARG PKG_DEPS="\

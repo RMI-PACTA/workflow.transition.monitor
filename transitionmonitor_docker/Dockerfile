@@ -54,6 +54,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2019/12/31/tlnet/
+
 ARG TEX_DEPS="\
     geometry \
     hyperref \
@@ -64,7 +66,8 @@ ARG TEX_DEPS="\
     xcolor \
     zref \
     "
-RUN tlmgr install $TEX_DEPS
+
+RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # install R package dependencies
 ARG PKG_DEPS="\

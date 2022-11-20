@@ -41,6 +41,18 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
+# install TeX system and fonts
+ ARG TEX_APT="\
+     texlive-xetex \
+     texlive-fonts-recommended \
+     texlive-fonts-extra \
+     lmodern \
+     "
+ RUN apt-get update \
+     && apt-get install -y --no-install-recommends $TEX_APT \
+     && tlmgr init-usertree \
+     && rm -rf /var/lib/apt/lists/*
+
 # install R package dependencies
 ARG PKG_DEPS="\
     bookdown \

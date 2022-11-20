@@ -42,16 +42,32 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install TeX system and fonts
- ARG TEX_APT="\
-     texlive-xetex \
-     texlive-fonts-recommended \
-     texlive-fonts-extra \
-     lmodern \
-     "
- RUN apt-get update \
-     && apt-get install -y --no-install-recommends $TEX_APT \
-     && tlmgr init-usertree \
-     && rm -rf /var/lib/apt/lists/*
+ARG TEX_APT="\
+  texlive-xetex \
+  texlive-fonts-recommended \
+  texlive-fonts-extra \
+  lmodern \
+  "
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends $TEX_APT \
+  && tlmgr init-usertree \
+  && rm -rf /var/lib/apt/lists/*
+
+# install tex package dependencies
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2019/12/31/tlnet/
+
+ARG TEX_DEPS="\
+    geometry \
+    hyperref \
+    l3packages \
+    mdframed \
+    needspace \
+    tools \
+    xcolor \
+    zref \
+    "
+
+RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # install R package dependencies
 ARG PKG_DEPS="\
@@ -79,22 +95,6 @@ RUN Rscript -e "\
     install.packages('remotes'); \
     pkg_deps <- strsplit(trimws(gsub('[\\\]+', '', '$PKG_DEPS')), '[[:space:]]+')[[1]]; \
     remotes::install_cran(pkg_deps); \
-    "
-
-# install {tinytex} and TeX packages
-ARG TEX_DEPS="\
-    geometry \
-    mdframed \
-    multicol \
-    needspace \ 
-    xcolor \
-    xparse \
-    zref \
-    "
-RUN Rscript -e "\
-    tex_deps <- strsplit(trimws(gsub('[\\\]+', '', '$TEX_DEPS')), '[[:space:]]+')[[1]]; \
-    remotes::install_cran('tinytex'); \
-    tinytex::install_tinytex(extra_packages = tex_deps); \
     "
 
 # copy in PACTA repos

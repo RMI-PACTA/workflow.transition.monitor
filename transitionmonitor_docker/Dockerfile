@@ -62,6 +62,7 @@ ARG TEX_DEPS="\
     l3packages \
     mdframed \
     needspace \
+    textcomp \
     tools \
     xcolor \
     zref \

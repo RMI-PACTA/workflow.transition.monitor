@@ -140,7 +140,6 @@ if (file.exists(equity_input_file)) {
   }
 
   rm(port_raw_all_eq)
-  rm(port_raw_eq)
   rm(port_eq)
   rm(port_pw_eq)
   rm(port_own_eq)
@@ -247,7 +246,6 @@ if (file.exists(bonds_inputs_file)) {
   }
 
   rm(port_raw_all_cb)
-  rm(port_raw_cb)
   rm(port_cb)
   rm(port_pw_cb)
   rm(port_all_cb)
@@ -258,8 +256,6 @@ if (file.exists(bonds_inputs_file)) {
 
 remove_if_exists(port_raw_all_eq)
 remove_if_exists(port_raw_all_cb)
-remove_if_exists(port_raw_eq)
-remove_if_exists(port_raw_cb)
 remove_if_exists(ald_scen_eq)
 remove_if_exists(ald_scen_cb)
 remove_if_exists(company_all_eq)

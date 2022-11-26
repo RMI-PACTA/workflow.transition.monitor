@@ -4,7 +4,7 @@
 # https://hub.docker.com/r/rocker/r-ver
 # https://rocker-project.org/images/versioned/r-ver.html
 
-FROM rocker/r-ver:4.1.2
+FROM rocker/r-ver:4.2.2
 
 # install system dependencies
 ARG SYS_DEPS="\

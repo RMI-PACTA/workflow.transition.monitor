@@ -56,7 +56,7 @@ green () {
 }
 
 dir_start="$(pwd)"
-dir_temp="$(mktemp -d -p /datadrive/tmp)"
+dir_temp="$(mktemp -d)"
 cleanup () {
     rm -rf $dir_temp
     cd $dir_start
@@ -164,8 +164,6 @@ cp "${dir_start}/Dockerfile" "$dir_temp"
 # Maybe copy in custom data path
 # FIXME: this should be handled better
 if [ -n "${datapath}" ]; then
-    yellow " $datapath"
-    yellow " $dir_temp"
     mkdir "${dir_temp}/pacta-data"
     cp -r "${datapath}" "${dir_temp}/pacta-data"
 fi

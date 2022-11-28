@@ -54,7 +54,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2019/12/31/tlnet/
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
 ARG TEX_DEPS="\
     geometry \

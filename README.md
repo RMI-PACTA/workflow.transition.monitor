@@ -27,15 +27,7 @@ You must have SSH authentication to your GitHub account setup to use this tool.
 
 Before running the script, you will need to choose the tag that you
 want to use for the release. You should use [semantic
-versioning](https://semver.org), and you should choose a tag that
-follows in sequence from previously existing tags in the pacta.portfolio.analysis 
-and friends repos. You can see existing tags in the relevant repos
-here:\
-<https://github.com/RMI-PACTA/pacta.executive.summary/tags>\
-<https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
-<https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
-<https://github.com/RMI-PACTA/workflow.transition.monitor/tags>\
-<https://github.com/RMI-PACTA/pacta-data/tags>\
+versioning](https://semver.org).
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.
 

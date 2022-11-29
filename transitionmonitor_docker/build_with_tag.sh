@@ -147,7 +147,7 @@ do
     head_hashes="$repo:$head_hash,$head_hashes"
     green "$(basename $repo) short hash of head is $head_hash"
 done
-green "HEAD hash successfully captures for each repo\n"
+green "HEAD hash successfully captured for each repo\n"
 
 
 # set git tag in each repo and log

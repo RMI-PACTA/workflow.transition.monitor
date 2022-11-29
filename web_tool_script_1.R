@@ -1,4 +1,5 @@
 suppressPackageStartupMessages({
+  library(pacta.portfolio.import)
   library(pacta.portfolio.analysis)
   library(cli)
   library(dplyr)
@@ -48,12 +49,6 @@ total_fund_list <- readRDS(file.path(file_location, "total_fund_list.rds"))
 isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds"))
 
 fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
-
-#FIXME: Hack to remove unusable equity. Probably a more clever way to do this.
-fin_data <- filter(
-  fin_data,
-  !(asset_type == "Equity" & unit_share_price == 0)
-)
 
 entity_info <- readRDS(file.path(file_location, "entity_info.rds"))
 

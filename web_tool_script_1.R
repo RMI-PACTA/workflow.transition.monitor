@@ -49,12 +49,6 @@ isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds")
 
 fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
 
-#FIXME: Hack to remove unusable equity. Probably a more clever way to do this.
-fin_data <- filter(
-  fin_data,
-  !(asset_type == "Equity" & unit_share_price == 0)
-)
-
 entity_info <- readRDS(file.path(file_location, "entity_info.rds"))
 
 abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))

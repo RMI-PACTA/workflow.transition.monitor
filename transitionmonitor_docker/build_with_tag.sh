@@ -150,15 +150,6 @@ done
 green "HEAD hash successfully captured for each repo\n"
 
 
-# set git tag in each repo and log
-for repo in $repos
-do
-    git -C "$repo" tag -a "$tag" -m "Release pacta $tag" HEAD || exit 2
-    green "$(basename $repo) tagged with $tag"
-done
-green "repos successfully tagged with $tag\n"
-
-
 # Copy Dockerfile alongside pacta siblings and build the image
 cp "${dir_start}/Dockerfile" "$dir_temp"
 
@@ -219,10 +210,5 @@ echo -e "\nTo test the new image with our test scripts (from the root directory 
 yellow "./run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
 echo -e "\nor to run all the tests at once (from the root directory of the test files):"
 yellow "./run-all-tests.sh"
-
-echo -e "\nTo push the git tags from within the docker image:"
-yellow "docker run --rm -ti -v \"\$HOME/.ssh\":/root/.ssh rmi_pacta:${tag} bash"
-echo -e "\nthen inside the container (for each of the 5 PACTA repos:"
-yellow "cd /bound && git push origin ${tag}"
 
 exit 0

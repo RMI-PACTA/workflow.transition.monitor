@@ -12,7 +12,6 @@ The tree of the docker container looks like this:
 /pacta.executive.summary
 /pacta.interactive.report
 /pacta.portfolio.analysis
-/pacta.interactive.report
 /pacta-data
 ```
 

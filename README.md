@@ -1,7 +1,7 @@
 # Description
 
 The Dockerfile in this directory creates an image containing a freshly
-cloned copy of pacta.portfolio.analysis and all the repositories it depends 
+cloned copy of workflow.transition.monitor and all the repositories it depends 
 on. It also installs the relevant PACTA R packages from the repos that it
 copies in.
 
@@ -17,7 +17,7 @@ The tree of the docker container looks like this:
 
 # Notes
 
-Note that pacta.portfolio.analysis and friends are not mounted but copied into the
+Note that workflow.transition.monitor and friends are not mounted but copied into the
 container, so they will be frozen in the state they are when you build
 the image.
 

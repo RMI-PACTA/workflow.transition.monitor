@@ -89,18 +89,17 @@ RUN Rscript -e "\
 
 # copy in PACTA repos
 COPY pacta-data /pacta-data
+COPY pacta.executive.summary /pacta.executive.summary
+COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY pacta.portfolio.import /pacta.portfolio.import
-COPY pacta.interactive.report /pacta.interactive.report
-COPY pacta.executive.summary /pacta.executive.summary
 COPY workflow.transition.monitor /bound
 
 # install PACTA R packages
+RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
+RUN Rscript -e "devtools::install(pkg = '/pacta.interactive.report')"
 RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis')"
 RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.import')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.interactive.report')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
-
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \

@@ -93,30 +93,7 @@ do
 done
 
 
-# check that the specified tag is not already used in any of the repos
-remotes="$(echo $repos | tr ' ' ',')"
-remotes=$(eval "echo $url{$remotes}.git")
-tags=""
-for i in $remotes
-do
-    tags_i="$(git ls-remote --tags --ref $i | cut -d / -f 3)"
-    tags="$tags $tags_i"
-done
-
-tags="$(echo $tags | tr ' ' '\n' | sort -V | uniq)"
-for i in $tags
-do
-    if [ "$i" == "$tag" ]; then
-        red "Tag '$tag' is taken. Choose a new tag different from these ones:"
-        red "$(echo $tags | tr ' ' '\n' | sort -V | uniq)" && exit 1
-    fi
-done
-if [ -z "$tags" ]; then
-    yellow "These remotes returned no tag:"
-    yellow "$(echo $remotes | tr ' ' '\n')"
-    yellow "Are your SSH keys unset?"
-fi
-
+# check that it is running from the transitionmonitor_docker directory
 if [ "$dir_start" == "." ]; then
     dir_start="$(pwd)"
 fi
@@ -148,15 +125,6 @@ do
     green "$(basename $repo) short hash of head is $head_hash"
 done
 green "HEAD hash successfully captured for each repo\n"
-
-
-# set git tag in each repo and log
-for repo in $repos
-do
-    git -C "$repo" tag -a "$tag" -m "Release pacta $tag" HEAD || exit 2
-    green "$(basename $repo) tagged with $tag"
-done
-green "repos successfully tagged with $tag\n"
 
 
 # Copy Dockerfile alongside pacta siblings and build the image
@@ -219,10 +187,5 @@ echo -e "\nTo test the new image with our test scripts (from the root directory 
 yellow "./run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
 echo -e "\nor to run all the tests at once (from the root directory of the test files):"
 yellow "./run-all-tests.sh"
-
-echo -e "\nTo push the git tags from within the docker image:"
-yellow "docker run --rm -ti -v \"\$HOME/.ssh\":/root/.ssh rmi_pacta:${tag} bash"
-echo -e "\nthen inside the container (for each of the 5 PACTA repos:"
-yellow "cd /bound && git push origin ${tag}"
 
 exit 0

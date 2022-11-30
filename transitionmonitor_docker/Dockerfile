@@ -74,22 +74,12 @@ ARG PKG_DEPS="\
     bookdown \
     cli \
     config \
-    countrycode \
     devtools \
     dplyr \
-    fs \
-    ggplot2 \
     glue \
     here \
     jsonlite \
-    knitr \
     readr \
-    rmarkdown \
-    scales \
-    stringr \
-    tibble \
-    tidyr \
-    writexl \
     "
 RUN Rscript -e "\
     install.packages('remotes'); \
@@ -107,6 +97,7 @@ COPY workflow.transition.monitor /bound
 
 # install PACTA R packages
 RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
+RUN Rscript -e "devtools::install(pkg = '/pacta.interactive.report')"
 RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis')"
 RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.import')"
 

@@ -1,7 +1,7 @@
 # Description
 
 The Dockerfile in this directory creates an image containing a freshly
-cloned copy of pacta.portfolio.analysis and all the repositories it depends 
+cloned copy of workflow.transition.monitor and all the repositories it depends 
 on. It also installs the relevant PACTA R packages from the repos that it
 copies in.
 
@@ -12,12 +12,13 @@ The tree of the docker container looks like this:
 /pacta.executive.summary
 /pacta.interactive.report
 /pacta.portfolio.analysis
+/pacta.portfolio.import
 /pacta-data
 ```
 
 # Notes
 
-Note that pacta.portfolio.analysis and friends are not mounted but copied into the
+Note that workflow.transition.monitor and friends are not mounted but copied into the
 container, so they will be frozen in the state they are when you build
 the image.
 
@@ -27,15 +28,7 @@ You must have SSH authentication to your GitHub account setup to use this tool.
 
 Before running the script, you will need to choose the tag that you
 want to use for the release. You should use [semantic
-versioning](https://semver.org), and you should choose a tag that
-follows in sequence from previously existing tags in the pacta.portfolio.analysis 
-and friends repos. You can see existing tags in the relevant repos
-here:\
-<https://github.com/RMI-PACTA/pacta.executive.summary/tags>\
-<https://github.com/RMI-PACTA/pacta.interactive.report/tags>\
-<https://github.com/RMI-PACTA/pacta.portfolio.analysis/tags>\
-<https://github.com/RMI-PACTA/workflow.transition.monitor/tags>\
-<https://github.com/RMI-PACTA/pacta-data/tags>\
+versioning](https://semver.org).
 
 Run the build_with_tag.sh script, specifying a tag to assign to it.
 
@@ -86,32 +79,7 @@ image: `run-like-constructiva-flags.sh` and `run-all-tests.sh`
 
 # Releasing
 
-To release a new version of the software, push all tags to GitHub. The
-tag you provide will affect the image, the repository containing the
-Dockerfile that builds the image (pacta.portfolio.analysis), and the pacta siblings repos. 
-That consistent tag make the process reproducible.
-
-To push the tags, start the container with something like
-
-``` {.bash}
-docker run --rm -ti -v "$HOME/.ssh":/root/.ssh rmi_pacta:latest bash
-```
-
-This example starts an ephemeral container (`run --rm`) from the image
-`rmi_pacta:latest`, and creates a volume that makes your .ssh key
-available to the container (`-v "$HOME/.ssh":/root/.ssh`), which
-you'll need to interact with GitHub. If instead of ssh you use https
-protocol, you may omit the volume argument and provide your username and
-password when prompted.
-
-Once inside the container, you can push any tag as you would normally
-push a branch `git push <remote> <tag>`, for example:
-
-``` {.bash}
-cd /bound
-# If origin = https://github.com/RMI-PACTA/pacta.portfolio.analysis
-git push origin 0.1.14
-```
+To release a new version of the software, use the `tag-and-push.sh` script in the `transition_monitor` directory.
 
 # For the web
 

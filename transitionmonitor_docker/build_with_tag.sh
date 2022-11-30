@@ -93,30 +93,7 @@ do
 done
 
 
-# check that the specified tag is not already used in any of the repos
-remotes="$(echo $repos | tr ' ' ',')"
-remotes=$(eval "echo $url{$remotes}.git")
-tags=""
-for i in $remotes
-do
-    tags_i="$(git ls-remote --tags --ref $i | cut -d / -f 3)"
-    tags="$tags $tags_i"
-done
-
-tags="$(echo $tags | tr ' ' '\n' | sort -V | uniq)"
-for i in $tags
-do
-    if [ "$i" == "$tag" ]; then
-        red "Tag '$tag' is taken. Choose a new tag different from these ones:"
-        red "$(echo $tags | tr ' ' '\n' | sort -V | uniq)" && exit 1
-    fi
-done
-if [ -z "$tags" ]; then
-    yellow "These remotes returned no tag:"
-    yellow "$(echo $remotes | tr ' ' '\n')"
-    yellow "Are your SSH keys unset?"
-fi
-
+# check that it is running from the transitionmonitor_docker directory
 if [ "$dir_start" == "." ]; then
     dir_start="$(pwd)"
 fi

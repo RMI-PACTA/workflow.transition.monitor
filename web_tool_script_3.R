@@ -139,9 +139,7 @@ indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indi
 
 # create interactive report ----------------------------------------------------
 
-source(file.path(template_path, "create_interactive_report.R"))
-source(file.path(template_path, "useful_functions.R"))
-source(file.path(template_path, "export_environment_info.R"))
+library("pacta.interactive.report")
 
 report_name = select_report_template(project_report_name = project_report_name,
                                      language_select = language_select)

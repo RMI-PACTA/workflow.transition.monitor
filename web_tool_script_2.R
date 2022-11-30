@@ -53,102 +53,93 @@ if (file.exists(equity_input_file)) {
   port_raw_all_eq <- readRDS(equity_input_file) %>%
     mutate(id = as.character(id))
 
-  list_investors_eq <- unique(port_raw_all_eq$investor_name)
+  map_eq <- NA
+  company_all_eq <- NA
+  port_all_eq <- NA
 
-  for (e in 1:length(list_investors_eq)) {
-    map_eq <- NA
-    company_all_eq <- NA
-    port_all_eq <- NA
+  port_eq <- calculate_weights(port_raw_all_eq, "Equity", grouping_variables)
 
-    investor_name_select <- list_investors_eq[e]
+  ald_scen_eq <- get_ald_scen("Equity")
+  port_eq <- merge_in_ald(port_eq, ald_scen_eq)
+  rm(ald_scen_eq)
 
-    port_raw_eq <- port_raw_all_eq %>% filter(investor_name == investor_name_select)
+  # Portfolio weight methodology
+  port_pw_eq <- port_weight_allocation(port_eq)
 
-    port_eq <- calculate_weights(port_raw_eq, "Equity", grouping_variables)
+  company_pw_eq <- aggregate_company(port_pw_eq)
 
-    ald_scen_eq <- get_ald_scen("Equity")
-    port_eq <- merge_in_ald(port_eq, ald_scen_eq)
-    rm(ald_scen_eq)
+  port_pw_eq <- aggregate_portfolio(company_pw_eq)
 
-    # Portfolio weight methodology
-    port_pw_eq <- port_weight_allocation(port_eq)
+  # Ownership weight methodology
+  port_own_eq <- ownership_allocation(port_eq)
 
-    company_pw_eq <- aggregate_company(port_pw_eq)
+  company_own_eq <- aggregate_company(port_own_eq)
 
-    port_pw_eq <- aggregate_portfolio(company_pw_eq)
+  port_own_eq <- aggregate_portfolio(company_own_eq)
 
-    # Ownership weight methodology
-    port_own_eq <- ownership_allocation(port_eq)
+  # Create combined outputs
+  company_all_eq <- bind_rows(company_pw_eq, company_own_eq)
 
-    company_own_eq <- aggregate_company(port_own_eq)
+  port_all_eq <- bind_rows(port_pw_eq, port_own_eq)
 
-    port_own_eq <- aggregate_portfolio(company_own_eq)
+  if (has_map) {
+    ald_raw_eq <- get_ald_raw("Equity")
+    map_eq <- merge_in_geography(company_all_eq, ald_raw_eq)
+    rm(ald_raw_eq)
 
-    # Create combined outputs
-    company_all_eq <- bind_rows(company_pw_eq, company_own_eq)
+    map_eq <- aggregate_map_data(map_eq)
+  }
 
-    port_all_eq <- bind_rows(port_pw_eq, port_own_eq)
+  # Technology Share Calculation
+  port_all_eq <- calculate_technology_share(port_all_eq)
 
-    if (has_map) {
-      ald_raw_eq <- get_ald_raw("Equity")
-      map_eq <- merge_in_geography(company_all_eq, ald_raw_eq)
-      rm(ald_raw_eq)
+  company_all_eq <- calculate_technology_share(company_all_eq)
 
-      map_eq <- aggregate_map_data(map_eq)
+  # Scenario alignment calculations
+  port_all_eq <- calculate_scenario_alignment(port_all_eq)
+
+  company_all_eq <- calculate_scenario_alignment(company_all_eq)
+
+  pf_file_results_path <- file.path(results_path, portfolio_name_ref_all)
+  if (!dir.exists(pf_file_results_path)) {
+    dir.create(pf_file_results_path)
+  }
+
+  if (data_check(company_all_eq)) {
+    saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
+  }
+  if (data_check(port_all_eq)) {
+
+    if (tdm_conditions_met(analysis_inputs_path)) {
+      tdm_vars <- determine_tdm_variables(start_year)
+
+      equity_tdm <-
+        calculate_tdm(
+          port_all_eq,
+          t0 = tdm_vars$t0,
+          delta_t1 = tdm_vars$delta_t1,
+          delta_t2 = tdm_vars$delta_t2,
+          additional_groups = tdm_vars$additional_groups,
+          scenarios = tdm_vars$scenarios
+        )
+
+      saveRDS(equity_tdm, file.path(pf_file_results_path, "Equity_tdm.rds"))
     }
 
-    # Technology Share Calculation
-    port_all_eq <- calculate_technology_share(port_all_eq)
-
-    company_all_eq <- calculate_technology_share(company_all_eq)
-
-    # Scenario alignment calculations
-    port_all_eq <- calculate_scenario_alignment(port_all_eq)
-
-    company_all_eq <- calculate_scenario_alignment(company_all_eq)
-
-    pf_file_results_path <- file.path(results_path, portfolio_name_ref_all)
-    if (!dir.exists(pf_file_results_path)) {
-      dir.create(pf_file_results_path)
+    # filter out scenarios used only for TDM, if they exist
+    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
+      port_all_eq <- filter(port_all_eq, ! scenario %in% tdm_scenarios())
     }
 
-    if (data_check(company_all_eq)) {
-      saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
-    }
-    if (data_check(port_all_eq)) {
-
-      if (tdm_conditions_met(analysis_inputs_path)) {
-        tdm_vars <- determine_tdm_variables(start_year)
-
-        equity_tdm <-
-          calculate_tdm(
-            port_all_eq,
-            t0 = tdm_vars$t0,
-            delta_t1 = tdm_vars$delta_t1,
-            delta_t2 = tdm_vars$delta_t2,
-            additional_groups = tdm_vars$additional_groups,
-            scenarios = tdm_vars$scenarios
-          )
-
-        saveRDS(equity_tdm, file.path(pf_file_results_path, "Equity_tdm.rds"))
-      }
-
-      # filter out scenarios used only for TDM, if they exist
-      if (data_includes_tdm_scenarios(analysis_inputs_path)) {
-        port_all_eq <- filter(port_all_eq, ! scenario %in% tdm_scenarios())
-      }
-
-      saveRDS(port_all_eq, file.path(pf_file_results_path, "Equity_results_portfolio.rds"))
-    }
-    if (has_map) {
-      if (data_check(map_eq)) {
-        saveRDS(map_eq, file.path(pf_file_results_path, "Equity_results_map.rds"))
-      }
+    saveRDS(port_all_eq, file.path(pf_file_results_path, "Equity_results_portfolio.rds"))
+  }
+  if (has_map) {
+    if (data_check(map_eq)) {
+      saveRDS(map_eq, file.path(pf_file_results_path, "Equity_results_map.rds"))
     }
   }
 
   rm(port_raw_all_eq)
-  rm(port_raw_eq)
   rm(port_eq)
   rm(port_pw_eq)
   rm(port_own_eq)
@@ -170,100 +161,91 @@ if (file.exists(bonds_inputs_file)) {
   port_raw_all_cb <- readRDS(bonds_inputs_file) %>%
     mutate(id = as.character(id))
 
-  list_investors_cb <- unique(port_raw_all_cb$investor_name)
+  map_cb <- NA
+  company_all_cb <- NA
+  port_all_cb <- NA
 
-  for (b in 1:length(list_investors_cb)) {
-    map_cb <- NA
-    company_all_cb <- NA
-    port_all_cb <- NA
+  port_cb <- calculate_weights(port_raw_all_cb, "Bonds", grouping_variables)
 
-    investor_name_select <- list_investors_cb[b]
+  ald_scen_cb <- get_ald_scen("Bonds")
+  port_cb <- merge_in_ald(port_cb, ald_scen_cb, id_col = "credit_parent_ar_company_id")
+  rm(ald_scen_cb)
 
-    port_raw_cb <- port_raw_all_cb %>% filter(investor_name == investor_name_select)
+  # Portfolio weight methodology
+  port_pw_cb <- port_weight_allocation(port_cb)
 
-    port_cb <- calculate_weights(port_raw_cb, "Bonds", grouping_variables)
+  company_pw_cb <- aggregate_company(port_pw_cb)
 
-    ald_scen_cb <- get_ald_scen("Bonds")
-    port_cb <- merge_in_ald(port_cb, ald_scen_cb, id_col = "credit_parent_ar_company_id")
-    rm(ald_scen_cb)
+  port_pw_cb <- aggregate_portfolio(company_pw_cb)
 
-    # Portfolio weight methodology
-    port_pw_cb <- port_weight_allocation(port_cb)
+  # Create combined outputs
+  company_all_cb <- company_pw_cb
 
-    company_pw_cb <- aggregate_company(port_pw_cb)
+  port_all_cb <- port_pw_cb
 
-    port_pw_cb <- aggregate_portfolio(company_pw_cb)
-
-    # Create combined outputs
-    company_all_cb <- company_pw_cb
-
-    port_all_cb <- port_pw_cb
-
-    if (has_map) {
-      if (data_check(company_all_cb)) {
-        ald_raw_cb <- get_ald_raw("Bonds")
-        map_cb <- merge_in_geography(company_all_cb, ald_raw_cb)
-        rm(ald_raw_cb)
-
-        map_cb <- aggregate_map_data(map_cb)
-      }
-    }
-
-    # Technology Share Calculation
-    if (nrow(port_all_cb) > 0) {
-      port_all_cb <- calculate_technology_share(port_all_cb)
-    }
-
-    if (nrow(company_all_cb) > 0) {
-      company_all_cb <- calculate_technology_share(company_all_cb)
-    }
-
-    # Scenario alignment calculations
-    port_all_cb <- calculate_scenario_alignment(port_all_cb)
-
-    company_all_cb <- calculate_scenario_alignment(company_all_cb)
-
-    pf_file_results_path <- file.path(results_path, portfolio_name_ref_all)
-    if (!dir.exists(pf_file_results_path)) {
-      dir.create(pf_file_results_path)
-    }
-
+  if (has_map) {
     if (data_check(company_all_cb)) {
-      saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
+      ald_raw_cb <- get_ald_raw("Bonds")
+      map_cb <- merge_in_geography(company_all_cb, ald_raw_cb)
+      rm(ald_raw_cb)
+
+      map_cb <- aggregate_map_data(map_cb)
     }
-    if (data_check(port_all_cb)) {
-      if (tdm_conditions_met(analysis_inputs_path)) {
-        tdm_vars <- determine_tdm_variables(start_year)
+  }
 
-        bonds_tdm <-
-          calculate_tdm(
-            port_all_cb,
-            t0 = tdm_vars$t0,
-            delta_t1 = tdm_vars$delta_t1,
-            delta_t2 = tdm_vars$delta_t2,
-            additional_groups = tdm_vars$additional_groups,
-            scenarios = tdm_vars$scenarios
-          )
+  # Technology Share Calculation
+  if (nrow(port_all_cb) > 0) {
+    port_all_cb <- calculate_technology_share(port_all_cb)
+  }
 
-        saveRDS(bonds_tdm, file.path(pf_file_results_path, "Bonds_tdm.rds"))
-      }
+  if (nrow(company_all_cb) > 0) {
+    company_all_cb <- calculate_technology_share(company_all_cb)
+  }
 
-      # filter out scenarios used only for TDM, if they exist
-      if (data_includes_tdm_scenarios(analysis_inputs_path)) {
-        port_all_cb <- filter(port_all_cb, ! scenario %in% tdm_scenarios())
-      }
+  # Scenario alignment calculations
+  port_all_cb <- calculate_scenario_alignment(port_all_cb)
 
-      saveRDS(port_all_cb, file.path(pf_file_results_path, "Bonds_results_portfolio.rds"))
+  company_all_cb <- calculate_scenario_alignment(company_all_cb)
+
+  pf_file_results_path <- file.path(results_path, portfolio_name_ref_all)
+  if (!dir.exists(pf_file_results_path)) {
+    dir.create(pf_file_results_path)
+  }
+
+  if (data_check(company_all_cb)) {
+    saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
+  }
+  if (data_check(port_all_cb)) {
+    if (tdm_conditions_met(analysis_inputs_path)) {
+      tdm_vars <- determine_tdm_variables(start_year)
+
+      bonds_tdm <-
+        calculate_tdm(
+          port_all_cb,
+          t0 = tdm_vars$t0,
+          delta_t1 = tdm_vars$delta_t1,
+          delta_t2 = tdm_vars$delta_t2,
+          additional_groups = tdm_vars$additional_groups,
+          scenarios = tdm_vars$scenarios
+        )
+
+      saveRDS(bonds_tdm, file.path(pf_file_results_path, "Bonds_tdm.rds"))
     }
-    if (has_map) {
-      if (data_check(map_cb)) {
-        saveRDS(map_cb, file.path(pf_file_results_path, "Bonds_results_map.rds"))
-      }
+
+    # filter out scenarios used only for TDM, if they exist
+    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
+      port_all_cb <- filter(port_all_cb, ! scenario %in% tdm_scenarios())
+    }
+
+    saveRDS(port_all_cb, file.path(pf_file_results_path, "Bonds_results_portfolio.rds"))
+  }
+  if (has_map) {
+    if (data_check(map_cb)) {
+      saveRDS(map_cb, file.path(pf_file_results_path, "Bonds_results_map.rds"))
     }
   }
 
   rm(port_raw_all_cb)
-  rm(port_raw_cb)
   rm(port_cb)
   rm(port_pw_cb)
   rm(port_all_cb)
@@ -274,8 +256,6 @@ if (file.exists(bonds_inputs_file)) {
 
 remove_if_exists(port_raw_all_eq)
 remove_if_exists(port_raw_all_cb)
-remove_if_exists(port_raw_eq)
-remove_if_exists(port_raw_cb)
 remove_if_exists(ald_scen_eq)
 remove_if_exists(ald_scen_cb)
 remove_if_exists(company_all_eq)

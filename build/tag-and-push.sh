@@ -3,7 +3,7 @@ usage() {
   echo "Usage: $0  -t <docker tag>" 1>&2
   echo ""
   echo "Optional flags:" 1>&2
-  # m for local image
+  # m for local image name
   echo "[-m <local docker image>] (default rmi_pacta)" 1>&2
   # r for registry
   echo "[-r <container registry>] (default transitionmonitordockerregistry.azurecr.io)" 1>&2

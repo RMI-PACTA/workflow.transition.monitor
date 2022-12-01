@@ -106,7 +106,7 @@ docker run -ti \
   --mount type=bind,source=${userFolder},target=/bound/working_dir \
   --mount type=bind,readonly,source=${resultsFolder},target=/user_results \
   rmi_pacta:latest \
-  /bound/build/bin/run-r-scripts "$portfolio_name"
+  /bound/bin/run-r-scripts "$portfolio_name"
 ```
 
 where you set `userFolder` to the path to the directory that contains

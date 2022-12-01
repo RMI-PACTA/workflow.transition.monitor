@@ -4,7 +4,7 @@
 # https://hub.docker.com/r/rocker/r-ver
 # https://rocker-project.org/images/versioned/r-ver.html
 
-FROM rocker/r-ver:4.1.2
+FROM rocker/r-ver:4.2.2
 
 # install system dependencies
 ARG SYS_DEPS="\
@@ -54,7 +54,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2019/12/31/tlnet/
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 ARG TEX_DEPS="\
     geometry \
     hyperref \

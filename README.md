@@ -74,7 +74,7 @@ loaded in your local docker images.
 
 #  Testing
 
-There are two scripts in the `test` directory to facilitate testing of the docker 
+There are two scripts in the `tests` directory to facilitate testing of the docker 
 image: `run-like-constructiva-flags.sh` and `run-all-tests.sh`
 
 # Releasing

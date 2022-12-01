@@ -1,6 +1,6 @@
 # Description
 
-The Dockerfile in this directory creates an image containing a freshly
+The Dockerfile in this repository creates an image containing a freshly
 cloned copy of workflow.transition.monitor and all the repositories it depends 
 on. It also installs the relevant PACTA R packages from the repos that it
 copies in.
@@ -30,7 +30,7 @@ Before running the script, you will need to choose the tag that you
 want to use for the release. You should use [semantic
 versioning](https://semver.org).
 
-Run the build_with_tag.sh script, specifying a tag to assign to it.
+All build scripts are located in the `build` directory. Run the `build_with_tag.sh` script, specifying a tag to assign to it.
 
 ``` {.bash}
 ./build_with_tag.sh -t 0.1.14
@@ -74,12 +74,12 @@ loaded in your local docker images.
 
 #  Testing
 
-There are two scripts in this directory to facilitate testing of the docker 
+There are two scripts in the `test` directory  to facilitate testing of the docker 
 image: `run-like-constructiva-flags.sh` and `run-all-tests.sh`
 
 # Releasing
 
-To release a new version of the software, use the `tag-and-push.sh` script in the `transition_monitor` directory.
+To release a new version of the software, use the `tag-and-push.sh` script in the `build` directory.
 
 # For the web
 
@@ -106,7 +106,7 @@ docker run -ti \
   --mount type=bind,source=${userFolder},target=/bound/working_dir \
   --mount type=bind,readonly,source=${resultsFolder},target=/user_results \
   rmi_pacta:latest \
-  /bound/bin/run-r-scripts "$portfolio_name"
+  /bound/build/bin/run-r-scripts "$portfolio_name"
 ```
 
 where you set `userFolder` to the path to the directory that contains

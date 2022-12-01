@@ -183,9 +183,9 @@ yellow "docker run --rm -ti rmi_pacta:${tag} bash -c 'echo \$build_version'"
 echo -e "\nTo see the R version installed on the loaded image:"
 yellow "docker run --rm rmi_pacta:${tag} Rscript -e R.version\$version.string"
 
-echo -e "\nTo test the new image with our test scripts (from the root directory of the test files) e.g.:"
-yellow "./run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
+echo -e "\nTo test the new image with our test scripts e.g.:"
+yellow "./test/run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
 echo -e "\nor to run all the tests at once (from the root directory of the test files):"
-yellow "./run-all-tests.sh"
+yellow "./test/run-all-tests.sh"
 
 exit 0

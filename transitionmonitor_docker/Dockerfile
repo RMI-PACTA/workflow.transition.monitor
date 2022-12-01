@@ -1,4 +1,4 @@
-# using rocker r-vers as a base with R 4.1.2
+# using rocker r-vers as a base with R 4.2.2
 # (which sets an env var for the CRAN repo to a RSPM mirror
 #  pegged to a specific date relevant to the R version)
 # https://hub.docker.com/r/rocker/r-ver

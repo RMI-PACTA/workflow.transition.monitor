@@ -93,14 +93,14 @@ do
 done
 
 
-# check that it is running from the transitionmonitor_docker directory
+# check that it is running from the build directory
 if [ "$dir_start" == "." ]; then
     dir_start="$(pwd)"
 fi
 
 wd="$(basename $dir_start)"
-if [ ! "$wd" == "transitionmonitor_docker" ]; then
-    red "Your current working directory is not 'transitionmonitor_docker': $dir_start" && exit 1
+if [ ! "$wd" == "build" ]; then
+    red "Your current working directory is not 'build': $dir_start" && exit 1
 fi
 
 
@@ -128,7 +128,7 @@ green "HEAD hash successfully captured for each repo\n"
 
 
 # Copy Dockerfile alongside pacta siblings and build the image
-cp "${dir_start}/Dockerfile" "$dir_temp"
+cp "${dir_start}/../Dockerfile" "$dir_temp"
 
 # Maybe copy in custom data path
 # FIXME: this should be handled better
@@ -183,9 +183,9 @@ yellow "docker run --rm -ti rmi_pacta:${tag} bash -c 'echo \$build_version'"
 echo -e "\nTo see the R version installed on the loaded image:"
 yellow "docker run --rm rmi_pacta:${tag} Rscript -e R.version\$version.string"
 
-echo -e "\nTo test the new image with our test scripts (from the root directory of the test files) e.g.:"
-yellow "./run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
+echo -e "\nTo test the new image with our test scripts e.g.:"
+yellow "./tests/run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
 echo -e "\nor to run all the tests at once (from the root directory of the test files):"
-yellow "./run-all-tests.sh"
+yellow "./tests/run-all-tests.sh"
 
 exit 0

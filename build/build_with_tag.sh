@@ -93,14 +93,14 @@ do
 done
 
 
-# check that it is running from the transitionmonitor_docker directory
+# check that it is running from the build directory
 if [ "$dir_start" == "." ]; then
     dir_start="$(pwd)"
 fi
 
 wd="$(basename $dir_start)"
-if [ ! "$wd" == "transitionmonitor_docker" ]; then
-    red "Your current working directory is not 'transitionmonitor_docker': $dir_start" && exit 1
+if [ ! "$wd" == "build" ]; then
+    red "Your current working directory is not 'build': $dir_start" && exit 1
 fi
 
 
@@ -128,7 +128,7 @@ green "HEAD hash successfully captured for each repo\n"
 
 
 # Copy Dockerfile alongside pacta siblings and build the image
-cp "${dir_start}/Dockerfile" "$dir_temp"
+cp "${dir_start}/../Dockerfile" "$dir_temp"
 
 # Maybe copy in custom data path
 # FIXME: this should be handled better

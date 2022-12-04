@@ -170,11 +170,13 @@ sector_order <- readr::read_csv(
 # combine config files to send to create_interactive_report()
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
 project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
+pacta_data_manifest <- jsonlite::read_json(file.path(analysis_inputs_path, "manifest.json"))
 
 configs <-
   list(
     portfolio_config = config::get(file = portfolio_config_path),
-    project_config = config::get(file = project_config_path)
+    project_config = config::get(file = project_config_path),
+    pacta_data_manifest = pacta_data_manifest
   )
 
 # Needed for testing only

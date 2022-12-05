@@ -303,5 +303,5 @@ if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", 
 
 } else {
   # this is required for the online tool to know that the process has been completed.
-  invisible(file.copy(file.path("data", "blank_pdf_do_not_delete.pdf"), es_dir))
+  invisible(file.copy(blank_pdf(), es_dir))
 }

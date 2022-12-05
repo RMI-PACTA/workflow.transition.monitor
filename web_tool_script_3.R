@@ -171,6 +171,7 @@ sector_order <- readr::read_csv(
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
 project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
 pacta_data_manifest <- jsonlite::read_json(file.path(analysis_inputs_path, "manifest.json"))
+pacta_data_manifest$parameters$factset_database <- NULL
 
 configs <-
   list(

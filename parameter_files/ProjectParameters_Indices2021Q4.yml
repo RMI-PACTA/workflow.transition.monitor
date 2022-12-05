@@ -36,11 +36,7 @@ default:
             - Hybrid
             - Electric
             - FuelCell
-            - Hybrid_HDV
-            - Electric_HDV
-            - FuelCell_HDV
-            - Dc-Electric Arc Furnace
-            - Ac-Electric Arc Furnace
+            - Electric Arc Furnace
         alignment_techs:
             - RenewablesCap
             - CoalCap

@@ -180,7 +180,7 @@ configs <-
   list(
     portfolio_config = config::get(file = portfolio_config_path),
     project_config = config::get(file = project_config_path),
-    pacta_data_public_manifest = pacta_data_manifest
+    pacta_data_public_manifest = pacta_data_public_manifest
   )
 
 # Needed for testing only

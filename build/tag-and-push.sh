@@ -1,14 +1,15 @@
 usage() {
+  # t for tag
   echo "Usage: $0  -t <docker tag>" 1>&2
   echo ""
   echo "Optional flags:" 1>&2
-  # t for tag
+  # m for local image name
   echo "[-m <local docker image>] (default rmi_pacta)" 1>&2
   # r for registry
   echo "[-r <container registry>] (default transitionmonitordockerregistry.azurecr.io)" 1>&2
-  # i for Image
+  # i for image
   echo "[-i <remote image>] (default <same as image defined by -m>)" 1>&2
-  # o for remOte tag
+  # o for remote tag
   echo "[-o <remote tag>] (default <same a tag defined by -t>)" 1>&2
   # v for verbose
   echo "[-d] (dry-run, tag only, no push)" 1>&2

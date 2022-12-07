@@ -3,9 +3,14 @@ default:
     paths:
         data_location_ext: ../pacta-data/2021Q4/
 
+    reporting:
+        project_report_name: PA2022BR
+        display_currency: USD
+        currency_exchange_value: 1.00
+
     parameters:
         timestamp: 2021Q4
-        dataprep_timestamp: 2021Q4_transitionmonitor
+        dataprep_timestamp: 2021Q4
         start_year: 2021
         horizon_year: 5
         select_scenario: WEO2021_NZE_2050

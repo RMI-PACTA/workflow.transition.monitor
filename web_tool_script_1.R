@@ -123,7 +123,7 @@ portfolio_total <- add_portfolio_flags(portfolio)
 
 portfolio_overview <- portfolio_summary(portfolio_total)
 
-audit_file <- create_audit_file(portfolio_total)
+audit_file <- create_audit_file(portfolio_total, grouping_variables, has_revenue)
 
 if (inc_emission_factors) {
   emissions_totals <- calculate_portfolio_financed_emissions(

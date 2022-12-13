@@ -109,12 +109,14 @@ portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_
 
 eq_portfolio <- create_portfolio_subset(
   portfolio,
-  "Equity"
+  "Equity",
+  grouping_variables
 )
 
 cb_portfolio <- create_portfolio_subset(
   portfolio,
-  "Bonds"
+  "Bonds",
+  grouping_variables
 )
 
 portfolio_total <- add_portfolio_flags(portfolio)

@@ -109,19 +109,21 @@ portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_
 
 eq_portfolio <- create_portfolio_subset(
   portfolio,
-  "Equity"
+  "Equity",
+  grouping_variables
 )
 
 cb_portfolio <- create_portfolio_subset(
   portfolio,
-  "Bonds"
+  "Bonds",
+  grouping_variables
 )
 
 portfolio_total <- add_portfolio_flags(portfolio)
 
 portfolio_overview <- portfolio_summary(portfolio_total)
 
-audit_file <- create_audit_file(portfolio_total)
+audit_file <- create_audit_file(portfolio_total, grouping_variables, has_revenue)
 
 if (inc_emission_factors) {
   emissions_totals <- calculate_portfolio_financed_emissions(

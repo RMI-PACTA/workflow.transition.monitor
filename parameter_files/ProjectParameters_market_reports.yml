@@ -1,0 +1,80 @@
+default:
+
+    paths:
+        data_location_ext: ../pacta-data/2021Q4/
+
+    reporting:
+        project_report_name: 'Market Reports'
+        display_currency: USD
+        currency_exchange_value: 1
+
+    parameters:
+        timestamp: 2021Q4
+        dataprep_timestamp: 2021Q4
+        start_year: 2021
+        horizon_year: 5
+        select_scenario: WEO2021_NZE_2050
+        scenario_other: GECO2021_1.5C-Unif
+        portfolio_allocation_method: portfolio_weight
+        scenario_geography: Global
+
+    methodology:
+        has_map: TRUE
+        has_revenue: FALSE
+        has_credit: FALSE
+        inc_emissionfactors: TRUE
+
+    sectors:
+        tech_roadmap_sectors:
+            - Power
+            - Automotive
+            - Oil&Gas
+            - Coal
+        pacta_sectors_not_analysed:
+            - Steel
+            - Aviation
+            - Cement
+        green_techs:
+            - RenewablesCap
+            - HydroCap
+            - NuclearCap
+            - Hybrid
+            - Electric
+            - FuelCell
+            - Electric Arc Furnace
+        alignment_techs:
+            - RenewablesCap
+            - CoalCap
+            - Coal
+            - Oil
+            - Gas
+            - Electric
+            - ICE
+
+    asset_types:
+        - Equity
+        - Bonds
+        - Others
+        - Funds
+
+    scenario_sources_list:
+        - ETP2020
+        - WEO2021
+        - GECO2021
+        - ISF2021
+        - IPR2021
+
+    scenario_geography_list:
+        - Global
+        - GlobalAggregate
+        - NonOECD
+        - OECD
+
+    equity_market_list:
+        - GlobalMarket
+        - DevelopedMarket
+        - EmergingMarket
+
+    grouping_variables:
+        - investor_name
+        - portfolio_name

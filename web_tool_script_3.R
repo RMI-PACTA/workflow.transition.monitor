@@ -40,8 +40,13 @@ analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_tim
 
 # fix parameters ---------------------------------------------------------------
 
-if(project_code == "GENERAL"){
-  language_select = "EN"
+if (project_code == "GENERAL") {
+  language_select <- "EN"
+}
+
+if (project_code == "PA2022FL") {
+  language_select <- "EN"
+  peer_group <- "All peer groups"
 }
 
 

@@ -5,8 +5,8 @@ default:
 
     reporting:
         project_report_name: PA2022BR
-        display_currency: USD
-        currency_exchange_value: 1.00
+        display_currency: BRL
+        currency_exchange_value: 0.18
 
     parameters:
         timestamp: 2021Q4

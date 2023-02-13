@@ -18,4 +18,4 @@ jobs:
       - uses: actions/add-to-project@v0.4.0
         with:
           project-url: https://github.com/orgs/RMI-PACTA/projects/8
-          github-token: ${{ secrets.CJ_ADD_TO_PROJECT_PAT }}
+          github-token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}

@@ -59,6 +59,7 @@ default:
 
     scenario_sources_list:
         - GECO2021
+        - WEO2021
 
     scenario_geography_list:
         - Global

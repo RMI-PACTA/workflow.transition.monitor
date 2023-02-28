@@ -4,22 +4,22 @@ default:
         data_location_ext: ../pacta-data/2021Q4/
 
     reporting:
-        project_report_name: PA2022BR
-        display_currency: BRL
-        currency_exchange_value: 0.18
+        project_report_name: MFM2022
+        display_currency: USD
+        currency_exchange_value: 1
 
     parameters:
         timestamp: 2021Q4
         dataprep_timestamp: 2021Q4
         start_year: 2021
         horizon_year: 5
-        select_scenario: WEO2021_NZE_2050
+        select_scenario: GECO2021_1.5C-Unif
         scenario_other: GECO2021_1.5C-Unif
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 
     methodology:
-        has_map: TRUE
+        has_map: FALSE
         has_revenue: FALSE
         has_credit: FALSE
         inc_emissionfactors: TRUE
@@ -58,22 +58,14 @@ default:
         - Funds
 
     scenario_sources_list:
-        - ETP2020
-        - WEO2021
         - GECO2021
-        - ISF2021
-        - IPR2021
+        - WEO2021
 
     scenario_geography_list:
         - Global
-        - GlobalAggregate
-        - NonOECD
-        - OECD
 
     equity_market_list:
         - GlobalMarket
-        - DevelopedMarket
-        - EmergingMarket
 
     grouping_variables:
         - investor_name

@@ -1,10 +1,10 @@
-# using rocker r-vers as a base with R 4.2.2
+# using rocker r-vers as a base with R 4.2.1
 # (which sets an env var for the CRAN repo to a RSPM mirror
 #  pegged to a specific date relevant to the R version)
 # https://hub.docker.com/r/rocker/r-ver
 # https://rocker-project.org/images/versioned/r-ver.html
 
-FROM rocker/r-ver:4.2.2
+FROM rocker/r-ver:4.2.1
 
 # install system dependencies
 ARG SYS_DEPS="\

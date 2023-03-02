@@ -5,6 +5,7 @@
 # https://rocker-project.org/images/versioned/r-ver.html
 
 FROM rocker/r-ver:4.2.2
+RUN echo 'options(repos = c(CRAN = "https://packagemanager.rstudio.com/cran/2023-01-31"))' >> "${R_HOME}/etc/Rprofile.site"
 
 # install system dependencies
 ARG SYS_DEPS="\

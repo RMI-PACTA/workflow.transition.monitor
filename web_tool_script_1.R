@@ -87,22 +87,6 @@ portfolio <- process_raw_portfolio(
   isin_to_fund_table = isin_to_fund_table
 )
 
-# FIXME - need to rethink how this fund coverage analysis is done
-# # information of coverage and coverage loses for all funds in raw_portfolio
-# fund_coverage <- get_fund_coverage(
-#   portfolio,
-#   fin_data,
-#   fund_data,
-#   currencies,
-#   grouping_variables
-# )
-#
-# # reduce information on fund coverage to a data frame that can be shared with users
-# fund_coverage_summary <- summarize_fund_coverage(fund_coverage)
-#
-# # list ISINs of unknown funds in funds. the list includes value_usd to estimate importance of the isin for o
-# unknown_funds_in_funds <- list_unknown_funds_in_funds(portfolio)
-
 portfolio <- add_revenue_split(has_revenue, portfolio, revenue_data)
 
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
@@ -156,8 +140,6 @@ save_if_exists(cb_portfolio, portfolio_name, file.path(proc_input_path_, "bonds_
 save_if_exists(portfolio_overview, portfolio_name, file.path(proc_input_path_, "overview_portfolio.rds"))
 save_if_exists(audit_file, portfolio_name, file.path(proc_input_path_, "audit_file.rds"))
 save_if_exists(audit_file, portfolio_name, file.path(proc_input_path_, "audit_file.csv"), csv_or_rds = "csv")
-# save_if_exists(fund_coverage_summary, portfolio_name, file.path(proc_input_path_, "fund_coverage_summary.rds"))
-# save_if_exists(unknown_funds_in_funds, portfolio_name, file.path(proc_input_path_, "unknown_funds_in_funds.rds"))
 
 if (inc_emission_factors) {
   save_if_exists(emissions_totals, portfolio_name, file.path(proc_input_path_, "emissions.rds"))
@@ -173,7 +155,3 @@ remove_if_exists(portfolio)
 remove_if_exists(audit_file)
 remove_if_exists(eq_portfolio)
 remove_if_exists(cb_portfolio)
-remove_if_exists(fund_coverage_summary)
-remove_if_exists(fund_coverage)
-remove_if_exists(unknown_funds_in_funds)
-

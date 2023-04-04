@@ -11,8 +11,12 @@ suppressPackageStartupMessages({
 
 cli::cli_h1("web_tool_script_3.R{get_build_version_msg()}")
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
-if (!exists("portfolio_root_dir")) { portfolio_root_dir <- "working_dir" }
+if (!exists("portfolio_name_ref_all")) {
+  portfolio_name_ref_all <- "1234"
+}
+if (!exists("portfolio_root_dir")) {
+  portfolio_root_dir <- "working_dir"
+}
 
 setup_project()
 
@@ -20,33 +24,35 @@ set_webtool_paths(portfolio_root_dir)
 
 set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
-set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
+set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 
 # quit if there's no relevant PACTA assets -------------------------------------
 
- total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
- if (file.exists(total_portfolio_path)) {
-   total_portfolio <- readRDS(total_portfolio_path)
-   quit_if_no_pacta_relevant_data(total_portfolio)
- } else {
-   warning("This is weird... the `total_portfolio.rds` file does not exist in the `30_Processed_inputs` directory.")
- }
+total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
+if (file.exists(total_portfolio_path)) {
+  total_portfolio <- readRDS(total_portfolio_path)
+  quit_if_no_pacta_relevant_data(total_portfolio)
+} else {
+  warning("This is weird... the `total_portfolio.rds` file does not exist in the `30_Processed_inputs` directory.")
+}
 
 
 # fix parameters ---------------------------------------------------------------
 
-if(project_code == "GENERAL"){
-  language_select = "EN"
+if (project_code == "GENERAL") {
+  language_select <- "EN"
 }
 
 
 # load PACTA results -----------------------------------------------------------
 
 readRDS_or_return_alt_data <- function(filepath, alt_return = NULL) {
-  if (file.exists(filepath)) { return(readRDS(filepath)) }
+  if (file.exists(filepath)) {
+    return(readRDS(filepath))
+  }
   alt_return
 }
 
@@ -137,8 +143,10 @@ indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indi
 
 # create interactive report ----------------------------------------------------
 
-report_name = select_report_template(project_report_name = project_report_name,
-                                     language_select = language_select)
+report_name <- select_report_template(
+  project_report_name = project_report_name,
+  language_select = language_select
+)
 
 template_dir <- file.path(template_path, report_name, "_book")
 survey_dir <- file.path(user_results_path, project_code, "survey")
@@ -159,7 +167,7 @@ js_translations <- jsonlite::fromJSON(
 )
 
 sector_order <- readr::read_csv(
-  file.path(template_path, "data","sector_order","sector_order.csv"),
+  file.path(template_path, "data", "sector_order", "sector_order.csv"),
   col_types = cols()
 )
 
@@ -178,12 +186,6 @@ configs <-
     project_config = config::get(file = project_config_path),
     pacta_data_public_manifest = pacta_data_public_manifest
   )
-
-# Needed for testing only
-select_scenario_other = scenario_other
-twodi_sectors = sector_list
-repo_path = template_path
-file_name = "template.Rmd"
 
 create_interactive_report(
   repo_path = template_path,
@@ -240,7 +242,7 @@ real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real
 score_card_dir <- fs::path_abs(file.path(user_results_path, project_code, "score_card"))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
-if(!dir.exists(es_dir)) {
+if (!dir.exists(es_dir)) {
   dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
 }
 
@@ -249,7 +251,7 @@ exec_summary_builtin_template_path <- system.file("extdata", exec_summary_templa
 invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))
 exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
 
-if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", "bank", "insurance", "pensionfund")) ) {
+if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", "bank", "insurance", "pensionfund"))) {
   data_aggregated_filtered <-
     prep_data_executive_summary(
       investor_name = investor_name,
@@ -262,8 +264,10 @@ if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", 
       equity_market = "GlobalMarket",
       portfolio_allocation_method_equity = "portfolio_weight",
       portfolio_allocation_method_bonds = "portfolio_weight",
-      green_techs = c("RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
-                      "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"),
+      green_techs = c(
+        "RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
+        "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"
+      ),
       equity_results_portfolio = equity_results_portfolio,
       bonds_results_portfolio = bonds_results_portfolio,
       peers_equity_results_aggregated = peers_equity_results_portfolio,
@@ -278,7 +282,7 @@ if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", 
     )
 
 
-  real_estate_flag = (length(list.files(real_estate_dir)) > 0)
+  real_estate_flag <- (length(list.files(real_estate_dir)) > 0)
 
   render_executive_summary(
     data = data_aggregated_filtered,
@@ -298,7 +302,6 @@ if(dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", 
     currency_exchange_value = currency_exchange_value,
     log_dir = log_path
   )
-
 } else {
   # this is required for the online tool to know that the process has been completed.
   invisible(file.copy(blank_pdf(), es_dir))

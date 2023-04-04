@@ -103,8 +103,6 @@ portfolio <- process_raw_portfolio(
 # # list ISINs of unknown funds in funds. the list includes value_usd to estimate importance of the isin for o
 # unknown_funds_in_funds <- list_unknown_funds_in_funds(portfolio)
 
-portfolio <- add_revenue_split(has_revenue, portfolio, revenue_data)
-
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
 eq_portfolio <- create_portfolio_subset(

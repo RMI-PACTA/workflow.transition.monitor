@@ -5,7 +5,6 @@ suppressPackageStartupMessages({
   library(dplyr)
   library(here)
   library(glue)
-  library(jsonlite)
 })
 
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
@@ -87,8 +86,6 @@ portfolio <- process_raw_portfolio(
   isin_to_fund_table = isin_to_fund_table
 )
 
-portfolio <- add_revenue_split(has_revenue, portfolio, revenue_data)
-
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
 eq_portfolio <- create_portfolio_subset(
@@ -119,9 +116,6 @@ if (inc_emission_factors) {
 }
 
 
-port_weights <- pw_calculations(eq_portfolio, cb_portfolio)
-
-
 ################
 #### SAVING ####
 ################
@@ -144,11 +138,6 @@ save_if_exists(audit_file, portfolio_name, file.path(proc_input_path_, "audit_fi
 if (inc_emission_factors) {
   save_if_exists(emissions_totals, portfolio_name, file.path(proc_input_path_, "emissions.rds"))
 }
-
-if(data_check(port_weights)){
-  port_weights <- jsonlite::toJSON(x=port_weights)
-  write(x = port_weights, file = file.path(proc_input_path_,"portfolio_weights.json"))
-  }
 
 remove_if_exists(portfolio_total)
 remove_if_exists(portfolio)

@@ -1,15 +1,13 @@
 suppressPackageStartupMessages({
   library(pacta.portfolio.analysis)
+  library(pacta.interactive.report)
+  library(pacta.executive.summary)
   library(cli)
   library(readr)
   library(jsonlite)
   library(config)
   library(fs)
 })
-
-# pkgs needed for interactive report
-interactice_report_pkgs <- c("bookdown", "ggplot2", "scales", "writexl")
-invisible(lapply(interactice_report_pkgs, library, character.only = TRUE, warn.conflicts = FALSE))
 
 cli::cli_h1("web_tool_script_3.R{get_build_version_msg()}")
 
@@ -139,8 +137,6 @@ indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indi
 
 # create interactive report ----------------------------------------------------
 
-library("pacta.interactive.report")
-
 report_name = select_report_template(project_report_name = project_report_name,
                                      language_select = language_select)
 
@@ -238,8 +234,6 @@ create_interactive_report(
 
 
 # create executive summary -----------------------------------------------------
-
-library(pacta.executive.summary)
 
 survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
 real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real_estate"))

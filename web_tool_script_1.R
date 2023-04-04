@@ -10,7 +10,9 @@ suppressPackageStartupMessages({
 cli::cli_h1("web_tool_script_1.R{get_build_version_msg()}")
 
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
+if (!exists("portfolio_name_ref_all")) {
+  portfolio_name_ref_all <- "1234"
+}
 
 portfolio_root_dir <- "working_dir"
 
@@ -22,19 +24,13 @@ set_webtool_paths(portfolio_root_dir)
 
 set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
-set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
+set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
 
 # To save, files need to go in the portfolio specific folder, created here
 create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, project_location = project_location)
-######################################################################
-
-
-####################
-#### DATA FILES ####
-####################
 
 
 # load necessary input data ----------------------------------------------------
@@ -57,17 +53,16 @@ abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
 if (inc_emission_factors) {
   entity_emission_intensities <- readRDS(
     file.path(file_location, "iss_entity_emission_intensities.rds")
-    )
+  )
 
   average_sector_emission_intensities <- readRDS(
     file.path(file_location, "iss_average_sector_emission_intensities.rds")
-    )
+  )
 }
 
 
-####################
-#### PORTFOLIOS ####
-####################
+# Portfolios -------------------------------------------------------------------
+
 abort_if_file_doesnt_exist(
   here::here(
     "working_dir", "20_Raw_Inputs", glue::glue("{portfolio_name_ref_all}.csv")
@@ -104,9 +99,7 @@ if (inc_emission_factors) {
 }
 
 
-################
-#### SAVING ####
-################
+# Saving -----------------------------------------------------------------------
 
 proc_input_path_ <- file.path(proc_input_path, portfolio_name_ref_all)
 

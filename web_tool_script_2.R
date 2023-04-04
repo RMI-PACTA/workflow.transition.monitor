@@ -6,12 +6,15 @@ suppressPackageStartupMessages({
 
 cli::cli_h1("web_tool_script_2.R{get_build_version_msg()}")
 
-#########################################################################
-# START RUN ANALYIS
-#########################################################################
 
-if (!exists("portfolio_name_ref_all")) { portfolio_name_ref_all <- "1234" }
-if (!exists("portfolio_root_dir")) { portfolio_root_dir <- "working_dir" }
+# Start run analysis -----------------------------------------------------------
+
+if (!exists("portfolio_name_ref_all")) {
+  portfolio_name_ref_all <- "1234"
+}
+if (!exists("portfolio_root_dir")) {
+  portfolio_root_dir <- "working_dir"
+}
 
 setup_project()
 
@@ -32,7 +35,8 @@ unlink(file.path(results_path, portfolio_name_ref_all, "*"), force = TRUE, recur
 # run again so output folders are available after deleting past results
 create_portfolio_subfolders(portfolio_name_ref_all)
 
-# quit if there's no relevant PACTA assets --------------------------------
+
+# quit if there's no relevant PACTA assets -------------------------------------
 
 total_portfolio_path <- file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds")
 if (file.exists(total_portfolio_path)) {
@@ -43,9 +47,7 @@ if (file.exists(total_portfolio_path)) {
 }
 
 
-##################
-##### EQUITY #####
-##################
+# Equity -----------------------------------------------------------------------
 
 port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity", grouping_variables)
 
@@ -106,7 +108,6 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
   if (data_check(port_all_eq)) {
-
     if (tdm_conditions_met(analysis_inputs_path)) {
       tdm_vars <- determine_tdm_variables(start_year)
 
@@ -125,7 +126,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
     # filter out scenarios used only for TDM, if they exist
     if (data_includes_tdm_scenarios(analysis_inputs_path)) {
-      port_all_eq <- filter(port_all_eq, ! scenario %in% tdm_scenarios())
+      port_all_eq <- filter(port_all_eq, !scenario %in% tdm_scenarios())
     }
 
     saveRDS(port_all_eq, file.path(pf_file_results_path, "Equity_results_portfolio.rds"))
@@ -147,9 +148,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 }
 
 
-#################
-##### BONDS #####
-#################
+# Bonds ------------------------------------------------------------------------
 
 port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds", grouping_variables)
 
@@ -227,7 +226,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
     # filter out scenarios used only for TDM, if they exist
     if (data_includes_tdm_scenarios(analysis_inputs_path)) {
-      port_all_cb <- filter(port_all_cb, ! scenario %in% tdm_scenarios())
+      port_all_cb <- filter(port_all_cb, !scenario %in% tdm_scenarios())
     }
 
     saveRDS(port_all_cb, file.path(pf_file_results_path, "Bonds_results_portfolio.rds"))

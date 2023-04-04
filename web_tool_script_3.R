@@ -265,8 +265,16 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
       portfolio_allocation_method_equity = "portfolio_weight",
       portfolio_allocation_method_bonds = "portfolio_weight",
       green_techs = c(
-        "RenewablesCap", "HydroCap", "NuclearCap", "Hybrid", "Electric", "FuelCell",
-        "Hybrid_HDV", "Electric_HDV", "FuelCell_HDV", "Electric Arc Furnace"
+        "RenewablesCap", 
+        "HydroCap", 
+        "NuclearCap", 
+        "Hybrid", 
+        "Electric", 
+        "FuelCell",
+        "Hybrid_HDV", 
+        "Electric_HDV", 
+        "FuelCell_HDV", 
+        "Electric Arc Furnace"
       ),
       equity_results_portfolio = equity_results_portfolio,
       bonds_results_portfolio = bonds_results_portfolio,

@@ -81,6 +81,13 @@ portfolio <- process_raw_portfolio(
   isin_to_fund_table = isin_to_fund_table
 )
 
+portfolio <-
+  portfolio %>%
+  mutate(
+    has_revenue_data = FALSE,
+    financial_sector = .data$security_mapped_sector
+  )
+
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
 eq_portfolio <- create_portfolio_subset(

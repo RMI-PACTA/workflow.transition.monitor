@@ -70,7 +70,6 @@ RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # install R package dependencies
 ARG PKG_DEPS="\
-    bookdown \
     cli \
     config \
     devtools \

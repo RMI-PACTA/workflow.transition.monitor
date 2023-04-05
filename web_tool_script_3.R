@@ -136,9 +136,9 @@ peers_bonds_results_user <- readRDS_or_return_alt_data(
   alt_return = empty_portfolio_results()
 )
 
-indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_equity_portfolio.rds"))
+indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_equity_results_portfolio.rds"))
 
-indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_portfolio.rds"))
+indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_results_portfolio.rds"))
 
 
 # create interactive report ----------------------------------------------------

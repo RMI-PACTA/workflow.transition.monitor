@@ -81,6 +81,17 @@ portfolio <- process_raw_portfolio(
   isin_to_fund_table = isin_to_fund_table
 )
 
+# FIXME: this is necessary because pacta.portfolio.analysis::add_revenue_split()
+#  was removed in #142, but later we realized that it had a sort of hidden
+#  behavior where if there is no revenue data it maps the security_mapped_sector
+#  column of the portfolio data to financial_sector, which is necessary later
+portfolio <-
+  portfolio %>%
+  mutate(
+    has_revenue_data = FALSE,
+    financial_sector = .data$security_mapped_sector
+  )
+
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
 eq_portfolio <- create_portfolio_subset(

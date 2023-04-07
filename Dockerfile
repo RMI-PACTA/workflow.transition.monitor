@@ -67,6 +67,9 @@ ARG TEX_DEPS="\
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
+# copy in scripts from this repo
+COPY workflow.transition.monitor /bound
+
 # install R package dependencies
 RUN Rscript -e "\
     install.packages(c('pak', 'renv')); \
@@ -79,7 +82,6 @@ COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY pacta.portfolio.import /pacta.portfolio.import
-COPY workflow.transition.monitor /bound
 
 # install PACTA R packages
 RUN Rscript -e "\

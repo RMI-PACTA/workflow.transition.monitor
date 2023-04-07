@@ -68,20 +68,9 @@ ARG TEX_DEPS="\
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # install R package dependencies
-ARG PKG_DEPS="\
-    cli \
-    config \
-    devtools \
-    dplyr \
-    glue \
-    here \
-    jsonlite \
-    readr \
-    "
 RUN Rscript -e "\
-    install.packages('remotes'); \
-    pkg_deps <- strsplit(trimws(gsub('[\\\]+', '', '$PKG_DEPS')), '[[:space:]]+')[[1]]; \
-    remotes::install_cran(pkg_deps); \
+    install.packages(c('pak', 'renv')); \
+    pak::pkg_install(pkg = renv::dependencies()$Package); \
     "
 
 # copy in PACTA repos
@@ -93,10 +82,16 @@ COPY pacta.portfolio.import /pacta.portfolio.import
 COPY workflow.transition.monitor /bound
 
 # install PACTA R packages
-RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.interactive.report')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.import')"
+RUN Rscript -e "\
+    pak::local_install( \
+        root = c( \
+            '/pacta.executive.summary', \
+            '/pacta.interactive.report', \
+            '/pacta.portfolio.analysis', \
+            '/pacta.portfolio.import' \
+        ) \
+    ) \
+    "
 
 # set permissions for PACTA repos
 RUN chmod -R a+rwX /bound \

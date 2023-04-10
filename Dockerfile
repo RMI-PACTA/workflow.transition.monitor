@@ -103,9 +103,9 @@ RUN Rscript -e "\
     ); \
   workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
   workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
-  pacta_deps <- lapply(local_pkgs, function(x) pak::local_deps(x)[['package']]); \
-  pacta_deps <- setdiff(unique(unlist(pacta_deps)), local_pkgs); \
-  pacta_deps <- sub('^r2dii.colours$', 'RMI-PACTA/r2dii.colours', pacta_deps); \
+  pacta_deps <- lapply(local_pkgs, pak::local_deps); \
+  pacta_deps <- do.call(rbind, pacta_deps); \
+  pacta_deps <- unique(pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), 'ref']); \
   pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
   "
 

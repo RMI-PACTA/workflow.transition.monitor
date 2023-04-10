@@ -76,42 +76,37 @@ ARG TEX_DEPS="\
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
-# copy in scripts from this repo
-COPY workflow.transition.monitor /bound
-
-# install R package dependencies
+# install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
-RUN Rscript -e "\
-  local_pkgs <- \
-    c( \
-      'pacta.executive.summary', \
-      'pacta.portfolio.analysis', \
-      'pacta.interactive.report', \
-      'pacta.portfolio.import' \
-    ); \
-  workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
-  workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
-  pak::pkg_install(pkg = workflow_pkgs); \
-  "
 
-# copy in local repos
-COPY pacta-data /pacta-data
+# copy in scripts from this repo and local PACTA package clones
+COPY workflow.transition.monitor /bound
 COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY pacta.portfolio.import /pacta.portfolio.import
 
-# install local packages
-RUN Rscript -e "pak::local_install(root = '/pacta.executive.summary')"
-RUN Rscript -e "pak::local_install(root = '/pacta.interactive.report')"
-RUN Rscript -e "pak::local_install(root = '/pacta.portfolio.analysis')"
-RUN Rscript -e "pak::local_install(root = '/pacta.portfolio.import')"
+# install R package dependencies
+RUN Rscript -e "\
+  local_pkgs <- \
+    c( \
+      'pacta.executive.summary', \
+      'pacta.interactive.report', \
+      'pacta.portfolio.analysis', \
+      'pacta.portfolio.import' \
+    ); \
+  workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
+  workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
+  pak::pkg_install(c(workflow_pkgs, paste0('local::./', local_pkgs))); \
+  "
+
+# copy in pacta-data
+COPY pacta-data /pacta-data
 
 # set permissions for PACTA repos that need local content
-RUN chmod -R a+rwX /bound \
-    && chmod -R a+rwX /pacta.interactive.report \
-    && chmod -R a+rwX /pacta-data
+RUN chmod -R a+rwX /bound && chmod -R a+rwX /pacta-data \
+    && chmod -R a+rwX /pacta.interactive.report
 
 # set the build_version environment variable
 ARG image_tag

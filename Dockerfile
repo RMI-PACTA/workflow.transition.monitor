@@ -76,16 +76,21 @@ ARG TEX_DEPS="\
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
+# copy in PACTA data
+COPY pacta-data /pacta-data
+
 # install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
-# copy in scripts from this repo and local PACTA package clones
+# copy in DESCRIPTION files from local PACTA package clones
+COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
+COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
+COPY pacta.portfolio.analysis/DESCRIPTION /pacta.portfolio.analysis/DESCRIPTION
+COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
+
+# copy in scripts from this repo
 COPY workflow.transition.monitor /bound
-COPY pacta.executive.summary /pacta.executive.summary
-COPY pacta.interactive.report /pacta.interactive.report
-COPY pacta.portfolio.analysis /pacta.portfolio.analysis
-COPY pacta.portfolio.import /pacta.portfolio.import
 
 # install R package dependencies
 RUN Rscript -e "\
@@ -98,11 +103,29 @@ RUN Rscript -e "\
     ); \
   workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
   workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
-  pak::pkg_install(c(workflow_pkgs, paste0('local::./', local_pkgs))); \
+  pacta_deps <- lapply(local_pkgs, function(x) pak::local_deps(x)[['package']]); \
+  pacta_deps <- setdiff(unique(unlist(pacta_deps)), local_pkgs); \
+  pacta_deps <- sub('^r2dii.colours$', 'RMI-PACTA/r2dii.colours', pacta_deps); \
+  pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
   "
 
-# copy in pacta-data
-COPY pacta-data /pacta-data
+# copy in local PACTA package clones
+COPY pacta.executive.summary /pacta.executive.summary
+COPY pacta.interactive.report /pacta.interactive.report
+COPY pacta.portfolio.analysis /pacta.portfolio.analysis
+COPY pacta.portfolio.import /pacta.portfolio.import
+
+# install local R package clones
+RUN Rscript -e "\
+  local_pkgs <- \
+    c( \
+      'pacta.executive.summary', \
+      'pacta.interactive.report', \
+      'pacta.portfolio.analysis', \
+      'pacta.portfolio.import' \
+    ); \
+  pak::pkg_install(paste0('local::./', local_pkgs)); \
+  "
 
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX /bound && chmod -R a+rwX /pacta-data \

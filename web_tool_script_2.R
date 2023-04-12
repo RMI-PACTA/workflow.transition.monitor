@@ -109,7 +109,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   }
   if (data_check(port_all_eq)) {
     if (tdm_conditions_met(analysis_inputs_path)) {
-      tdm_vars <- determine_tdm_variables(start_year)
+      tdm_vars <- determine_tdm_variables(project_code)
 
       equity_tdm <-
         calculate_tdm(
@@ -125,7 +125,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     }
 
     # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
+    if (data_includes_tdm_scenarios(project_code)) {
       port_all_eq <- filter(port_all_eq, !scenario %in% tdm_scenarios())
     }
 
@@ -225,7 +225,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     }
 
     # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
+    if (data_includes_tdm_scenarios(project_code)) {
       port_all_cb <- filter(port_all_cb, !scenario %in% tdm_scenarios())
     }
 

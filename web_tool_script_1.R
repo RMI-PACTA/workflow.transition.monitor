@@ -94,18 +94,6 @@ portfolio <-
 
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
-eq_portfolio <- create_portfolio_subset(
-  portfolio,
-  "Equity",
-  grouping_variables
-)
-
-cb_portfolio <- create_portfolio_subset(
-  portfolio,
-  "Bonds",
-  grouping_variables
-)
-
 portfolio_total <- add_portfolio_flags(portfolio)
 
 portfolio_overview <- portfolio_summary(portfolio_total)
@@ -133,8 +121,6 @@ export_audit_information_data(
 )
 
 save_if_exists(portfolio_total, portfolio_name, file.path(proc_input_path_, "total_portfolio.rds"))
-save_if_exists(eq_portfolio, portfolio_name, file.path(proc_input_path_, "equity_portfolio.rds"))
-save_if_exists(cb_portfolio, portfolio_name, file.path(proc_input_path_, "bonds_portfolio.rds"))
 save_if_exists(portfolio_overview, portfolio_name, file.path(proc_input_path_, "overview_portfolio.rds"))
 save_if_exists(audit_file, portfolio_name, file.path(proc_input_path_, "audit_file.rds"))
 save_if_exists(audit_file, portfolio_name, file.path(proc_input_path_, "audit_file.csv"), csv_or_rds = "csv")
@@ -146,5 +132,3 @@ if (inc_emission_factors) {
 remove_if_exists(portfolio_total)
 remove_if_exists(portfolio)
 remove_if_exists(audit_file)
-remove_if_exists(eq_portfolio)
-remove_if_exists(cb_portfolio)

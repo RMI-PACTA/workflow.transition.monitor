@@ -45,7 +45,7 @@ isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds")
 
 fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
 
-entity_info <- entity_info <- get_entity_info()
+entity_info <- get_entity_info()
 
 abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))

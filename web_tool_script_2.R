@@ -109,7 +109,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   }
   if (data_check(port_all_eq)) {
     if (tdm_conditions_met(analysis_inputs_path)) {
-      tdm_vars <- determine_tdm_variables(project_code)
+      tdm_vars <- determine_tdm_variables(start_year)
 
       equity_tdm <-
         calculate_tdm(

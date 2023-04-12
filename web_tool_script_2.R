@@ -58,7 +58,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
   port_eq <- calculate_weights(port_raw_all_eq, "Equity", grouping_variables)
 
-  port_eq_new <- merge_abcd_from_db(
+  port_eq <- merge_abcd_from_db(
     portfolio = port_eq,
     portfolio_type= "Equity",
     db_dir = analysis_inputs_path,
@@ -166,8 +166,8 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
   port_cb <- calculate_weights(port_raw_all_cb, "Bonds", grouping_variables)
 
-  port_eq_new <- merge_abcd_from_db(
-    portfolio = port_eq,
+  port_cb <- merge_abcd_from_db(
+    portfolio = port_cb,
     portfolio_type= "Bonds",
     db_dir = analysis_inputs_path,
     equity_market_list = equity_market_list,

@@ -49,12 +49,9 @@ if (file.exists(total_portfolio_path)) {
 
 # Equity -----------------------------------------------------------------------
 
-equity_input_file <- file.path(proc_input_path, portfolio_name_ref_all, "equity_portfolio.rds")
+port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity", grouping_variables)
 
-if (file.exists(equity_input_file)) {
-  port_raw_all_eq <- readRDS(equity_input_file) %>%
-    mutate(id = as.character(id))
-
+if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   map_eq <- NA
   company_all_eq <- NA
   port_all_eq <- NA
@@ -153,12 +150,9 @@ if (file.exists(equity_input_file)) {
 
 # Bonds ------------------------------------------------------------------------
 
-bonds_inputs_file <- file.path(proc_input_path, portfolio_name_ref_all, "bonds_portfolio.rds")
+port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds", grouping_variables)
 
-if (file.exists(bonds_inputs_file)) {
-  port_raw_all_cb <- readRDS(bonds_inputs_file) %>%
-    mutate(id = as.character(id))
-
+if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   map_cb <- NA
   company_all_cb <- NA
   port_all_cb <- NA

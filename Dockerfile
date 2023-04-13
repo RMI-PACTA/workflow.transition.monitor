@@ -1,10 +1,19 @@
-# using rocker r-vers as a base with R 4.2.2
-# (which sets an env var for the CRAN repo to a RSPM mirror
-#  pegged to a specific date relevant to the R version)
+# using rocker r-vers as a base with R 4.2.3
 # https://hub.docker.com/r/rocker/r-ver
 # https://rocker-project.org/images/versioned/r-ver.html
+#
+# sets CRAN repo to use Posit Package Manager to freeze R package versions to
+# those available on 2023-03-31
+# https://packagemanager.rstudio.com/client/#/repos/2/overview
+# https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
+#
+# sets CTAN repo to freeze TeX package dependencies to those available on
+# 2021-12-31
+# https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
-FROM rocker/r-ver:4.2.2
+
+FROM rocker/r-ver:4.2.3
+RUN echo "options(repos = c(CRAN = 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt'))" >> "${R_HOME}/etc/Rprofile.site"
 
 # install system dependencies
 ARG SYS_DEPS="\
@@ -67,41 +76,60 @@ ARG TEX_DEPS="\
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
-# install R package dependencies
-ARG PKG_DEPS="\
-    cli \
-    config \
-    devtools \
-    dplyr \
-    glue \
-    here \
-    jsonlite \
-    readr \
-    "
-RUN Rscript -e "\
-    install.packages('remotes'); \
-    pkg_deps <- strsplit(trimws(gsub('[\\\]+', '', '$PKG_DEPS')), '[[:space:]]+')[[1]]; \
-    remotes::install_cran(pkg_deps); \
-    "
-
-# copy in PACTA repos
+# copy in PACTA data
 COPY pacta-data /pacta-data
+
+# install packages for dependency resolution and installation
+RUN Rscript -e "install.packages('pak')"
+RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
+
+# copy in DESCRIPTION files from local PACTA package clones
+COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
+COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
+COPY pacta.portfolio.analysis/DESCRIPTION /pacta.portfolio.analysis/DESCRIPTION
+COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
+
+# copy in scripts from this repo
+COPY workflow.transition.monitor /bound
+
+# install R package dependencies
+RUN Rscript -e "\
+  local_pkgs <- \
+    c( \
+      'pacta.executive.summary', \
+      'pacta.interactive.report', \
+      'pacta.portfolio.analysis', \
+      'pacta.portfolio.import' \
+    ); \
+  workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
+  workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
+  pacta_deps <- lapply(local_pkgs, pak::local_deps); \
+  pacta_deps <- do.call(rbind, pacta_deps); \
+  pacta_deps <- unique(pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), 'ref']); \
+  pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
+  "
+
+# copy in local PACTA package clones
 COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY pacta.portfolio.import /pacta.portfolio.import
-COPY workflow.transition.monitor /bound
 
-# install PACTA R packages
-RUN Rscript -e "devtools::install(pkg = '/pacta.executive.summary')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.interactive.report')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.analysis')"
-RUN Rscript -e "devtools::install(pkg = '/pacta.portfolio.import')"
+# install local R package clones
+RUN Rscript -e "\
+  local_pkgs <- \
+    c( \
+      'pacta.executive.summary', \
+      'pacta.interactive.report', \
+      'pacta.portfolio.analysis', \
+      'pacta.portfolio.import' \
+    ); \
+  pak::pkg_install(paste0('local::./', local_pkgs)); \
+  "
 
-# set permissions for PACTA repos
-RUN chmod -R a+rwX /bound \
-    && chmod -R a+rwX /pacta.interactive.report \
-    && chmod -R a+rwX /pacta-data
+# set permissions for PACTA repos that need local content
+RUN chmod -R a+rwX /bound && chmod -R a+rwX /pacta-data \
+    && chmod -R a+rwX /pacta.interactive.report
 
 # set the build_version environment variable
 ARG image_tag

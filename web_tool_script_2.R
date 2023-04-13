@@ -108,7 +108,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
   if (data_check(port_all_eq)) {
-    if (tdm_conditions_met(analysis_inputs_path)) {
+    if (tdm_conditions_met(project_code)) {
       tdm_vars <- determine_tdm_variables(start_year)
 
       equity_tdm <-
@@ -122,10 +122,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
         )
 
       saveRDS(equity_tdm, file.path(pf_file_results_path, "Equity_tdm.rds"))
-    }
 
-    # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
       port_all_eq <- filter(port_all_eq, !scenario %in% tdm_scenarios())
     }
 
@@ -208,7 +205,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
   }
   if (data_check(port_all_cb)) {
-    if (tdm_conditions_met(analysis_inputs_path)) {
+    if (tdm_conditions_met(project_code)) {
       tdm_vars <- determine_tdm_variables(start_year)
 
       bonds_tdm <-
@@ -222,10 +219,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
         )
 
       saveRDS(bonds_tdm, file.path(pf_file_results_path, "Bonds_tdm.rds"))
-    }
 
-    # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
       port_all_cb <- filter(port_all_cb, !scenario %in% tdm_scenarios())
     }
 

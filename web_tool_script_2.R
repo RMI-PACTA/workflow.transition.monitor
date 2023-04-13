@@ -58,9 +58,16 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
   port_eq <- calculate_weights(port_raw_all_eq, "Equity", grouping_variables)
 
-  ald_scen_eq <- get_ald_scen("Equity")
-  port_eq <- merge_in_ald(port_eq, ald_scen_eq)
-  rm(ald_scen_eq)
+  port_eq <- merge_abcd_from_db(
+    portfolio = port_eq,
+    portfolio_type= "Equity",
+    db_dir = analysis_inputs_path,
+    equity_market_list = equity_market_list,
+    scenario_sources_list = scenario_sources_list,
+    scenario_geographies_list = scenario_geographies_list,
+    sector_list = sector_list,
+    id_col = "id"
+  )
 
   # Portfolio weight methodology
   port_pw_eq <- port_weight_allocation(port_eq)
@@ -108,7 +115,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
   if (data_check(port_all_eq)) {
-    if (tdm_conditions_met(analysis_inputs_path)) {
+    if (tdm_conditions_met(project_code)) {
       tdm_vars <- determine_tdm_variables(start_year)
 
       equity_tdm <-
@@ -122,10 +129,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
         )
 
       saveRDS(equity_tdm, file.path(pf_file_results_path, "Equity_tdm.rds"))
-    }
 
-    # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
       port_all_eq <- filter(port_all_eq, !scenario %in% tdm_scenarios())
     }
 
@@ -159,9 +163,16 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
   port_cb <- calculate_weights(port_raw_all_cb, "Bonds", grouping_variables)
 
-  ald_scen_cb <- get_ald_scen("Bonds")
-  port_cb <- merge_in_ald(port_cb, ald_scen_cb, id_col = "credit_parent_ar_company_id")
-  rm(ald_scen_cb)
+  port_cb <- merge_abcd_from_db(
+    portfolio = port_cb,
+    portfolio_type= "Bonds",
+    db_dir = analysis_inputs_path,
+    equity_market_list = equity_market_list,
+    scenario_sources_list = scenario_sources_list,
+    scenario_geographies_list = scenario_geographies_list,
+    sector_list = sector_list,
+    id_col = "id"
+  )
 
   # Portfolio weight methodology
   port_pw_cb <- port_weight_allocation(port_cb)
@@ -208,7 +219,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
   }
   if (data_check(port_all_cb)) {
-    if (tdm_conditions_met(analysis_inputs_path)) {
+    if (tdm_conditions_met(project_code)) {
       tdm_vars <- determine_tdm_variables(start_year)
 
       bonds_tdm <-
@@ -222,10 +233,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
         )
 
       saveRDS(bonds_tdm, file.path(pf_file_results_path, "Bonds_tdm.rds"))
-    }
 
-    # filter out scenarios used only for TDM, if they exist
-    if (data_includes_tdm_scenarios(analysis_inputs_path)) {
       port_all_cb <- filter(port_all_cb, !scenario %in% tdm_scenarios())
     }
 

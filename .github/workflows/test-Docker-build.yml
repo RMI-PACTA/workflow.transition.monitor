@@ -14,30 +14,36 @@ jobs:
     steps:
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v3
+        with:
+          path: workflow.transition.monitor
 
       - name: Checkout pacta.portfolio.import
         uses: actions/checkout@v3
         with:
           repository: RMI-PACTA/pacta.portfolio.import
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: pacta.portfolio.import
 
       - name: Checkout pacta.portfolio.analysis
         uses: actions/checkout@v3
         with:
           repository: RMI-PACTA/pacta.portfolio.analysis
           token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          path: pacta.portfolio.analysis
 
       - name: Checkout pacta.interactive.report
         uses: actions/checkout@v3
         with:
           repository: RMI-PACTA/pacta.interactive.report
           token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          path: pacta.interactive.report
 
       - name: Checkout pacta.executive.summary
         uses: actions/checkout@v3
         with:
           repository: RMI-PACTA/pacta.executive.summary
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: pacta.executive.summary
 
       - name: Make fake (empty) pacta-data folder
         run: mkdir pacta-data

@@ -56,6 +56,7 @@ ARG TEX_APT="\
   texlive-fonts-recommended \
   texlive-fonts-extra \
   lmodern \
+  xz-utils \
   "
 RUN apt-get update \
   && apt-get install -y --no-install-recommends $TEX_APT \

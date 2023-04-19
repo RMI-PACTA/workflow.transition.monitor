@@ -46,7 +46,7 @@ jobs:
           path: pacta.executive.summary
 
       - name: Make fake (empty) pacta-data folder
-        run: mkdir pacta-data
+        run: mkdir pacta-data; touch pacta-data/test.txt
         shell: bash
 
       - name: List files and directories in working directory

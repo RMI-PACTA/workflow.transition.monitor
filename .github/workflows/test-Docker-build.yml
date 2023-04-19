@@ -43,6 +43,10 @@ jobs:
         run: mkdir pacta-data
         shell: bash
 
+      - name: List files and directories in working directory
+        run: ls -al
+        shell: bash
+
       - name: Build Docker image
-        run: docker build workflow.transition.monitor
+        run: docker build workflow.transition.monitor/
         shell: bash

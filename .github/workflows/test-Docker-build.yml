@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main]
+    branches: [Docker-build-test-GH-action]
   workflow_dispatch:
 
 jobs:

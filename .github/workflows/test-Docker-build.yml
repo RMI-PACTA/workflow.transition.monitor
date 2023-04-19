@@ -1,0 +1,48 @@
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  Docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v3
+
+      - name: Checkout pacta.portfolio.import
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/pacta.portfolio.import
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout pacta.portfolio.analysis
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/pacta.portfolio.analysis
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout pacta.interactive.report
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/pacta.interactive.report
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout pacta.executive.summary
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/pacta.executive.summary
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make fake (empty) pacta-data folder
+        run: mkdir pacta-data
+        shell: bash
+
+      - name: Build Docker image
+        run: docker build
+        shell: bash

@@ -46,13 +46,9 @@ jobs:
           path: pacta.executive.summary
 
       - name: Make fake (empty) pacta-data folder
-        run: mkdir pacta-data; touch pacta-data/test.txt
-        shell: bash
-
-      - name: List files and directories in working directory
-        run: ls -al
+        run: mkdir pacta-data
         shell: bash
 
       - name: Build Docker image
-        run: docker build workflow.transition.monitor/
+        run: cp workflow.transition.monitor/Dockerfile Dockerfile; docker build .
         shell: bash

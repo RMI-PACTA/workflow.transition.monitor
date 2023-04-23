@@ -1,15 +1,20 @@
 on:
   push:
     branches: [main]
+    tags: [v*]
+  pull_request:
   workflow_dispatch:
+
+env:
+  IMAGE_NAME: workflow.transition.monitor
 
 jobs:
   Docker-build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     timeout-minutes: 15
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout workflow.transition.monitor
@@ -47,8 +52,30 @@ jobs:
 
       - name: Make fake (empty) pacta-data folder
         run: mkdir pacta-data
-        shell: bash
 
       - name: Build Docker image
-        run: cp workflow.transition.monitor/Dockerfile Dockerfile; docker build .
-        shell: bash
+        run: |
+          cp workflow.transition.monitor/Dockerfile Dockerfile
+          docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          # if from a PR, use the PR number
+          [ "$VERSION" == "merge" ] && VERSION=$(echo "PR${{ github.event.pull_request.number }}")
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION

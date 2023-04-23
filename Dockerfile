@@ -124,8 +124,8 @@ RUN Rscript -e "\
     c( \
       'pacta.executive.summary', \
       'pacta.interactive.report', \
-      'pacta.portfolio.analysis', \
-      'pacta.portfolio.import' \
+      'pacta.portfolio.import', \
+      'pacta.portfolio.analysis' \
     ); \
   pak::pkg_install(paste0('local::./', local_pkgs)); \
   "

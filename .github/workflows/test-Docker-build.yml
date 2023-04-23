@@ -82,24 +82,25 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           echo "BUILD_NAME_TAG=$IMAGE_ID:$VERSION" >> $GITHUB_OUTPUT
 
-    - name: Find Comment
-      if: ${{ github.event_name == 'pull_request' }}
-      uses: peter-evans/find-comment@v2
-      id: fc
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
-        body-includes: Docker image from this PR created
+      - name: Find Comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Docker image from this PR created
 
-    - name: Create or update comment
-      if: ${{ github.event_name == 'pull_request' }}
-      uses: peter-evans/create-or-update-comment@v3
-      with:
-        comment-id: ${{ steps.fc.outputs.comment-id }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          Docker image from this PR created
-          ```
-          docker pull ghcr.io/rmi-pacta/${{ steps.push-image.outputs.BUILD_NAME_TAG }}
-          ```
-        edit-mode: replace
+      - name: Create or update comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Docker image from this PR created
+            ```
+            docker pull ghcr.io/rmi-pacta/${{ steps.push-image.outputs.BUILD_NAME_TAG }}
+            ```
+          edit-mode: replace
+

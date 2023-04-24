@@ -13,7 +13,8 @@
 
 
 FROM rocker/r-ver:4.2.3
-RUN echo "options(repos = c(CRAN = 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt'))" >> "${R_HOME}/etc/Rprofile.site"
+ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
+RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
 # install system dependencies
 ARG SYS_DEPS="\

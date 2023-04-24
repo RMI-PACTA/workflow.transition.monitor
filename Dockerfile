@@ -107,7 +107,9 @@ RUN Rscript -e "\
   workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
   pacta_deps <- lapply(local_pkgs, pak::local_deps); \
   pacta_deps <- do.call(rbind, pacta_deps); \
-  pacta_deps <- unique(pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), 'ref']); \
+  pacta_deps <- pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), ]; \
+  pacta_deps <- pacta_deps[!pacta_deps[['package']] %in% local_pkgs, ]; \
+  pacta_deps <- sort(unique(pacta_deps[, 'ref'])); \
   pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
   "
 

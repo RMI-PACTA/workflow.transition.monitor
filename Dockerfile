@@ -13,7 +13,8 @@
 
 
 FROM rocker/r-ver:4.2.3
-RUN echo "options(repos = c(CRAN = 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt'))" >> "${R_HOME}/etc/Rprofile.site"
+ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
+RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
 # install system dependencies
 ARG SYS_DEPS="\
@@ -56,6 +57,7 @@ ARG TEX_APT="\
   texlive-fonts-recommended \
   texlive-fonts-extra \
   lmodern \
+  xz-utils \
   "
 RUN apt-get update \
   && apt-get install -y --no-install-recommends $TEX_APT \
@@ -105,7 +107,9 @@ RUN Rscript -e "\
   workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
   pacta_deps <- lapply(local_pkgs, pak::local_deps); \
   pacta_deps <- do.call(rbind, pacta_deps); \
-  pacta_deps <- unique(pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), 'ref']); \
+  pacta_deps <- pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), ]; \
+  pacta_deps <- pacta_deps[!pacta_deps[['package']] %in% local_pkgs, ]; \
+  pacta_deps <- sort(unique(pacta_deps[, 'ref'])); \
   pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
   "
 

@@ -143,12 +143,6 @@ indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indi
 
 # create interactive report ----------------------------------------------------
 
-report_name <- select_report_template(
-  project_report_name = project_report_name,
-  language_select = language_select
-)
-
-template_dir <- file.path(template_path, report_name, "_book")
 survey_dir <- file.path(user_results_path, project_code, "survey")
 real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
@@ -188,13 +182,11 @@ configs <-
   )
 
 create_interactive_report(
-  repo_path = template_path,
-  template_dir = template_dir,
+  template_dir = get_report_template_path(project_report_name, language_select),
   output_dir = output_dir,
   survey_dir = survey_dir,
   real_estate_dir = real_estate_dir,
   language_select = language_select,
-  report_name = report_name,
   project_name = project_name,
   investor_name = investor_name,
   portfolio_name = portfolio_name,
@@ -265,15 +257,15 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
       portfolio_allocation_method_equity = "portfolio_weight",
       portfolio_allocation_method_bonds = "portfolio_weight",
       green_techs = c(
-        "RenewablesCap", 
-        "HydroCap", 
-        "NuclearCap", 
-        "Hybrid", 
-        "Electric", 
+        "RenewablesCap",
+        "HydroCap",
+        "NuclearCap",
+        "Hybrid",
+        "Electric",
         "FuelCell",
-        "Hybrid_HDV", 
-        "Electric_HDV", 
-        "FuelCell_HDV", 
+        "Hybrid_HDV",
+        "Electric_HDV",
+        "FuelCell_HDV",
         "Electric Arc Furnace"
       ),
       equity_results_portfolio = equity_results_portfolio,

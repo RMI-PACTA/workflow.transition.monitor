@@ -90,6 +90,7 @@ COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
 COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
 COPY pacta.portfolio.analysis/DESCRIPTION /pacta.portfolio.analysis/DESCRIPTION
 COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
+COPY pacta.portfolio.utils/DESCRIPTION /pacta.portfolio.utils/DESCRIPTION
 
 # copy in scripts from this repo
 COPY workflow.transition.monitor /bound
@@ -101,7 +102,8 @@ RUN Rscript -e "\
       'pacta.executive.summary', \
       'pacta.interactive.report', \
       'pacta.portfolio.analysis', \
-      'pacta.portfolio.import' \
+      'pacta.portfolio.import', \
+      'pacta.portfolio.utils' \
     ); \
   workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
   workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
@@ -118,6 +120,7 @@ COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
 COPY pacta.portfolio.analysis /pacta.portfolio.analysis
 COPY pacta.portfolio.import /pacta.portfolio.import
+COPY pacta.portfolio.import /pacta.portfolio.utils
 
 # install local R package clones
 RUN Rscript -e "\
@@ -126,6 +129,7 @@ RUN Rscript -e "\
       'pacta.executive.summary', \
       'pacta.interactive.report', \
       'pacta.portfolio.analysis', \
+      'pacta.portfolio.utils', \
       'pacta.portfolio.import' \
     ); \
   pak::pkg_install(paste0('local::./', local_pkgs)); \

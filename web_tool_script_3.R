@@ -1,5 +1,5 @@
 suppressPackageStartupMessages({
-  library(pacta.portfolio.analysis)
+  library(pacta.portfolio.utils)
   library(pacta.interactive.report)
   library(pacta.executive.summary)
   library(cli)

@@ -53,16 +53,16 @@ RUN apt-get update \
 
 # install TeX system and fonts
 ARG TEX_APT="\
-  texlive-xetex \
-  texlive-fonts-recommended \
-  texlive-fonts-extra \
-  lmodern \
-  xz-utils \
-  "
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    lmodern \
+    xz-utils \
+    "
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends $TEX_APT \
-  && tlmgr init-usertree \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends $TEX_APT \
+    && tlmgr init-usertree \
+    && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/

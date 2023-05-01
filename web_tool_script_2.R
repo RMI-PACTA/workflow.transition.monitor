@@ -119,7 +119,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     tdm_vars <- determine_tdm_variables(start_year)
     if (
       tdm_conditions_met(
-        port_all_eq, 
+        port_all_eq,
         t0 = tdm_vars$t0,
         delta_t1 = tdm_vars$delta_t1,
         delta_t2 = tdm_vars$delta_t2,

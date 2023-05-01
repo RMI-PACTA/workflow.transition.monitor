@@ -25,7 +25,7 @@ ARG SYS_DEPS="\
     wget \
     "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $SYS_DEPS \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $SYS_DEPS \
     && chmod -R a+rwX /root \
     && rm -rf /var/lib/apt/lists/*
 
@@ -48,7 +48,7 @@ ARG R_PKG_SYS_DEPS="\
     zlib1g-dev \
     "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
 # install TeX system and fonts
@@ -60,7 +60,7 @@ ARG TEX_APT="\
   xz-utils \
   "
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends $TEX_APT \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $TEX_APT \
   && tlmgr init-usertree \
   && rm -rf /var/lib/apt/lists/*
 

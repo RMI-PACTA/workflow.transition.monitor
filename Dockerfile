@@ -129,7 +129,15 @@ RUN Rscript -e "\
       'pacta.executive.summary', \
       'pacta.interactive.report', \
       'pacta.portfolio.analysis', \
-      'pacta.portfolio.utils', \
+      'pacta.portfolio.utils' \
+    ); \
+  pak::pkg_install(paste0('local::./', local_pkgs)); \
+  "
+
+# install local R package clones
+RUN Rscript -e "\
+  local_pkgs <- \
+    c( \
       'pacta.portfolio.import' \
     ); \
   pak::pkg_install(paste0('local::./', local_pkgs)); \

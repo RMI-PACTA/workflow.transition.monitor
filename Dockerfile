@@ -12,7 +12,7 @@
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
 
-FROM rocker/r-ver:4.2.3
+FROM --platform=linux/amd64 rocker/r-ver:4.2.3
 ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
@@ -25,7 +25,7 @@ ARG SYS_DEPS="\
     wget \
     "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $SYS_DEPS \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $SYS_DEPS \
     && chmod -R a+rwX /root \
     && rm -rf /var/lib/apt/lists/*
 
@@ -48,21 +48,21 @@ ARG R_PKG_SYS_DEPS="\
     zlib1g-dev \
     "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $R_PKG_SYS_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
 # install TeX system and fonts
 ARG TEX_APT="\
-  texlive-xetex \
-  texlive-fonts-recommended \
-  texlive-fonts-extra \
-  lmodern \
-  xz-utils \
-  "
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    lmodern \
+    xz-utils \
+    "
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends $TEX_APT \
-  && tlmgr init-usertree \
-  && rm -rf /var/lib/apt/lists/*
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $TEX_APT \
+    && tlmgr init-usertree \
+    && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/

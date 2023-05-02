@@ -115,8 +115,18 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
   if (data_check(port_all_eq)) {
-    if (tdm_conditions_met(project_code)) {
-      tdm_vars <- determine_tdm_variables(start_year)
+    tdm_vars <- determine_tdm_variables(start_year)
+    if (
+      tdm_conditions_met(
+        port_all_eq,
+        t0 = tdm_vars$t0,
+        delta_t1 = tdm_vars$delta_t1,
+        delta_t2 = tdm_vars$delta_t2,
+        additional_groups = tdm_vars$additional_groups,
+        scenarios = tdm_vars$scenarios,
+        project_code = project_code
+      )
+    ) {
 
       equity_tdm <-
         calculate_tdm(
@@ -219,8 +229,18 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
   }
   if (data_check(port_all_cb)) {
-    if (tdm_conditions_met(project_code)) {
       tdm_vars <- determine_tdm_variables(start_year)
+    if (
+      tdm_conditions_met(
+        port_all_cb,
+        t0 = tdm_vars$t0,
+        delta_t1 = tdm_vars$delta_t1,
+        delta_t2 = tdm_vars$delta_t2,
+        additional_groups = tdm_vars$additional_groups,
+        scenarios = tdm_vars$scenarios,
+        project_code = project_code
+      )
+    ) {
 
       bonds_tdm <-
         calculate_tdm(

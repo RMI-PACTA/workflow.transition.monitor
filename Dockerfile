@@ -88,7 +88,7 @@ RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 # copy in DESCRIPTION files from local PACTA package clones
 COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
 COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
-COPY pacta.portfolio.analysis/DESCRIPTION /pacta.portfolio.analysis/DESCRIPTION
+COPY pacta.portfolio.allocate/DESCRIPTION /pacta.portfolio.allocate/DESCRIPTION
 COPY pacta.portfolio.audit/DESCRIPTION /pacta.portfolio.audit/DESCRIPTION
 COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
 COPY pacta.portfolio.utils/DESCRIPTION /pacta.portfolio.utils/DESCRIPTION
@@ -102,7 +102,7 @@ RUN Rscript -e "\
     c( \
       'pacta.executive.summary', \
       'pacta.interactive.report', \
-      'pacta.portfolio.analysis', \
+      'pacta.portfolio.allocate', \
       'pacta.portfolio.audit', \
       'pacta.portfolio.import', \
       'pacta.portfolio.utils' \
@@ -120,7 +120,7 @@ RUN Rscript -e "\
 # copy in local PACTA package clones
 COPY pacta.executive.summary /pacta.executive.summary
 COPY pacta.interactive.report /pacta.interactive.report
-COPY pacta.portfolio.analysis /pacta.portfolio.analysis
+COPY pacta.portfolio.allocate /pacta.portfolio.allocate
 COPY pacta.portfolio.audit /pacta.portfolio.audit
 COPY pacta.portfolio.import /pacta.portfolio.import
 COPY pacta.portfolio.utils /pacta.portfolio.utils
@@ -131,7 +131,7 @@ RUN Rscript -e "\
     c( \
       'pacta.executive.summary', \
       'pacta.interactive.report', \
-      'pacta.portfolio.analysis', \
+      'pacta.portfolio.allocate', \
       'pacta.portfolio.audit', \
       'pacta.portfolio.import', \
       'pacta.portfolio.utils' \

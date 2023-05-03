@@ -1,7 +1,7 @@
 default:
     paths:
        # Use form "../this_repo/" (not "./" or "/path/to/this_repo")
-        project_location_ext: ../pacta.portfolio.analysis/
+        project_location_ext: ../pacta.portfolio.allocate/
         data_location_ext: ../pacta-data/2021Q4/
         template_location: ../pacta.interactive.report/
         user_data_location: ../user_results/

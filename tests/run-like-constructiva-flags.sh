@@ -7,8 +7,8 @@ usage() {
   echo "[-t <docker image tag>] (default latest)" 1>&2
   echo "[-u <userId>] (default 4)" 1>&2
   echo "[-m <docker image>] (default rmi_pacta)" 1>&2
-  # a for pacta.portfolio.analysis
-  echo "[-a <path to local pacta.portfolio.analysis repo>] (default docker internal)" 1>&2
+  # a for pacta.portfolio.allocate
+  echo "[-a <path to local pacta.portfolio.allocate repo>] (default docker internal)" 1>&2
   # d for pacta-data
   echo "[-d <path to local pacta-data repo>] (default docker internal)" 1>&2
   # c for pacta.interactive.report

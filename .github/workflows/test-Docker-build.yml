@@ -29,12 +29,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: pacta.portfolio.import
 
-      - name: Checkout pacta.portfolio.analysis
+      - name: Checkout pacta.portfolio.allocate
         uses: actions/checkout@v3
         with:
-          repository: RMI-PACTA/pacta.portfolio.analysis
+          repository: RMI-PACTA/pacta.portfolio.allocate
           token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          path: pacta.portfolio.analysis
+          path: pacta.portfolio.allocate
 
       - name: Checkout pacta.portfolio.audit
         uses: actions/checkout@v3

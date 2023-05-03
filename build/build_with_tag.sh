@@ -38,6 +38,7 @@ if [ -z "${repos}" ]; then
     repos="\
         pacta.portfolio.import \
         pacta.portfolio.analysis \
+        pacta.portfolio.audit \
         pacta.portfolio.utils \
         pacta.interactive.report \
         pacta.executive.summary \

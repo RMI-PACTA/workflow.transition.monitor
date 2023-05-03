@@ -3,6 +3,7 @@ suppressPackageStartupMessages({
   library(pacta.interactive.report)
   library(pacta.executive.summary)
   library(cli)
+  library(dplyr)
   library(readr)
   library(jsonlite)
   library(config)
@@ -56,55 +57,77 @@ readRDS_or_return_alt_data <- function(filepath, alt_return = NULL) {
   alt_return
 }
 
+add_inv_and_port_names_if_needed <- function(data) {
+  if (!"portfolio_name" %in% names(data)) {
+    data <- mutate(data, portfolio_name = .env$portfolio_name, .before = everything())
+  }
+
+  if (!"investor_name" %in% names(data)) {
+    data <- mutate(data, investor_name = .env$investor_name, .before = everything())
+  }
+
+  data
+}
+
 audit_file <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"),
   alt_return = empty_audit_file()
 )
+audit_file <- add_inv_and_port_names_if_needed(audit_file)
 
 portfolio_overview <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"),
   alt_return = empty_portfolio_overview()
 )
+portfolio_overview <- add_inv_and_port_names_if_needed(portfolio_overview)
 
 emissions <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"),
   alt_return = empty_emissions_results()
 )
+emissions <- add_inv_and_port_names_if_needed(emissions)
 
 total_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
+total_portfolio <- add_inv_and_port_names_if_needed(total_portfolio)
 
 equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
+equity_results_portfolio <- add_inv_and_port_names_if_needed(equity_results_portfolio)
 
 bonds_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
+bonds_results_portfolio <- add_inv_and_port_names_if_needed(bonds_results_portfolio)
 
 equity_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"),
   alt_return = empty_company_results()
 )
+equity_results_company <- add_inv_and_port_names_if_needed(equity_results_company)
 
 bonds_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"),
   alt_return = empty_company_results()
 )
+bonds_results_company <- add_inv_and_port_names_if_needed(bonds_results_company)
 
 equity_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"),
   alt_return = empty_map_results()
 )
+equity_results_map <- add_inv_and_port_names_if_needed(equity_results_map)
 
 bonds_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"),
   alt_return = empty_map_results()
 )
+bonds_results_map <- add_inv_and_port_names_if_needed(bonds_results_map)
 
 equity_tdm <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_tdm.rds"),

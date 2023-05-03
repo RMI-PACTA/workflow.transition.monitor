@@ -36,6 +36,13 @@ jobs:
           token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
           path: pacta.portfolio.analysis
 
+      - name: Checkout pacta.portfolio.utils
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/pacta.portfolio.utils
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: pacta.portfolio.utils
+
       - name: Checkout pacta.interactive.report
         uses: actions/checkout@v3
         with:

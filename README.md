@@ -11,7 +11,7 @@ The tree of the docker container looks like this:
 /bound  # contents of workflow.transition.monitor
 /pacta.executive.summary
 /pacta.interactive.report
-/pacta.portfolio.analysis
+/pacta.portfolio.allocate
 /pacta.portfolio.import
 /pacta-data
 ```

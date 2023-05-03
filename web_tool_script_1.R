@@ -1,4 +1,5 @@
 suppressPackageStartupMessages({
+  library(pacta.portfolio.utils)
   library(pacta.portfolio.import)
   library(pacta.portfolio.analysis)
   library(cli)
@@ -76,7 +77,6 @@ portfolio <- process_raw_portfolio(
   fund_data = fund_data,
   entity_info = entity_info,
   currencies = currencies,
-  grouping_variables = grouping_variables,
   total_fund_list = total_fund_list,
   isin_to_fund_table = isin_to_fund_table
 )
@@ -98,7 +98,7 @@ portfolio_total <- add_portfolio_flags(portfolio)
 
 portfolio_overview <- portfolio_summary(portfolio_total)
 
-audit_file <- create_audit_file(portfolio_total, grouping_variables, has_revenue)
+audit_file <- create_audit_file(portfolio_total, has_revenue)
 
 if (inc_emission_factors) {
   emissions_totals <- calculate_portfolio_financed_emissions(

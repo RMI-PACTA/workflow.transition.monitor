@@ -1,6 +1,6 @@
 suppressPackageStartupMessages({
   library(pacta.portfolio.utils)
-  library(pacta.portfolio.analysis)
+  library(pacta.portfolio.allocate)
   library(cli)
   library(dplyr)
 })

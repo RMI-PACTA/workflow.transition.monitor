@@ -90,9 +90,9 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   port_all_eq <- bind_rows(port_pw_eq, port_own_eq)
 
   if (has_map) {
-    ald_raw_eq <- get_ald_raw("Equity")
-    map_eq <- merge_in_geography(company_all_eq, ald_raw_eq)
-    rm(ald_raw_eq)
+    abcd_raw_eq <- get_abcd_raw("Equity")
+    map_eq <- merge_in_geography(company_all_eq, abcd_raw_eq)
+    rm(abcd_raw_eq)
 
     map_eq <- aggregate_map_data(map_eq)
   }
@@ -199,9 +199,9 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
   if (has_map) {
     if (data_check(company_all_cb)) {
-      ald_raw_cb <- get_ald_raw("Bonds")
-      map_cb <- merge_in_geography(company_all_cb, ald_raw_cb)
-      rm(ald_raw_cb)
+      abcd_raw_cb <- get_abcd_raw("Bonds")
+      map_cb <- merge_in_geography(company_all_cb, abcd_raw_cb)
+      rm(abcd_raw_cb)
 
       map_cb <- aggregate_map_data(map_cb)
     }

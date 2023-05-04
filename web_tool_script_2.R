@@ -116,7 +116,20 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
   if (data_check(port_all_eq)) {
-    tdm_vars <- determine_tdm_variables(start_year)
+    tdm_vars <- list(
+      t0 = start_year,
+      delta_t1 = 5,
+      delta_t2 = 9,
+      additional_groups = c(
+        "scenario_source",
+        "scenario",
+        "allocation",
+        "equity_market",
+        "scenario_geography"
+      ),
+      scenarios = "IPR FPS 2021"
+    )
+
     if (
       tdm_conditions_met(
         port_all_eq,
@@ -230,7 +243,20 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
   }
   if (data_check(port_all_cb)) {
-      tdm_vars <- determine_tdm_variables(start_year)
+    tdm_vars <- list(
+      t0 = start_year,
+      delta_t1 = 5,
+      delta_t2 = 9,
+      additional_groups = c(
+        "scenario_source",
+        "scenario",
+        "allocation",
+        "equity_market",
+        "scenario_geography"
+      ),
+      scenarios = "IPR FPS 2021"
+    )
+
     if (
       tdm_conditions_met(
         port_all_cb,

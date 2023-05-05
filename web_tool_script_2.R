@@ -154,7 +154,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
       saveRDS(equity_tdm, file.path(pf_file_results_path, "Equity_tdm.rds"))
 
-      port_all_eq <- filter(port_all_eq, !scenario %in% tdm_scenarios())
+      port_all_eq <- filter(port_all_eq, !scenario %in% tdm_vars$scenarios)
     }
 
     saveRDS(port_all_eq, file.path(pf_file_results_path, "Equity_results_portfolio.rds"))
@@ -281,7 +281,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
       saveRDS(bonds_tdm, file.path(pf_file_results_path, "Bonds_tdm.rds"))
 
-      port_all_cb <- filter(port_all_cb, !scenario %in% tdm_scenarios())
+      port_all_cb <- filter(port_all_cb, !scenario %in% tdm_vars$scenarios)
     }
 
     saveRDS(port_all_cb, file.path(pf_file_results_path, "Bonds_results_portfolio.rds"))

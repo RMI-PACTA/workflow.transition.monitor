@@ -134,10 +134,14 @@ equity_tdm <- readRDS_or_return_alt_data(
   alt_return = NULL
 )
 
+equity_tdm <- add_inv_and_port_names_if_needed(equity_tdm)
+
 bonds_tdm <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_tdm.rds"),
   alt_return = NULL
 )
+
+bonds_tdm <- add_inv_and_port_names_if_needed(bonds_tdm)
 
 peers_equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")),

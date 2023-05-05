@@ -58,7 +58,7 @@ readRDS_or_return_alt_data <- function(filepath, alt_return = NULL) {
 }
 
 add_inv_and_port_names_if_needed <- function(data) {
-  if (!inherits(data, data.frame)) {
+  if (!inherits(data, "data.frame")) {
     return(data)
   }
 

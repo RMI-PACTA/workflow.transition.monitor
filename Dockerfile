@@ -1,21 +1,7 @@
-# using rocker r-vers as a base with R 4.2.3
-# https://hub.docker.com/r/rocker/r-ver
-# https://rocker-project.org/images/versioned/r-ver.html
-#
-# sets CRAN repo to use Posit Package Manager to freeze R package versions to
-# those available on 2023-03-31
-# https://packagemanager.rstudio.com/client/#/repos/2/overview
-# https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
-#
-# sets CTAN repo to freeze TeX package dependencies to those available on
-# 2021-12-31
-# https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
+ARG R_VERS
+FROM --platform=linux/amd64 rocker/r-ver:${R_VERS:-latest}
 
-
-FROM --platform=linux/amd64 rocker/r-ver:4.2.3
-ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
-RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
-
+# set apt-get to noninteractive mode
 ARG DEBIAN_FRONTEND noninteractive
 ARG DEBCONF_NOWARNINGS="yes"
 
@@ -68,7 +54,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
+ARG CTAN_REPO
 ARG TEX_DEPS="\
     geometry \
     hyperref \
@@ -82,69 +68,29 @@ ARG TEX_DEPS="\
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # copy in PACTA data
-COPY pacta-data /pacta-data
-
-# install packages for dependency resolution and installation
-RUN Rscript -e "install.packages('pak')"
-RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
-
-# copy in DESCRIPTION files from local PACTA package clones
-COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
-COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
-COPY pacta.portfolio.allocate/DESCRIPTION /pacta.portfolio.allocate/DESCRIPTION
-COPY pacta.portfolio.audit/DESCRIPTION /pacta.portfolio.audit/DESCRIPTION
-COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
-COPY pacta.portfolio.utils/DESCRIPTION /pacta.portfolio.utils/DESCRIPTION
+ARG PACTA_DATA
+ARG PACTA_DATA_DIR
+COPY $PACTA_DATA $PACTA_DATA_DIR
 
 # copy in scripts from this repo
-COPY workflow.transition.monitor /bound
+ARG WORKFLOW_DIR
+COPY . $WORKFLOW_DIR
 
 # install R package dependencies
+ARG CRAN_REPO
+RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
+ARG PACTA_PKGS
+RUN Rscript -e "install.packages('pak')"
+RUN Rscript -e "pak::pak(c('renv', 'yaml'))"
 RUN Rscript -e "\
-  local_pkgs <- \
-    c( \
-      'pacta.executive.summary', \
-      'pacta.interactive.report', \
-      'pacta.portfolio.allocate', \
-      'pacta.portfolio.audit', \
-      'pacta.portfolio.import', \
-      'pacta.portfolio.utils' \
-    ); \
-  workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
-  workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
-  pacta_deps <- lapply(local_pkgs, pak::local_deps); \
-  pacta_deps <- do.call(rbind, pacta_deps); \
-  pacta_deps <- pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), ]; \
-  pacta_deps <- pacta_deps[!pacta_deps[['package']] %in% local_pkgs, ]; \
-  pacta_deps <- sort(unique(pacta_deps[, 'ref'])); \
-  pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
-  "
-
-# copy in local PACTA package clones
-COPY pacta.executive.summary /pacta.executive.summary
-COPY pacta.interactive.report /pacta.interactive.report
-COPY pacta.portfolio.allocate /pacta.portfolio.allocate
-COPY pacta.portfolio.audit /pacta.portfolio.audit
-COPY pacta.portfolio.import /pacta.portfolio.import
-COPY pacta.portfolio.utils /pacta.portfolio.utils
-
-# install local R package clones
-RUN Rscript -e "\
-  local_pkgs <- \
-    c( \
-      'pacta.executive.summary', \
-      'pacta.interactive.report', \
-      'pacta.portfolio.allocate', \
-      'pacta.portfolio.audit', \
-      'pacta.portfolio.import', \
-      'pacta.portfolio.utils' \
-    ); \
-  pak::pkg_install(paste0('local::./', local_pkgs)); \
-  "
+    pacta_pkgs <- strsplit('$PKG_DEPS', '[[:space:]]+')[[1]][-1]; \
+    workflow_pkgs <- sort(unique(renv::dependencies('$WORKFLOW_DIR')[['Package']])); \
+    workflow_pkgs <- grep('^pacta[.]', workflow_pkgs, value = TRUE, invert = TRUE); \
+    pak::pak(c(pacta_pkgs, workflow_pkgs)); \
+    "
 
 # set permissions for PACTA repos that need local content
-RUN chmod -R a+rwX /bound && chmod -R a+rwX /pacta-data \
-    && chmod -R a+rwX /pacta.interactive.report
+RUN chmod -R a+rwX $WORKFLOW_DIR && chmod -R a+rwX $PACTA_DATA_DIR
 
 # set the build_version environment variable
 ARG image_tag

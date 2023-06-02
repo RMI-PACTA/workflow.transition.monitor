@@ -6,12 +6,10 @@ services:
     build:
       args:
         PACTA_PKGS: "\
-          RMI-PACTA/pacta.data.validation@main \
           RMI-PACTA/pacta.portfolio.utils@main \
           RMI-PACTA/pacta.portfolio.import@main \
           RMI-PACTA/pacta.portfolio.audit@main \
           RMI-PACTA/pacta.portfolio.allocate@main \
-          RMI-PACTA/pacta.interactive.plot@main \
           RMI-PACTA/pacta.executive.summary@main \
           "
         R_VERS: 4.2.3

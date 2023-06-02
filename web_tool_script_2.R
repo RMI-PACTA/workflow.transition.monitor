@@ -198,7 +198,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     scenario_sources_list = scenario_sources_list,
     scenario_geographies_list = scenario_geographies_list,
     sector_list = sector_list,
-    id_col = "id"
+    id_col = "credit_parent_ar_company_id"
   )
 
   # Portfolio weight methodology

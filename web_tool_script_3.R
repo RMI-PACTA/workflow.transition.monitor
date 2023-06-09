@@ -212,8 +212,11 @@ configs <-
     pacta_data_public_manifest = pacta_data_public_manifest
   )
 
+template_dir_name <- paste(tolower(project_report_name), tolower(language_select), "template", sep = "_")
+template_dir <- file.path("../templates.transition.monitor", template_dir_name)
+
 create_interactive_report(
-  template_dir = get_report_template_path(project_report_name, language_select),
+  template_dir = template_dir,
   output_dir = output_dir,
   survey_dir = survey_dir,
   real_estate_dir = real_estate_dir,

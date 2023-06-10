@@ -84,6 +84,9 @@ RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 # copy in PACTA data
 COPY pacta-data /pacta-data
 
+# copy in report templates
+COPY templates.transition.monitor /templates.transition.monitor
+
 # install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
@@ -143,8 +146,10 @@ RUN Rscript -e "\
   "
 
 # set permissions for PACTA repos that need local content
-RUN chmod -R a+rwX /bound && chmod -R a+rwX /pacta-data \
-    && chmod -R a+rwX /pacta.interactive.report
+RUN chmod -R a+rwX /bound && \
+    chmod -R a+rwX /pacta-data && \
+    chmod -R a+rwX /templates.transition.monitor && \
+    chmod -R a+rwX /pacta.interactive.report
 
 # set the build_version environment variable
 ARG image_tag

@@ -64,6 +64,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: pacta.executive.summary
 
+      - name: Checkout templates.transition.monitor
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/templates.transition.monitor
+          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          path: templates.transition.monitor
+
       - name: Make fake (empty) pacta-data folder
         run: mkdir pacta-data
 

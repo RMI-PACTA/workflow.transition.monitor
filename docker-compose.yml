@@ -3,6 +3,7 @@ version: "3.9"
 services:
   transition_monitor:
     platform: linux/amd64
+    image: workflow.transition.monitor
     build:
       args:
         PACTA_PKGS: "\

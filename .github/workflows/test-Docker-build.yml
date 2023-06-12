@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker compose --file /workflow.transition.monitor/docker-compose.yml --project-directory /
+          docker compose --file /workflow.transition.monitor/docker-compose.yml --project-directory / build
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin

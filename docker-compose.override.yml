@@ -16,5 +16,5 @@ services:
         CRAN_REPO: https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
         CTAN_REPO: https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
         WORKFLOW_DIR: /bound
-        PACTA_DATA: pacta-data/2021Q4
+        PACTA_DATA: pacta-data
         PACTA_DATA_DIR: /pacta-data

@@ -28,7 +28,9 @@ jobs:
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker compose --file workflow.transition.monitor/docker-compose.yml --project-directory . build
+          cp workflow.transition.monitor/docker-compose.yml docker-compose.yml
+          cp workflow.transition.monitor/docker-compose.override.yml docker-compose.override.yml
+          docker compose --file docker-compose.yml build
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin

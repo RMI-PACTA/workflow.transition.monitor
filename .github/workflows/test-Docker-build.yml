@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker compose --file workflow.transition.monitor/docker-compose.yml --project-directory .
+          docker compose --file workflow.transition.monitor/docker-compose.yml --project-directory . build
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
@@ -52,7 +52,6 @@ jobs:
           [ "$VERSION" == "merge" ] && VERSION=$(echo "PR${{ github.event.pull_request.number }}")
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker images
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
           echo "BUILD_NAME_TAG=$IMAGE_ID:$VERSION" >> $GITHUB_OUTPUT

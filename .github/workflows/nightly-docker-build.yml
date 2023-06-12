@@ -1,9 +1,6 @@
 on:
-  push:
-    branches: [main]
-    tags: [v*]
-  pull_request:
-  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 * * 1,2,3,4,5'
 
 env:
   IMAGE_NAME: workflow.transition.monitor
@@ -86,44 +83,12 @@ jobs:
         id: push-image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
-          # if from a PR, use the PR number
-          [ "$VERSION" == "merge" ] && VERSION=$(echo "PR${{ github.event.pull_request.number }}")
+          # Use Docker `nightly` tag convention
+          VERSION=nightly
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
           echo "BUILD_NAME_TAG=$IMAGE_ID:$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Find Comment
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Docker image from this PR created
-
-      - name: Create or update comment
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Docker image from this PR created
-            ```
-            docker pull ghcr.io/rmi-pacta/${{ steps.push-image.outputs.BUILD_NAME_TAG }}
-            ```
-          edit-mode: replace
-

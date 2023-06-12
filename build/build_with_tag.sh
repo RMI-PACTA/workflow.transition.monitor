@@ -43,6 +43,7 @@ if [ -z "${repos}" ]; then
         pacta.interactive.report \
         pacta.executive.summary \
         workflow.transition.monitor \
+        templates.transition.monitor \
         "
 fi
 

@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  transition_monitor:
+    platform: linux/amd64
+    build:
+      args:
+        PACTA_PKGS: "\
+          RMI-PACTA/pacta.portfolio.utils@main \
+          RMI-PACTA/pacta.portfolio.import@main \
+          RMI-PACTA/pacta.portfolio.audit@main \
+          RMI-PACTA/pacta.portfolio.allocate@main \
+          RMI-PACTA/pacta.executive.summary@main \
+          "
+        R_VERS: 4.2.3
+        CRAN_REPO: https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
+        CTAN_REPO: https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
+        WORKFLOW_DIR: /bound
+        PACTA_DATA: pacta-data/2021Q4
+        PACTA_DATA_DIR: /pacta-data

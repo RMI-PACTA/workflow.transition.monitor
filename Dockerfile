@@ -87,7 +87,7 @@ RUN Rscript -e "install.packages('pak')"
 RUN Rscript -e "pak::pak(c('renv', 'yaml'))"
 RUN Rscript -e "\
     pacta_pkgs <- strsplit('$PKG_DEPS', '[[:space:]]+')[[1]][-1]; \
-    print(pacta_pkgs); \
+    print('$PKG_DEPS'); \
     workflow_pkgs <- sort(unique(renv::dependencies('$WORKFLOW_DIR')[['Package']])); \
     workflow_pkgs <- grep('^pacta[.]', workflow_pkgs, value = TRUE, invert = TRUE); \
     pak::pak(c(pacta_pkgs, workflow_pkgs)); \

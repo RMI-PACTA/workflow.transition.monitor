@@ -10,6 +10,7 @@ services:
           RMI-PACTA/pacta.portfolio.import@main \
           RMI-PACTA/pacta.portfolio.audit@main \
           RMI-PACTA/pacta.portfolio.allocate@main \
+          RMI-PACTA/pacta.portfolio.report@main \
           RMI-PACTA/pacta.executive.summary@main \
           "
         R_VERS: 4.2.3

@@ -1,6 +1,6 @@
 suppressPackageStartupMessages({
   library(pacta.portfolio.utils)
-  library(pacta.interactive.report)
+  library(pacta.portfolio.report)
   library(pacta.executive.summary)
   library(cli)
   library(dplyr)

@@ -30,6 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
+          cd workflow.transition.monitor
           ls -al
           docker compose --file workflow.transition.monitor/docker-compose.yml --project-directory . build
 

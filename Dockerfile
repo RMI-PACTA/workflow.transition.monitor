@@ -77,7 +77,7 @@ COPY templates.transition.monitor /templates.transition.monitor
 
 # copy in scripts from this repo
 ARG WORKFLOW_DIR
-COPY . $WORKFLOW_DIR
+COPY workflow.transition.monitor $WORKFLOW_DIR
 
 # install R package dependencies
 ARG CRAN_REPO

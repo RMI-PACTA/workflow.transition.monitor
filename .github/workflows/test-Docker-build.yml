@@ -31,7 +31,6 @@ jobs:
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          ls -al /
           docker compose --file workflow.transition.monitor/docker-compose.yml --project-directory . build
 
       - name: Log in to registry

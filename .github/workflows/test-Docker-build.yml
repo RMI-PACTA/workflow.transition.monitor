@@ -26,7 +26,7 @@ jobs:
         run: mkdir pacta-data
 
       - name: Make fake (empty) templates.transition.monitor folder
-        run: templates.transition.monitor
+        run: mkdir templates.transition.monitor
 
       - name: Build Docker image
         run: |

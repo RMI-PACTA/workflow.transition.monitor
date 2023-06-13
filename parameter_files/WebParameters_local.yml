@@ -3,7 +3,7 @@ default:
        # Use form "../this_repo/" (not "./" or "/path/to/this_repo")
         project_location_ext: ../pacta.portfolio.allocate/
         data_location_ext: ../pacta-data/2021Q4/
-        template_location: ../pacta.interactive.report/
+        template_location: ../templates.transition.monitor/
         user_data_location: ../user_results/
     parameters:
         project_name: working_dir

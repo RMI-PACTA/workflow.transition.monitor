@@ -123,7 +123,7 @@ jobs:
           body: |
             Docker image from this PR created
             ```
-            docker pull ghcr.io/rmi-pacta/${{ steps.push-image.outputs.BUILD_NAME_TAG }}
+            docker pull ${{ steps.push-image.outputs.BUILD_NAME_TAG }}
             ```
           edit-mode: replace
 

@@ -50,12 +50,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: pacta.portfolio.utils
 
-      - name: Checkout pacta.interactive.report
+      - name: Checkout pacta.portfolio.report
         uses: actions/checkout@v3
         with:
-          repository: RMI-PACTA/pacta.interactive.report
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          path: pacta.interactive.report
+          repository: RMI-PACTA/pacta.portfolio.report
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: pacta.portfolio.report
 
       - name: Checkout pacta.executive.summary
         uses: actions/checkout@v3

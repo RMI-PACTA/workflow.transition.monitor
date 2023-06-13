@@ -149,7 +149,7 @@ RUN Rscript -e "\
 RUN chmod -R a+rwX /bound && \
     chmod -R a+rwX /pacta-data && \
     chmod -R a+rwX /templates.transition.monitor && \
-    chmod -R a+rwX /pacta.interactive.report
+    chmod -R a+rwX /pacta.portfolio.report
 
 # set the build_version environment variable
 ARG image_tag

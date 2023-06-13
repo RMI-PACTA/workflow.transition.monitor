@@ -40,7 +40,7 @@ if [ -z "${repos}" ]; then
         pacta.portfolio.allocate \
         pacta.portfolio.audit \
         pacta.portfolio.utils \
-        pacta.interactive.report \
+        pacta.portfolio.report \
         pacta.executive.summary \
         workflow.transition.monitor \
         templates.transition.monitor \

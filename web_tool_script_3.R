@@ -1,6 +1,6 @@
 suppressPackageStartupMessages({
   library(pacta.portfolio.utils)
-  library(pacta.interactive.report)
+  library(pacta.portfolio.report)
   library(pacta.executive.summary)
   library(cli)
   library(dplyr)
@@ -178,21 +178,21 @@ survey_dir <- file.path(user_results_path, project_code, "survey")
 real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 dataframe_translations <- readr::read_csv(
-  file.path(template_path, "data/translation/dataframe_labels.csv"),
+  system.file("extdata/translation/dataframe_labels.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
 header_dictionary <- readr::read_csv(
-  file.path(template_path, "data/translation/dataframe_headers.csv"),
+  system.file("extdata/translation/dataframe_headers.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
 js_translations <- jsonlite::fromJSON(
-  txt = file.path(template_path, "data/translation/js_labels.json")
+  txt = system.file("extdata/translation/js_labels.json", package = "pacta.portfolio.report")
 )
 
 sector_order <- readr::read_csv(
-  file.path(template_path, "data", "sector_order", "sector_order.csv"),
+  system.file("extdata/sector_order/sector_order.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
@@ -213,7 +213,7 @@ configs <-
   )
 
 template_dir_name <- paste(tolower(project_report_name), tolower(language_select), "template", sep = "_")
-template_dir <- file.path("../templates.transition.monitor", template_dir_name)
+template_dir <- file.path(template_path, template_dir_name)
 
 create_interactive_report(
   template_dir = template_dir,

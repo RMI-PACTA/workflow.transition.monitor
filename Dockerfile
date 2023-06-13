@@ -93,7 +93,7 @@ RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
 # copy in DESCRIPTION files from local PACTA package clones
 COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
-COPY pacta.interactive.report/DESCRIPTION /pacta.interactive.report/DESCRIPTION
+COPY pacta.portfolio.report/DESCRIPTION /pacta.portfolio.report/DESCRIPTION
 COPY pacta.portfolio.allocate/DESCRIPTION /pacta.portfolio.allocate/DESCRIPTION
 COPY pacta.portfolio.audit/DESCRIPTION /pacta.portfolio.audit/DESCRIPTION
 COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
@@ -107,7 +107,7 @@ RUN Rscript -e "\
   local_pkgs <- \
     c( \
       'pacta.executive.summary', \
-      'pacta.interactive.report', \
+      'pacta.portfolio.report', \
       'pacta.portfolio.allocate', \
       'pacta.portfolio.audit', \
       'pacta.portfolio.import', \
@@ -125,7 +125,7 @@ RUN Rscript -e "\
 
 # copy in local PACTA package clones
 COPY pacta.executive.summary /pacta.executive.summary
-COPY pacta.interactive.report /pacta.interactive.report
+COPY pacta.portfolio.report /pacta.portfolio.report
 COPY pacta.portfolio.allocate /pacta.portfolio.allocate
 COPY pacta.portfolio.audit /pacta.portfolio.audit
 COPY pacta.portfolio.import /pacta.portfolio.import
@@ -136,7 +136,7 @@ RUN Rscript -e "\
   local_pkgs <- \
     c( \
       'pacta.executive.summary', \
-      'pacta.interactive.report', \
+      'pacta.portfolio.report', \
       'pacta.portfolio.allocate', \
       'pacta.portfolio.audit', \
       'pacta.portfolio.import', \
@@ -149,7 +149,7 @@ RUN Rscript -e "\
 RUN chmod -R a+rwX /bound && \
     chmod -R a+rwX /pacta-data && \
     chmod -R a+rwX /templates.transition.monitor && \
-    chmod -R a+rwX /pacta.interactive.report
+    chmod -R a+rwX /pacta.portfolio.report
 
 # set the build_version environment variable
 ARG image_tag

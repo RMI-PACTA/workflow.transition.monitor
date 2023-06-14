@@ -13,7 +13,7 @@
 
 
 FROM --platform=linux/arm64 rocker/r-ver:4.2.3
-ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
+ARG CRAN_REPO="https://packagemanager.posit.co/cran/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
 ARG DEBIAN_FRONTEND noninteractive

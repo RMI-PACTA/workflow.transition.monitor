@@ -1,5 +1,5 @@
 ARG R_VERS
-FROM --platform=linux/amd64 rocker/r-ver:${R_VERS:-latest}
+FROM rocker/r-ver:${R_VERS:-latest}
 
 # set apt-get to noninteractive mode
 ARG DEBIAN_FRONTEND noninteractive

@@ -4,8 +4,8 @@
 #
 # sets CRAN repo to use Posit Package Manager to freeze R package versions to
 # those available on 2023-03-31
-# https://packagemanager.rstudio.com/client/#/repos/2/overview
-# https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
+# https://packagemanager.posit.co/client/#/repos/2/overview
+# https://packagemanager.posit.co/cran/__linux__/jammy/2023-03-31+MbiAEzHt
 #
 # sets CTAN repo to freeze TeX package dependencies to those available on
 # 2021-12-31
@@ -13,7 +13,7 @@
 
 
 FROM --platform=linux/amd64 rocker/r-ver:4.2.3
-ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
+ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
 ARG DEBIAN_FRONTEND noninteractive

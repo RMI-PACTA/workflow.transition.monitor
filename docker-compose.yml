@@ -15,7 +15,7 @@ services:
           RMI-PACTA/pacta.executive.summary@main \
           "
         R_VERS: 4.2.3
-        CRAN_REPO: https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt
+        CRAN_REPO: https://packagemanager.posit.co/cran/__linux__/jammy/2023-03-31+MbiAEzHt
         CTAN_REPO: https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
         WORKFLOW_DIR: /bound
         PACTA_DATA: pacta-data

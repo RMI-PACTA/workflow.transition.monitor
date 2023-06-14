@@ -12,7 +12,7 @@
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
 
-FROM --platform=linux/amd64 rocker/r-ver:4.2.3
+FROM --platform=linux/arm64 rocker/r-ver:4.2.3
 ARG CRAN_REPO="https://packagemanager.rstudio.com/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 

@@ -71,6 +71,12 @@ jobs:
           token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
           path: templates.transition.monitor
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Make fake (empty) pacta-data folder
         run: mkdir pacta-data
 

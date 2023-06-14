@@ -20,3 +20,5 @@ services:
         WORKFLOW_DIR: /bound
         PACTA_DATA: pacta-data
         PACTA_DATA_DIR: /pacta-data
+        TEMPLATES: templates.transition.monitor
+        TEMPLATES_DIR: /templates.transition.monitor

@@ -73,7 +73,9 @@ ARG PACTA_DATA_DIR
 COPY $PACTA_DATA $PACTA_DATA_DIR
 
 # copy in report templates
-COPY templates.transition.monitor /templates.transition.monitor
+ARG TEMPLATES
+ARG TEMPLATES_DIR
+COPY $TEMPLATES $TEMPLATES_DIR
 
 # copy in scripts from this repo
 ARG WORKFLOW_DIR
@@ -95,7 +97,7 @@ RUN Rscript -e "\
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX $WORKFLOW_DIR && \
     chmod -R a+rwX $PACTA_DATA_DIR && \
-    chmod -R a+rwX /templates.transition.monitor
+    chmod -R a+rwX $TEMPLATES_DIR
 
 # set the build_version environment variable
 ARG image_tag

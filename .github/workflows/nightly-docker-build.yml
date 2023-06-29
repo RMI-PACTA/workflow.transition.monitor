@@ -11,7 +11,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
       - name: Checkout workflow.transition.monitor

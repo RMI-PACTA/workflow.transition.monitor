@@ -5,6 +5,7 @@ services:
     platform: linux/amd64
     image: workflow.transition.monitor:latest
     build:
+      context: .
       args:
         PACTA_PKGS: "\
           RMI-PACTA/pacta.portfolio.utils@main \

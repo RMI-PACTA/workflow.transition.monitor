@@ -4,6 +4,7 @@ services:
   transition_monitor:
     platform: linux/amd64
     build:
+      context: .
       args:
         PACTA_PKGS: "\
           RMI-PACTA/pacta.portfolio.utils@main \

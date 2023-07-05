@@ -1,12 +1,12 @@
 on:
   workflow_call:
-    outputs:
-      build-Docker-image-GITHUB_RUN_ID:
-        description: "build-Docker-image GITHUB_RUN_ID"
-        value: $GITHUB_RUN_ID
-
-env:
-  IMAGE_NAME: workflow.transition.monitor
+    inputs:
+      image-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
 
 jobs:
   Docker-build:
@@ -31,7 +31,7 @@ jobs:
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag $IMAGE_NAME
+          docker build . --file Dockerfile --tag ${{ inputs.image-name }}
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
@@ -39,6 +39,11 @@ jobs:
       - name: Push image
         id: push-image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-          docker tag $IMAGE_NAME $IMAGE_ID:$GITHUB_RUN_ID
-          docker push $IMAGE_ID:$GITHUB_RUN_ID
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          echo image-name=${{ inputs.image-name }}
+          echo image-tag=${{ inputs.image-tag }}
+          echo IMAGE_ID=$IMAGE_ID
+          docker tag ${{ inputs.image-name }} $IMAGE_ID:${{ inputs.image-tag }}
+          docker push $IMAGE_ID:${{ inputs.image-tag }}

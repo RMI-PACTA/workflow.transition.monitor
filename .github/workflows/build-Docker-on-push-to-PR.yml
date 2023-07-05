@@ -11,6 +11,7 @@ jobs:
     secrets: inherit
 
   tag_and_push_image:
+    needs: build_docker_image
     runs-on: ubuntu-latest
     permissions:
       packages: write

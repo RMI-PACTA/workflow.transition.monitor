@@ -9,16 +9,21 @@ on:
         type: string
     outputs:
       full-image-name:
-        description: "Full image name"
-        value: ${{jobs.my_job.outputs.full-image-name}}
+        description: "Full image name including host/registry, name, and tag"
+        value: ${{ jobs.docker-build.outputs.full-image-name }}
 jobs:
-  my_job:
+  docker-build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    timeout-minutes: 25
     outputs:
-      full-image-name: ${{steps.my_step.outputs.full-image-name}}
+      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
+
     steps:
-      - name: "Example output creation"
-        id: "my_step"
+      - name: "Push image"
+        id: "push-image"
         run: |
           full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
           echo "outputting full-image-name: $full_image_name"

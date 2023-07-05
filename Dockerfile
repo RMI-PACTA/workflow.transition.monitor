@@ -11,7 +11,7 @@
 # 2021-12-31
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
-ARG PLATFORM="linux/x86_64"
+ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.2.3"
 FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 

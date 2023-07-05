@@ -31,7 +31,7 @@ if [ -z "${tag}" ]; then
 fi
 
 if [ -z "${platform}" ]; then
-    platform="linux/x86_64"
+    platform="linux/amd64"
 fi
 
 if [ -z "${repos}" ]; then

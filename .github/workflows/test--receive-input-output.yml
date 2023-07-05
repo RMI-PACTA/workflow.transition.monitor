@@ -22,11 +22,30 @@ jobs:
       full-image-name: ${{ steps.build-and-push-image.outputs.full-image-name }}
 
     steps:
-      - name: "Build and push image"
-        id: "build-and-push-image"
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v3
+        with:
+          path: workflow.transition.monitor
+
+      - name: Make fake (empty) pacta-data folder
+        run: mkdir pacta-data
+
+      - name: Make fake (empty) templates.transition.monitor folder
+        run: mkdir templates.transition.monitor
+
+      - name: Build Docker image
         run: |
-          image_name_and_tag="${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          full_image_name="ghcr.io/${{ github.repository_owner }}/$image_name_and_tag"
-          echo "image_name_and_tag=$image_name_and_tag"
-          echo "full-image-name=$full_image_name"
+          cp workflow.transition.monitor/Dockerfile Dockerfile
+          docker build . --file Dockerfile --tag ${{ inputs.image-name }}
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Push image
+        id: push-image
+        run: |
+          full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
+          full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
+          docker tag ${{ inputs.image-name }} $full_image_name
+          docker push $full_image_name
           echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT

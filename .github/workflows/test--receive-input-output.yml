@@ -1,6 +1,12 @@
 on:
   workflow_call:
-    # Map the workflow outputs to job outputs
+    inputs:
+      image-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
     outputs:
       my_var:
         description: "The first output string"
@@ -8,7 +14,6 @@ on:
 jobs:
   my_job:
     runs-on: ubuntu-latest
-    # Map the job outputs to step outputs
     outputs:
       my_var: ${{steps.my_step.outputs.my_var}}
     steps:
@@ -16,10 +21,7 @@ jobs:
         id: "my_step"
         run: |
           my_var="Hello World"
-          echo "Output [$my_var]"
+          echo "received input image-name: ${{ inputs.image-name }}"
+          echo "received input image-tag: ${{ inputs.image-tag }}"
+          echo "Outputting: $my_var"
           echo "my_var=$my_var" >> $GITHUB_OUTPUT
-  my_second_job:
-    needs: my_job
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo my_var [${{needs.my_job.outputs.my_var}}]

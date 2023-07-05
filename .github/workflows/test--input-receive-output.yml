@@ -5,9 +5,12 @@ jobs:
   job1:
     name: "Call other workflow"
     uses: ./.github/workflows/test--receive-input-output.yml
+    with:
+      image-name: workflow.transition.monitor
+      image-tag: pr${{ github.event.pull_request.number }}
   job2:
     needs: job1
     runs-on: ubuntu-latest
     steps:
       - name: "Print my_var"
-        run: echo my_var [${{needs.job1.outputs.my_var}}]
+        run: echo "my_var value is ${{needs.job1.outputs.my_var}}"

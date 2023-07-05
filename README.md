@@ -115,3 +115,30 @@ structure), and you set `resultsFolder` to the path to the directory that
 contains the survey (and other) results that are relevant to the specific user 
 on the server. Those directories will then be mounted inside of the docker
 container in the appropriate locations.
+
+# Using Docker images pushed to GHCR automatically by GH Actions
+
+``` {.bash}
+tag_name=PR199
+repos_directory=~/github/rmi-pacta/
+data_folder=~/github/rmi-pacta/pacta-data
+
+
+# if you have local clones of workflow.transition.monitor and 
+# templates.transition.monitor in the specified repos_directory above, you 
+# probably do not need to edit any options below unless you want to further
+# customize things
+image_name=ghcr.io/rmi-pacta/workflow.transition.monitor:$tag_name
+portfolio_name="1234"
+user_folder=${repos_directory}workflow.transition.monitor/working_dir
+templates_folder=${repos_directory}templates.transition.monitor
+
+
+docker run -ti --rm --network none \
+  --pull=always \
+  --mount type=bind,source=${user_folder},target=/bound/working_dir \
+  --mount type=bind,readonly,source=${data_folder},target=/pacta-data \
+  --mount type=bind,readonly,source=${templates_folder},target=/templates.transition.monitor \
+  $image_name \
+  /bound/bin/run-r-scripts "$portfolio_name"
+```

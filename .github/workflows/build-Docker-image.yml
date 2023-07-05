@@ -1,0 +1,44 @@
+on:
+  workflow_call:
+    outputs:
+      build-Docker-image-GITHUB_RUN_ID:
+        description: "build-Docker-image GITHUB_RUN_ID"
+        value: $GITHUB_RUN_ID
+
+env:
+  IMAGE_NAME: workflow.transition.monitor
+
+jobs:
+  Docker-build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v3
+        with:
+          path: workflow.transition.monitor
+
+      - name: Make fake (empty) pacta-data folder
+        run: mkdir pacta-data
+
+      - name: Make fake (empty) templates.transition.monitor folder
+        run: mkdir templates.transition.monitor
+
+      - name: Build Docker image
+        run: |
+          cp workflow.transition.monitor/Dockerfile Dockerfile
+          docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Push image
+        id: push-image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          docker tag $IMAGE_NAME $IMAGE_ID:$GITHUB_RUN_ID
+          docker push $IMAGE_ID:$GITHUB_RUN_ID

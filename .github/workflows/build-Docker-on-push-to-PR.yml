@@ -1,0 +1,57 @@
+on:
+  pull_request:
+
+env:
+  IMAGE_NAME: workflow.transition.monitor
+
+jobs:
+  build_docker_image:
+    name: build Docker image
+    uses: ./.github/workflows/build-Docker-image.yml
+    secrets: inherit
+
+  tag_and_push_image:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    timeout-minutes: 25
+
+    steps:
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: Push image
+        id: push-image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          TAG=$(echo "PR${{ github.event.pull_request.number }}")
+          echo IMAGE_ID=$IMAGE_ID
+          echo TAG=TAG
+          docker tag $IMAGE_NAME: $IMAGE_ID:TAG
+          docker push $IMAGE_ID:TAG
+          echo "BUILD_NAME_TAG=$IMAGE_ID:TAG" >> $GITHUB_OUTPUT
+
+      - name: Find Comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Docker image from this PR created
+
+      - name: Create or update comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Docker image from this PR created
+            ```
+            docker pull ${{ steps.push-image.outputs.BUILD_NAME_TAG }}
+            ```
+          edit-mode: replace

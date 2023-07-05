@@ -11,6 +11,10 @@
 # 2021-12-31
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
+LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
+LABEL org.opencontainers.image.description="workflow.transition.monitor container image"
+LABEL org.opencontainers.image.licenses=MIT
+
 ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.2.3"
 FROM --platform=$PLATFORM rocker/r-ver:$R_VERS

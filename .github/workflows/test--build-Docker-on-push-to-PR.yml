@@ -4,7 +4,7 @@ on:
 jobs:
   build_docker_image:
     name: build Docker image
-    uses: ./.github/workflows/build-Docker-image.yml
+    uses: ./.github/workflows/test--build-Docker-image.yml
     secrets: inherit
     with:
       image-name: workflow.transition.monitor

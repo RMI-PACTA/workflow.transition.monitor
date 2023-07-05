@@ -16,4 +16,4 @@ jobs:
     steps:
       - name: "Report"
         run: |
-          echo "received output full-image-name: ${{needs.build_docker_image.outputs.full-image-name}}"
+          echo "received output full-image-name: ${{ needs.build_docker_image.outputs.full-image-name }}"

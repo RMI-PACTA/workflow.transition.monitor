@@ -14,29 +14,6 @@ jobs:
     needs: build_docker_image
     runs-on: ubuntu-latest
     steps:
-      - name: "Report inputs""
-        run: echo "received output full-image-name: ${{ needs.build_docker_image.outputs.full-image-name }}"
-
-      - name: Find Comment
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Docker image from this PR created
-
-      - name: Create or update comment
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            Docker image from this PR created
-            ```
-            docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
-            ```
-          edit-mode: replace
+      - name: "Report"
+        run: |
+          echo "received output full-image-name: ${{needs.build_docker_image.outputs.full-image-name}}"

@@ -4,7 +4,7 @@ on:
 jobs:
   job1:
     name: "Call other workflow"
-    uses: ./.github/workflows/test--input-receive-output.yml
+    uses: ./.github/workflows/test--receive-input-output.yml
   job2:
     needs: job1
     steps:

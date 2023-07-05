@@ -35,4 +35,4 @@ jobs:
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           FULL_IMAGE_NAME=$IMAGE_ID:${{ inputs.image-tag }}
-          echo "::set-output name=full-image-name::$FULL_IMAGE_NAME"
+          echo "full-image-name=$FULL_IMAGE_NAME" >> "$GITHUB_OUTPUT"

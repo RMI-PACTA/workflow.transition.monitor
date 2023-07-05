@@ -13,8 +13,11 @@ jobs:
   add_comment:
     needs: build_docker_image
     runs-on: ubuntu-latest
-
     steps:
+      - name: Report
+        run: |
+          echo "full-image-name: ${{ needs.build_docker_image.outputs.full-image-name }}"
+
       - name: Find Comment
         if: ${{ github.event_name == 'pull_request' }}
         uses: peter-evans/find-comment@v2

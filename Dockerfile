@@ -11,12 +11,15 @@
 # 2021-12-31
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
+ARG PLATFORM="linux/x86_64"
+ARG R_VERS="4.2.3"
+FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 
-FROM --platform=linux/amd64 rocker/r-ver:4.2.3
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-03-31+MbiAEzHt"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
-ARG DEBIAN_FRONTEND noninteractive
+# set apt-get to noninteractive mode
+ARG DEBIAN_FRONTEND="noninteractive"
 ARG DEBCONF_NOWARNINGS="yes"
 
 # install system dependencies
@@ -68,7 +71,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
-ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
+ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"
 ARG TEX_DEPS="\
     geometry \
     hyperref \
@@ -82,74 +85,58 @@ ARG TEX_DEPS="\
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # copy in PACTA data
-COPY pacta-data /pacta-data
+ARG PACTA_DATA="pacta-data"
+ARG PACTA_DATA_DIR="/pacta-data"
+COPY $PACTA_DATA $PACTA_DATA_DIR
 
 # copy in report templates
-COPY templates.transition.monitor /templates.transition.monitor
+ARG TEMPLATES="templates.transition.monitor"
+ARG TEMPLATES_DIR="/templates.transition.monitor"
+COPY $TEMPLATES $TEMPLATES_DIR
 
 # install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
-# copy in DESCRIPTION files from local PACTA package clones
-COPY pacta.executive.summary/DESCRIPTION /pacta.executive.summary/DESCRIPTION
-COPY pacta.portfolio.report/DESCRIPTION /pacta.portfolio.report/DESCRIPTION
-COPY pacta.portfolio.allocate/DESCRIPTION /pacta.portfolio.allocate/DESCRIPTION
-COPY pacta.portfolio.audit/DESCRIPTION /pacta.portfolio.audit/DESCRIPTION
-COPY pacta.portfolio.import/DESCRIPTION /pacta.portfolio.import/DESCRIPTION
-COPY pacta.portfolio.utils/DESCRIPTION /pacta.portfolio.utils/DESCRIPTION
-
 # copy in scripts from this repo
-COPY workflow.transition.monitor /bound
+ARG WORKFLOW_DIR="/bound"
+COPY workflow.transition.monitor $WORKFLOW_DIR
+
+# PACTA R package tags
+ARG summary_tag="/tree/main"
+ARG allocate_tag="/tree/main"
+ARG audit_tag="/tree/main"
+ARG import_tag="/tree/main"
+ARG report_tag="/tree/main"
+ARG utils_tag="/tree/main"
+
+ARG summary_url="https://github.com/rmi-pacta/pacta.executive.summary"
+ARG allocate_url="https://github.com/rmi-pacta/pacta.portfolio.allocate"
+ARG audit_url="https://github.com/rmi-pacta/pacta.portfolio.audit"
+ARG import_url="https://github.com/rmi-pacta/pacta.portfolio.import"
+ARG report_url="https://github.com/rmi-pacta/pacta.portfolio.report"
+ARG utils_url="https://github.com/rmi-pacta/pacta.portfolio.utils"
 
 # install R package dependencies
 RUN Rscript -e "\
-  local_pkgs <- \
+  gh_pkgs <- \
     c( \
-      'pacta.executive.summary', \
-      'pacta.portfolio.report', \
-      'pacta.portfolio.allocate', \
-      'pacta.portfolio.audit', \
-      'pacta.portfolio.import', \
-      'pacta.portfolio.utils' \
+      paste0('$summary_url', '$summary_tag'), \
+      paste0('$allocate_url', '$allocate_tag'), \
+      paste0('$allocate_url', '$audit_tag'), \
+      paste0('$import_url', '$import_tag'), \
+      paste0('$report_url', '$report_tag'), \
+      paste0('$utils_url', '$utils_tag') \
     ); \
-  workflow_pkgs <- renv::dependencies('/bound')[['Package']]; \
-  workflow_pkgs <- setdiff(workflow_pkgs, local_pkgs); \
-  pacta_deps <- lapply(local_pkgs, pak::local_deps); \
-  pacta_deps <- do.call(rbind, pacta_deps); \
-  pacta_deps <- pacta_deps[!pacta_deps[['type']] %in% c('local', 'installed'), ]; \
-  pacta_deps <- pacta_deps[!pacta_deps[['package']] %in% local_pkgs, ]; \
-  pacta_deps <- sort(unique(pacta_deps[, 'ref'])); \
-  pak::pkg_install(c(workflow_pkgs, pacta_deps)); \
-  "
-
-# copy in local PACTA package clones
-COPY pacta.executive.summary /pacta.executive.summary
-COPY pacta.portfolio.report /pacta.portfolio.report
-COPY pacta.portfolio.allocate /pacta.portfolio.allocate
-COPY pacta.portfolio.audit /pacta.portfolio.audit
-COPY pacta.portfolio.import /pacta.portfolio.import
-COPY pacta.portfolio.utils /pacta.portfolio.utils
-
-# install local R package clones
-RUN Rscript -e "\
-  local_pkgs <- \
-    c( \
-      'pacta.executive.summary', \
-      'pacta.portfolio.report', \
-      'pacta.portfolio.allocate', \
-      'pacta.portfolio.audit', \
-      'pacta.portfolio.import', \
-      'pacta.portfolio.utils' \
-    ); \
-  pak::pkg_install(paste0('local::./', local_pkgs)); \
+  workflow_pkgs <- renv::dependencies('$WORKFLOW_DIR')[['Package']]; \
+  workflow_pkgs <- grep('^pacta[.]', workflow_pkgs, value = TRUE, invert = TRUE); \
+  pak::pak(c(gh_pkgs, workflow_pkgs)); \
   "
 
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX /bound && \
     chmod -R a+rwX /pacta-data && \
-    chmod -R a+rwX /templates.transition.monitor && \
-    chmod -R a+rwX /pacta.portfolio.report
+    chmod -R a+rwX /templates.transition.monitor
 
 # set the build_version environment variable
 ARG image_tag

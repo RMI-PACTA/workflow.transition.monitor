@@ -22,57 +22,11 @@ jobs:
         with:
           path: workflow.transition.monitor
 
-      - name: Checkout pacta.portfolio.import
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.portfolio.import
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: pacta.portfolio.import
-
-      - name: Checkout pacta.portfolio.allocate
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.portfolio.allocate
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          path: pacta.portfolio.allocate
-
-      - name: Checkout pacta.portfolio.audit
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.portfolio.audit
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: pacta.portfolio.audit
-
-      - name: Checkout pacta.portfolio.utils
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.portfolio.utils
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: pacta.portfolio.utils
-
-      - name: Checkout pacta.portfolio.report
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.portfolio.report
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: pacta.portfolio.report
-
-      - name: Checkout pacta.executive.summary
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/pacta.executive.summary
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: pacta.executive.summary
-
-      - name: Checkout templates.transition.monitor
-        uses: actions/checkout@v3
-        with:
-          repository: RMI-PACTA/templates.transition.monitor
-          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
-          path: templates.transition.monitor
-
       - name: Make fake (empty) pacta-data folder
         run: mkdir pacta-data
+
+      - name: Make fake (empty) templates.transition.monitor folder
+        run: mkdir templates.transition.monitor
 
       - name: Build Docker image
         run: |

@@ -3,7 +3,7 @@ on:
 
 jobs:
   job1:
-    name: "Call other workflow"
+    name: "Call build and push action"
     uses: ./.github/workflows/test--receive-input-output.yml
     with:
       image-name: workflow.transition.monitor
@@ -12,6 +12,6 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - name: "Print my_var"
+      - name: "Report"
         run: |
           echo "received output full-image-name: ${{needs.job1.outputs.full-image-name}}"

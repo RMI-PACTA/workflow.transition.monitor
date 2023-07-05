@@ -7,6 +7,7 @@ on:
         value: ${{jobs.my_job.outputs.my_var}}
 jobs:
   my_job:
+    runs-on: ubuntu-latest
     # Map the job outputs to step outputs
     outputs:
       my_var: ${{steps.my_step.outputs.my_var}}
@@ -19,5 +20,6 @@ jobs:
           echo "my_var=$my_var" >> $GITHUB_OUTPUT
   my_second_job:
     needs: my_job
+    runs-on: ubuntu-latest
     steps:
       - run: echo my_var [${{needs.my_job.outputs.my_var}}]

@@ -7,6 +7,7 @@ jobs:
     uses: ./.github/workflows/test--receive-input-output.yml
   job2:
     needs: job1
+    runs-on: ubuntu-latest
     steps:
       - name: "Print my_var"
         run: echo my_var [${{needs.job1.outputs.my_var}}]

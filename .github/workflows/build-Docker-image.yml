@@ -17,6 +17,11 @@ jobs:
     timeout-minutes: 25
 
     steps:
+      - name: Report inputs
+        run: |
+            echo image-name=${{ inputs.image-name }}
+            echo image-tag=${{ inputs.image-tag }}
+
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v3
         with:

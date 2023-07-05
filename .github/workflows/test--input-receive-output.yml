@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Report
-        run: |
-          echo "received output full-image-name: ${{needs.build_docker_image.outputs.full-image-name}}"
+        run: echo "hello"
 
       - name: Find Comment
         if: ${{ github.event_name == 'pull_request' }}

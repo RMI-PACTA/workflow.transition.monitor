@@ -58,4 +58,4 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           docker tag ${{ inputs.image-name }} $IMAGE_ID:${{ inputs.image-tag }}
           docker push $IMAGE_ID:${{ inputs.image-tag }}
-          echo "::set-output name=full-image-name::$IMAGE_ID:${{ inputs.image-tag }}"
+          echo "::set-output name=full-image-name::TEST-FULL-IMAGE-NAME-OUTPUT"

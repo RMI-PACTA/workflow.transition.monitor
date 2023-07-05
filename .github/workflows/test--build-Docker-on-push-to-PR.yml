@@ -1,0 +1,23 @@
+on:
+  pull_request:
+
+jobs:
+  build_docker_image:
+    name: build Docker image
+    uses: ./.github/workflows/build-Docker-image.yml
+    secrets: inherit
+    with:
+      image-name: workflow.transition.monitor
+      image-tag: pr${{ github.event.pull_request.number }}
+
+  add_comment:
+    needs: build_docker_image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    timeout-minutes: 25
+
+    steps:
+      - name: Report inputs
+        run: echo full-image-name=${{ inputs.full-image-name }}

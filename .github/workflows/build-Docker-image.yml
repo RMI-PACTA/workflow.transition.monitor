@@ -1,16 +1,4 @@
 on:
-  workflow_call:
-    inputs:
-      image-name:
-        required: true
-        type: string
-      image-tag:
-        required: true
-        type: string
-    outputs:
-      full-image-name:
-        description: "Full image name including host/registry, name, and tag"
-        value: ${{ jobs.docker-build.outputs.full-image-name }}
 
 jobs:
   docker-build:

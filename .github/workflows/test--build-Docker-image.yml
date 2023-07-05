@@ -1,0 +1,38 @@
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
+    outputs:
+      full-image-name:
+        description: "Full image name including host/registry, name, and tag"
+        value: ${{ jobs.docker-build.outputs.full-image-name }}
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    timeout-minutes: 25
+    outputs:
+      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
+
+    steps:
+      - name: Report inputs
+        run: |
+            echo image-name=${{ inputs.image-name }}
+            echo image-tag=${{ inputs.image-tag }}
+
+      - name: Push image
+        id: push-image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          FULL_IMAGE_NAME=$IMAGE_ID:${{ inputs.image-tag }}
+          echo "::set-output name=full-image-name::$FULL_IMAGE_NAME"

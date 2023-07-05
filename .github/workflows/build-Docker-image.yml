@@ -7,14 +7,20 @@ on:
       image-tag:
         required: true
         type: string
+    outputs:
+      full-image-name:
+        description: "Full image name including host/registry, name, and tag"
+        value: ${{ jobs.docker-build.outputs.full-image-name }}
 
 jobs:
-  Docker-build:
+  docker-build:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
     timeout-minutes: 25
+    outputs:
+      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 
     steps:
       - name: Report inputs
@@ -52,3 +58,4 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           docker tag ${{ inputs.image-name }} $IMAGE_ID:${{ inputs.image-tag }}
           docker push $IMAGE_ID:${{ inputs.image-tag }}
+          echo "::set-output name=full-image-name::$IMAGE_ID:${{ inputs.image-tag }}"

@@ -19,6 +19,10 @@ jobs:
     timeout-minutes: 25
 
     steps:
+      - name: Report inputs
+        run: echo full-image-name=${{ inputs.full-image-name }}
+        run: echo ${{ needs.build_docker_image.outputs.firstword }}
+
       - name: Find Comment
         if: ${{ github.event_name == 'pull_request' }}
         uses: peter-evans/find-comment@v2
@@ -39,6 +43,6 @@ jobs:
           body: |
             Docker image from this PR created
             ```
-            docker pull ghcr.io/rmi-pacta/$IMAGE_NAME:$IMAGE_TAG
+            docker pull ${{ inputs.full-image-name }}
             ```
           edit-mode: replace

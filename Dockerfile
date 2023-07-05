@@ -123,7 +123,7 @@ RUN Rscript -e "\
     c( \
       paste0('$summary_url', '$summary_tag'), \
       paste0('$allocate_url', '$allocate_tag'), \
-      paste0('$allocate_url', '$audit_tag'), \
+      paste0('$audit_url', '$audit_tag'), \
       paste0('$import_url', '$import_tag'), \
       paste0('$report_url', '$report_tag'), \
       paste0('$utils_url', '$utils_tag') \

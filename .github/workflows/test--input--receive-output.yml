@@ -1,0 +1,12 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    name: "Call other workflow"
+    uses: ./.github/workflows/test--input-receive-output.yml
+  job2:
+    needs: job1
+    steps:
+      - name: "Print my_var"
+        run: echo my_var [${{needs.job1.outputs.my_var}}]

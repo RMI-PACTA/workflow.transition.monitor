@@ -36,7 +36,7 @@ jobs:
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          #docker build . --file Dockerfile --tag ${{ inputs.image-name }}
+          docker build . --file Dockerfile --tag ${{ inputs.image-name }}
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
@@ -46,6 +46,6 @@ jobs:
         run: |
           full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
           full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
-          #docker tag ${{ inputs.image-name }} $full_image_name
-          #docker push $full_image_name
+          docker tag ${{ inputs.image-name }} $full_image_name
+          docker push $full_image_name
           echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT

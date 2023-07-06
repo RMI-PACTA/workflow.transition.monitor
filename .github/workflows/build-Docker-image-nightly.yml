@@ -5,7 +5,7 @@ on:
 jobs:
   build_docker_image:
     name: "Call build and push action"
-    uses: ./.github/workflows/test--receive-input-output.yml
+    uses: ./.github/workflows/build-and-push-Docker-image.yml
     secrets: inherit
     with:
       image-name: workflow.transition.monitor

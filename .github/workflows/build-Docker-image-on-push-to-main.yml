@@ -1,0 +1,12 @@
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_docker_image:
+    name: "Call build and push action"
+    uses: ./.github/workflows/test--receive-input-output.yml
+    secrets: inherit
+    with:
+      image-name: workflow.transition.monitor
+      image-tag: nightly

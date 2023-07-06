@@ -1,0 +1,39 @@
+on:
+  pull_request:
+
+jobs:
+  build_docker_image:
+    name: "Call build and push action"
+    uses: ./.github/workflows/test--receive-input-output.yml
+    secrets: inherit
+    with:
+      image-name: workflow.transition.monitor
+      image-tag: pr${{ github.event.pull_request.number }}
+
+  add_comment:
+    needs: build_docker_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Docker image from this PR created
+
+      - name: Create or update comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.PAT_ADD_ISSUES_TO_PROJECT }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Docker image from this PR created
+            ```
+            docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
+            ```
+          edit-mode: replace

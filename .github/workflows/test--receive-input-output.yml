@@ -48,4 +48,4 @@ jobs:
           full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
           #docker tag ${{ inputs.image-name }} $full_image_name
           #docker push $full_image_name
-          echo "full-image-name=TEST" >> $GITHUB_OUTPUT
+          echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT

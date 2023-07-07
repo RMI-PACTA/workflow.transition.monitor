@@ -32,7 +32,7 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Docker image from this PR created
+            Docker image from this PR (${{ github.sha }}) created
             ```
             docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
             ```

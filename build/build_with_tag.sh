@@ -31,17 +31,11 @@ if [ -z "${tag}" ]; then
 fi
 
 if [ -z "${platform}" ]; then
-    platform="linux/x86_64"
+    platform="linux/amd64"
 fi
 
 if [ -z "${repos}" ]; then
     repos="\
-        pacta.portfolio.import \
-        pacta.portfolio.allocate \
-        pacta.portfolio.audit \
-        pacta.portfolio.utils \
-        pacta.portfolio.report \
-        pacta.executive.summary \
         workflow.transition.monitor \
         templates.transition.monitor \
         "
@@ -133,6 +127,7 @@ green "HEAD hash successfully captured for each repo\n"
 # Copy Dockerfile alongside pacta siblings and build the image
 cp "${dir_start}/../Dockerfile" "$dir_temp"
 
+
 # Maybe copy in custom data path
 # FIXME: this should be handled better
 if [ -n "${datapath}" ]; then
@@ -142,13 +137,14 @@ if [ -n "${datapath}" ]; then
     cp -r "${datapath}" "${dir_temp}/pacta-data"
 fi
 
+
 # build the docker image
 green "Building rmi_pacta Docker image...\n"
 
 docker build \
     --build-arg image_tag=$tag \
     --build-arg head_hashes=$head_hashes \
-    --platform $platform \
+    --build-arg PLATFORM=$platform \
     --tag rmi_pacta:$tag \
     --tag rmi_pacta:latest \
     .

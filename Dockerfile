@@ -106,7 +106,7 @@ ARG TEMPLATES_DIR="/templates.transition.monitor"
 COPY $TEMPLATES_SRC $TEMPLATES_DIR
 
 # install packages for dependency resolution and installation
-RUN Rscript -e "install.packages('pak')"
+RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
 # copy in scripts from this repo

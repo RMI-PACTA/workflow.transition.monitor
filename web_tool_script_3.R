@@ -221,7 +221,6 @@ create_interactive_report(
   survey_dir = survey_dir,
   real_estate_dir = real_estate_dir,
   language_select = language_select,
-  project_name = project_name,
   investor_name = investor_name,
   portfolio_name = portfolio_name,
   peer_group = peer_group,

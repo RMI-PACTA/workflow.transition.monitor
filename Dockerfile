@@ -18,6 +18,13 @@ FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
 LABEL org.opencontainers.image.description="Docker image to drive the Transition Monitor backend"
 LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.title=""
+LABEL org.opencontainers.image.revision=""
+LABEL org.opencontainers.image.version=""
+LABEL org.opencontainers.image.vendor=""
+LABEL org.opencontainers.image.base.name=""
+LABEL org.opencontainers.image.ref.name=""
+LABEL org.opencontainers.image.authors=""
 
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-08-31"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"

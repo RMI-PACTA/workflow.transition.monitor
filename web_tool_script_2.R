@@ -28,7 +28,7 @@ set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_n
 set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
-analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)
 
 # delete all results files within the current portfolio folder
 unlink(file.path(results_path, portfolio_name_ref_all, "*"), force = TRUE, recursive = TRUE)
@@ -118,7 +118,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   if (data_check(port_all_eq)) {
     port_all_eq_tdm <- port_all_eq %>%
       filter(scenario_geography == "Global", equity_market == "GlobalMarket")
-  
+
     tdm_vars <- list(
       t0 = start_year,
       delta_t1 = 5,
@@ -248,7 +248,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   if (data_check(port_all_cb)) {
     port_all_cb_tdm <- port_all_cb %>%
       filter(scenario_geography == "Global", equity_market == "GlobalMarket")
-    
+
     tdm_vars <- list(
       t0 = start_year,
       delta_t1 = 5,

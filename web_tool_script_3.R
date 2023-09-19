@@ -6,7 +6,6 @@ suppressPackageStartupMessages({
   library(dplyr)
   library(readr)
   library(jsonlite)
-  library(config)
   library(fs)
 })
 

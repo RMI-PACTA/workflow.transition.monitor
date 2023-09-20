@@ -212,6 +212,10 @@ configs <-
     pacta_data_public_manifest = pacta_data_public_manifest
   )
 
+# workaround a bug in {config} v0.3.2 that only adds "config" class to objects it creates
+class(configs$portfolio_config) <- c(class(configs$portfolio_config), "list")
+class(configs$project_config) <- c(class(configs$project_config), "list")
+
 template_dir_name <- paste(tolower(project_report_name), tolower(language_select), "template", sep = "_")
 template_dir <- file.path(template_path, template_dir_name)
 

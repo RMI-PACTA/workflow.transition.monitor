@@ -50,14 +50,14 @@ if (file.exists(total_portfolio_path)) {
 
 # Equity -----------------------------------------------------------------------
 
-port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity", grouping_variables)
+port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity")
 
 if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   map_eq <- NA
   company_all_eq <- NA
   port_all_eq <- NA
 
-  port_eq <- calculate_weights(port_raw_all_eq, "Equity", grouping_variables)
+  port_eq <- calculate_weights(port_raw_all_eq, "Equity")
 
   port_eq <- merge_abcd_from_db(
     portfolio = port_eq,
@@ -181,14 +181,14 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
 # Bonds ------------------------------------------------------------------------
 
-port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds", grouping_variables)
+port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds")
 
 if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   map_cb <- NA
   company_all_cb <- NA
   port_all_cb <- NA
 
-  port_cb <- calculate_weights(port_raw_all_cb, "Bonds", grouping_variables)
+  port_cb <- calculate_weights(port_raw_all_cb, "Bonds")
 
   port_cb <- merge_abcd_from_db(
     portfolio = port_cb,

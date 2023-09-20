@@ -68,7 +68,3 @@ default:
         - GlobalMarket
         - DevelopedMarket
         - EmergingMarket
-
-    grouping_variables:
-        - investor_name
-        - portfolio_name

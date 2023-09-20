@@ -28,7 +28,7 @@ set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_n
 set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 # need to define an alternative location for data files
-analysis_inputs_path <- set_analysis_inputs_path(data_location_ext, dataprep_timestamp)
+analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)
 
 # delete all results files within the current portfolio folder
 unlink(file.path(results_path, portfolio_name_ref_all, "*"), force = TRUE, recursive = TRUE)
@@ -50,14 +50,14 @@ if (file.exists(total_portfolio_path)) {
 
 # Equity -----------------------------------------------------------------------
 
-port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity", grouping_variables)
+port_raw_all_eq <- create_portfolio_subset(total_portfolio, "Equity")
 
 if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   map_eq <- NA
   company_all_eq <- NA
   port_all_eq <- NA
 
-  port_eq <- calculate_weights(port_raw_all_eq, "Equity", grouping_variables)
+  port_eq <- calculate_weights(port_raw_all_eq, "Equity")
 
   port_eq <- merge_abcd_from_db(
     portfolio = port_eq,
@@ -118,7 +118,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   if (data_check(port_all_eq)) {
     port_all_eq_tdm <- port_all_eq %>%
       filter(scenario_geography == "Global", equity_market == "GlobalMarket")
-  
+
     tdm_vars <- list(
       t0 = start_year,
       delta_t1 = 5,
@@ -181,14 +181,14 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
 
 # Bonds ------------------------------------------------------------------------
 
-port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds", grouping_variables)
+port_raw_all_cb <- create_portfolio_subset(total_portfolio, "Bonds")
 
 if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   map_cb <- NA
   company_all_cb <- NA
   port_all_cb <- NA
 
-  port_cb <- calculate_weights(port_raw_all_cb, "Bonds", grouping_variables)
+  port_cb <- calculate_weights(port_raw_all_cb, "Bonds")
 
   port_cb <- merge_abcd_from_db(
     portfolio = port_cb,
@@ -248,7 +248,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   if (data_check(port_all_cb)) {
     port_all_cb_tdm <- port_all_cb %>%
       filter(scenario_geography == "Global", equity_market == "GlobalMarket")
-    
+
     tdm_vars <- list(
       t0 = start_year,
       delta_t1 = 5,

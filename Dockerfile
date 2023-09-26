@@ -1,4 +1,4 @@
-# using rocker r-vers as a base with R 4.2.3
+# using rocker r-vers as a base with R 4.3.1
 # https://hub.docker.com/r/rocker/r-ver
 # https://rocker-project.org/images/versioned/r-ver.html
 #
@@ -12,12 +12,19 @@
 # https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/
 
 ARG PLATFORM="linux/amd64"
-ARG R_VERS="4.2.3"
+ARG R_VERS="4.3.1"
 FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
 LABEL org.opencontainers.image.description="Docker image to drive the Transition Monitor backend"
 LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.title=""
+LABEL org.opencontainers.image.revision=""
+LABEL org.opencontainers.image.version=""
+LABEL org.opencontainers.image.vendor=""
+LABEL org.opencontainers.image.base.name=""
+LABEL org.opencontainers.image.ref.name=""
+LABEL org.opencontainers.image.authors=""
 
 ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-08-31"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
@@ -99,7 +106,7 @@ ARG TEMPLATES_DIR="/templates.transition.monitor"
 COPY $TEMPLATES_SRC $TEMPLATES_DIR
 
 # install packages for dependency resolution and installation
-RUN Rscript -e "install.packages('pak')"
+RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"
 RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
 # copy in scripts from this repo

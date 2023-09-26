@@ -5,6 +5,4 @@ default:
         template_location: /templates.transition.monitor/
         user_data_location: /user_results/
     parameters:
-        project_name: working_dir
-        new_data: FALSE
 

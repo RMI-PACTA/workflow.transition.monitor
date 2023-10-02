@@ -46,7 +46,7 @@ isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds")
 
 fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
 
-entity_info <- get_entity_info()
+entity_info <- get_entity_info(dir = analysis_inputs_path)
 
 abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
 abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
@@ -69,7 +69,7 @@ abort_if_file_doesnt_exist(
     "working_dir", "20_Raw_Inputs", glue::glue("{portfolio_name_ref_all}.csv")
   )
 )
-portfolio_raw <- get_input_files(portfolio_name_ref_all)
+portfolio_raw <- get_input_files(portfolio_name_ref_all, project_location = project_location)
 
 portfolio <- process_raw_portfolio(
   portfolio_raw = portfolio_raw,

@@ -123,9 +123,9 @@ RUN Rscript -e "\
   "
 
 # set permissions for PACTA repos that need local content
-RUN chmod -R a+rwX /bound && \
-    chmod -R a+rwX /pacta-data && \
-    chmod -R a+rwX /templates.transition.monitor
+RUN chmod -R a+rwX $WORKFLOW_DIR && \
+    chmod -R a+rwX $PACTA_DATA_DIR && \
+    chmod -R a+rwX $TEMPLATES_DIR
 
 # set the build_version environment variable
 ARG image_tag

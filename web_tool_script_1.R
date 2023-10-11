@@ -36,28 +36,26 @@ create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, pro
 
 # load necessary input data ----------------------------------------------------
 
-file_location <- file.path(analysis_inputs_path)
+currencies <- readRDS(file.path(analysis_inputs_path, "currencies.rds"))
 
-currencies <- readRDS(file.path(file_location, "currencies.rds"))
+fund_data <- readRDS(file.path(analysis_inputs_path, "fund_data.rds"))
+total_fund_list <- readRDS(file.path(analysis_inputs_path, "total_fund_list.rds"))
+isin_to_fund_table <- readRDS(file.path(analysis_inputs_path, "isin_to_fund_table.rds"))
 
-fund_data <- readRDS(file.path(file_location, "fund_data.rds"))
-total_fund_list <- readRDS(file.path(file_location, "total_fund_list.rds"))
-isin_to_fund_table <- readRDS(file.path(file_location, "isin_to_fund_table.rds"))
+fin_data <- readRDS(file.path(analysis_inputs_path, "financial_data.rds"))
 
-fin_data <- readRDS(file.path(file_location, "financial_data.rds"))
+entity_info <- get_entity_info(dir = analysis_inputs_path)
 
-entity_info <- get_entity_info()
-
-abcd_flags_equity <- readRDS(file.path(file_location, "abcd_flags_equity.rds"))
-abcd_flags_bonds <- readRDS(file.path(file_location, "abcd_flags_bonds.rds"))
+abcd_flags_equity <- readRDS(file.path(analysis_inputs_path, "abcd_flags_equity.rds"))
+abcd_flags_bonds <- readRDS(file.path(analysis_inputs_path, "abcd_flags_bonds.rds"))
 
 if (inc_emission_factors) {
   entity_emission_intensities <- readRDS(
-    file.path(file_location, "iss_entity_emission_intensities.rds")
+    file.path(analysis_inputs_path, "iss_entity_emission_intensities.rds")
   )
 
   average_sector_emission_intensities <- readRDS(
-    file.path(file_location, "iss_average_sector_emission_intensities.rds")
+    file.path(analysis_inputs_path, "iss_average_sector_emission_intensities.rds")
   )
 }
 
@@ -69,7 +67,7 @@ abort_if_file_doesnt_exist(
     "working_dir", "20_Raw_Inputs", glue::glue("{portfolio_name_ref_all}.csv")
   )
 )
-portfolio_raw <- get_input_files(portfolio_name_ref_all)
+portfolio_raw <- get_input_files(portfolio_name_ref_all, project_location = project_location)
 
 portfolio <- process_raw_portfolio(
   portfolio_raw = portfolio_raw,

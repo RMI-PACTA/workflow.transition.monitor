@@ -4,6 +4,6 @@ default:
         investor_name: Test
         peer_group: bank
         language: EN
-        project_code: PA2022CH
+        project_code: GENERAL
         holdings_date:
-            - 2021Q4
+            - 2022Q4

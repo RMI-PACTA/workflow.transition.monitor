@@ -74,14 +74,9 @@ ARG TEX_DEPS="\
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # copy in PACTA data
-ARG PACTA_DATA_SRC="pacta-data"
 ARG PACTA_DATA_DIR="/pacta-data"
-COPY $PACTA_DATA_SRC $PACTA_DATA_DIR
-
-# copy in report templates
-ARG TEMPLATES_SRC="templates.transition.monitor"
 ARG TEMPLATES_DIR="/templates.transition.monitor"
-COPY $TEMPLATES_SRC $TEMPLATES_DIR
+RUN mkdir -p $PACTA_DATA_DIR $TEMPLATES_DIR
 
 # install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"

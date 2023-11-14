@@ -27,12 +27,6 @@ jobs:
         with:
           path: workflow.transition.monitor
 
-      - name: Make fake (empty) pacta-data folder
-        run: mkdir pacta-data
-
-      - name: Make fake (empty) templates.transition.monitor folder
-        run: mkdir templates.transition.monitor
-
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile

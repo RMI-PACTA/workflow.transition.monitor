@@ -12,7 +12,7 @@ on:
     outputs:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"
-        value: ${{ jobs.docker-build.outputs.full-image-name }}
+        value: ${{ jobs.docker.outputs.full-image-name }}
 
 jobs:
   docker:
@@ -22,9 +22,16 @@ jobs:
       contents: read
     timeout-minutes: 25
     outputs:
-      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
+      full-image-name: ${{ steps.image-name.outputs.full-image-name }}
 
     steps:
+
+      - name: Define image name
+        id: image-name
+        run: |
+          full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
+          full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
+          echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -36,16 +43,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Define image name
-        run: |
-          full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
-          full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
-          tags: "$full_image_name"
-
-      - name: Export image name
-        run: echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
+          tags: ${{ steps.image-name.outputs.full_image_name}}

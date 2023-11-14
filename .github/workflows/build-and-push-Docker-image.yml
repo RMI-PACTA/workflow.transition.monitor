@@ -1,3 +1,5 @@
+name: Build and push docker image
+
 on:
   workflow_call:
     inputs:
@@ -11,8 +13,9 @@ on:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"
         value: ${{ jobs.docker-build.outputs.full-image-name }}
+
 jobs:
-  docker-build:
+  docker:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -22,24 +25,27 @@ jobs:
       full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 
     steps:
-      - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          path: workflow.transition.monitor
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag ${{ inputs.image-name }}
-
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
-      - name: Push image
-        id: push-image
+      - name: Define image name
         run: |
           full_image_name="ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ inputs.image-tag }}"
           full_image_name=$(echo $full_image_name | tr '[A-Z]' '[a-z]')
-          docker tag ${{ inputs.image-name }} $full_image_name
-          docker push $full_image_name
-          echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: "$full_image_name"
+
+      - name: Export image name
+        run: echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT

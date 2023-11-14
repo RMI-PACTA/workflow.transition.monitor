@@ -35,11 +35,11 @@ ARG DEBCONF_NOWARNINGS="yes"
 
 # install system dependencies
 ARG SYS_DEPS="\
-    git \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    openssh-client \
-    wget \
+    git=1:2.34.* \
+    libcurl4-openssl-dev=7.81.* \
+    libssl-dev=3.0.* \
+    openssh-client=1:8.* \
+    wget=1.21.* \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $SYS_DEPS \
@@ -48,11 +48,11 @@ RUN apt-get update \
 
 # install TeX system and fonts
 ARG TEX_APT="\
-    texlive-xetex \
-    texlive-fonts-recommended \
-    texlive-fonts-extra \
-    lmodern \
-    xz-utils \
+    texlive-xetex=2021.2021.20220204-* \
+    texlive-fonts-recommended=2021.20220204-* \
+    texlive-fonts-extra=2021.20220204-* \
+    lmodern=2.004.* \
+    xz-utils=5.2.* \
     "
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $TEX_APT \

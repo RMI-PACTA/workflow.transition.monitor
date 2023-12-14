@@ -116,6 +116,10 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
     saveRDS(company_all_eq, file.path(pf_file_results_path, "Equity_results_company.rds"))
   }
 
+  if (data_check(port_all_eq)) {
+    saveRDS(port_all_eq, file.path(pf_file_results_path, "Equity_results_portfolio.rds"))
+  }
+
   if (has_map) {
     if (data_check(map_eq)) {
       saveRDS(map_eq, file.path(pf_file_results_path, "Equity_results_map.rds"))
@@ -198,6 +202,10 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
   if (data_check(company_all_cb)) {
     saveRDS(company_all_cb, file.path(pf_file_results_path, "Bonds_results_company.rds"))
+  }
+
+  if (data_check(port_all_cb)) {
+    saveRDS(port_all_cb, file.path(pf_file_results_path, "Bonds_results_portfolio.rds"))
   }
 
   if (has_map) {

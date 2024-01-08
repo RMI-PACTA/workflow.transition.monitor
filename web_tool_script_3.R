@@ -132,20 +132,6 @@ bonds_results_map <- readRDS_or_return_alt_data(
 )
 bonds_results_map <- add_inv_and_port_names_if_needed(bonds_results_map)
 
-equity_tdm <- readRDS_or_return_alt_data(
-  filepath = file.path(results_path, portfolio_name_ref_all, "Equity_tdm.rds"),
-  alt_return = NULL
-)
-
-equity_tdm <- add_inv_and_port_names_if_needed(equity_tdm)
-
-bonds_tdm <- readRDS_or_return_alt_data(
-  filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_tdm.rds"),
-  alt_return = NULL
-)
-
-bonds_tdm <- add_inv_and_port_names_if_needed(bonds_tdm)
-
 peers_equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")),
   alt_return = empty_portfolio_results()
@@ -257,8 +243,6 @@ create_interactive_report(
   currency_exchange_value = currency_exchange_value,
   header_dictionary = header_dictionary,
   sector_order = sector_order,
-  equity_tdm = equity_tdm,
-  bonds_tdm = bonds_tdm,
   configs = configs
 )
 

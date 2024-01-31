@@ -26,6 +26,7 @@ Authors@R:
              email = "PACTA4investors@rmi.org"))
 Description: This repo builds a Docker image for use on the Transition Monitor 
     website.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: 
     cli,

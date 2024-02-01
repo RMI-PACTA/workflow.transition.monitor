@@ -85,7 +85,6 @@ COPY $TEMPLATES_SRC $TEMPLATES_DIR
 
 # install packages for dependency resolution and installation
 RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"
-RUN Rscript -e "pak::pkg_install(c('renv', 'yaml'))"
 
 # copy in scripts from this repo
 ARG WORKFLOW_DIR="/bound"
@@ -117,7 +116,7 @@ RUN Rscript -e "\
       paste0('$report_url', '$report_tag'), \
       paste0('$utils_url', '$utils_tag') \
     ); \
-  workflow_pkgs <- renv::dependencies('$WORKFLOW_DIR')[['Package']]; \
+  workflow_pkgs <- pak::local_deps(root = '$WORKFLOW_DIR')[['package']]; \
   workflow_pkgs <- grep('^pacta[.]', workflow_pkgs, value = TRUE, invert = TRUE); \
   pak::pak(c(gh_pkgs, workflow_pkgs)); \
   "

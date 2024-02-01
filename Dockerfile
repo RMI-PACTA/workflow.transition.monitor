@@ -116,8 +116,8 @@ RUN Rscript -e "\
       paste0('$report_url', '$report_tag'), \
       paste0('$utils_url', '$utils_tag') \
     ); \
-  workflow_pkgs <- pak::local_deps(root = '$WORKFLOW_DIR')[['package']]; \
-  workflow_pkgs <- grep('^pacta[.]|^workflow.transition.monitor$', workflow_pkgs, value = TRUE, invert = TRUE); \
+  workflow_pkgs <- pak::local_deps(root = '$WORKFLOW_DIR')[['ref']]; \
+  workflow_pkgs <- grep('^RMI-PACTA[/]|^local::.$', workflow_pkgs, value = TRUE, invert = TRUE); \
   pak::pak(c(gh_pkgs, workflow_pkgs)); \
   "
 

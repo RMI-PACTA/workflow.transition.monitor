@@ -10,6 +10,14 @@ jobs:
       image-name: workflow.transition.monitor
       image-tag: pr${{ github.event.pull_request.number }}
 
+  build_docker_image:
+    name: "Build private docker image"
+    uses: ./.github/workflows/build-push-private.yml
+    secrets: inherit
+    with:
+      image-name: gh-actions-test
+      image-tag: pr${{ github.event.pull_request.number }}
+
   add_comment:
     needs: build_docker_image
     runs-on: ubuntu-latest

@@ -1,19 +1,15 @@
 # Description
 
-The Dockerfile in this repository creates an image containing a freshly
-cloned copy of workflow.transition.monitor and all the repositories it depends 
-on. It also installs the relevant PACTA R packages from the repos that it
-copies in.
+The Dockerfile in this repository creates an image containing a freshly cloned copy of workflow.transition.monitor and templates.transition.monitor. It also installs the relevant public PACTA R packages from their respective GitHub repos. It also adds the relevant quarter PACTA data directory under `/pacta-data`.
 
 The tree of the docker container looks like this:
 
 ``` {.bash}
 /bound  # contents of workflow.transition.monitor
-/pacta.executive.summary
-/pacta.interactive.report
-/pacta.portfolio.allocate
-/pacta.portfolio.import
+/bound/bin  # contains the shell scripts that run the process
 /pacta-data
+/pacta-data/2021Q4  # or whichever quarter is relevant for that build
+/templates.transition.monitor
 ```
 
 # Notes
@@ -30,13 +26,13 @@ Before running the script, you will need to choose the tag that you
 want to use for the release. You should use [semantic
 versioning](https://semver.org).
 
-All build scripts are located in the `build` directory. Run the `build_with_tag.sh` script, specifying a tag to assign to it.
+All build scripts are located in the `build` directory. Run the `build_with_tag.sh` script from the `build/` directory, specifying a tag to assign to it.
 
 ``` {.bash}
 ./build_with_tag.sh -t 0.1.14
 ```
 
-NOTE: Currently the docker image WILL NOT BUILD without specifying a path to a data folder to mount. This is done via the `-d` argument:
+NOTE: Currently the docker image WILL NOT BUILD without specifying a path to a data folder to copy in. The local data folder to be copied in should have the proper name for the quarter of data it is associated with, e.g. `2021Q4`, because the same name will be copied in to the Docker image. This is done via the `-d` argument:
 
 ``` {.bash}
 ./build_with_tag.sh -t 0.1.14 -d /home/azureuser/2021Q4
@@ -59,13 +55,13 @@ The script will:
 - clone the repos locally, only copying the current version of the files
 - build a `rmi_pacta:<tag>` and `rmi_pacta:latest` docker image (where `<tag>` is the tag you provided, e.g. `0.1.14`). The image builds from the Dockerfile in this directory, which will
 
-  - use [`r-base:<version>`](https://hub.docker.com/_/r-base) as the base (where <version> is the R version specified in the Dockerfile)
+  - use [`rocker/r-ver:<version>`](https://hub.docker.com/r/rocker/r-ver/tags) as the base (where <version> is the R version specified in the Dockerfile)
   - install system dependencies
   - install latex and dependencies
   - install dependent TeX packages
   - install dependent R packages and system dependencies
   - copy in the freshly cloned repos
-  - install the appropriate PACTA R packages in the Docker image's R environment from the copied repos
+  - install the appropriate PACTA R packages in the Docker image's R environment from their respective GitHub repos
   - make some necessary permissions changes
   - set the `build_version` environment variable with the specified tag
 

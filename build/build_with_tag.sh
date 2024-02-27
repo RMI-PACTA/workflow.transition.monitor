@@ -8,6 +8,7 @@ usage() {
     echo "Usage: $0  -t <docker image tag>" 1>&2
     echo "Optional flags:" 1>&2
     # d for data path
+    echo "[-i <image name>] (name for docker image. Default: rmi_pacta)" 1>&2
     echo "[-d <path to data>] (path string pointing to alternative data quarters)" 1>&2
     # x for architecture?
     echo "[-x <platform string>] (platform string to define the target Docker image platform)" 1>&2
@@ -16,15 +17,21 @@ usage() {
     exit 1;
 }
 
-while getopts t:d:x:s flag
+while getopts t:i:d:x:s flag
 do
     case "${flag}" in
         t) tag=${OPTARG};;
+        i) image_name=${OPTARG};;
         d) datapath=${OPTARG};;
         x) platform=${OPTARG};;
         s) save=1;;
+        *) usage;;
     esac
 done
+
+if [ -z "${image_name}" ]; then
+    image_name="rmi_pacta"
+fi
 
 if [ -z "${tag}" ]; then
     usage
@@ -81,7 +88,7 @@ fi
 
 
 # test that no existing rmi_pacta docker image using the same tag is loaded
-existing_img_tags="$(docker images rmi_pacta --format '{{.Tag}}')"
+existing_img_tags="$(docker images $image_name --format '{{.Tag}}')"
 for i in $existing_img_tags
 do
     if [ "$i" == "$tag" ]; then
@@ -137,14 +144,14 @@ fi
 
 
 # build the docker image
-green "Building rmi_pacta Docker image...\n"
+green "Building $image_name Docker image...\n"
 
 docker build \
     --build-arg image_tag=$tag \
     --build-arg head_hashes=$head_hashes \
     --build-arg PLATFORM=$platform \
-    --tag rmi_pacta:$tag \
-    --tag rmi_pacta:latest \
+    --tag $image_name:$tag \
+    --tag $image_name:latest \
     .
 
 if [ $? -ne 0 ]

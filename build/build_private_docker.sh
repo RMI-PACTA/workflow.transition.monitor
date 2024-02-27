@@ -1,5 +1,16 @@
 #! /bin/sh
 
+# This script uses hardcoded parameters to define the versions for pacta data
+# and templates.transition.monitor. make changes to this script and commit
+# prior to running, so that the SHA tag that is pushed to registry is capable
+# of tracking the inputs.
+if [ -z "$(git status --porcelain)" ]; then 
+  echo "Git status is clean. Proceeding."
+else 
+  echo "Commit changes to this script prior to running."
+  exit 1
+fi
+
 #requires being logged in to az
 az acr login --name transitionmonitordockerregistry
 

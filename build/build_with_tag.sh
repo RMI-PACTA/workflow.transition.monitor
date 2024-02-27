@@ -8,6 +8,7 @@ usage() {
     echo "Usage: $0  -t <docker image tag>" 1>&2
     echo "Optional flags:" 1>&2
     # d for data path
+    echo "[-i <image name>] (name for docker image. Default: rmi_pacta)" 1>&2
     echo "[-d <path to data>] (path string pointing to alternative data quarters)" 1>&2
     # x for architecture?
     echo "[-x <platform string>] (platform string to define the target Docker image platform)" 1>&2
@@ -16,15 +17,21 @@ usage() {
     exit 1;
 }
 
-while getopts t:d:x:s flag
+while getopts t:i:d:x:s flag
 do
     case "${flag}" in
         t) tag=${OPTARG};;
+        i) image_name=${OPTARG};;
         d) datapath=${OPTARG};;
         x) platform=${OPTARG};;
         s) save=1;;
+        *) usage;;
     esac
 done
+
+if [ -z "${image_name}" ]; then
+    image_name="rmi_pacta"
+fi
 
 if [ -z "${tag}" ]; then
     usage
@@ -80,8 +87,8 @@ if (! docker images > /dev/null 2>&1 ); then
 fi
 
 
-# test that no existing rmi_pacta docker image using the same tag is loaded
-existing_img_tags="$(docker images rmi_pacta --format '{{.Tag}}')"
+# test that no existing docker image with the same name using the same tag is loaded
+existing_img_tags="$(docker images $image_name --format '{{.Tag}}')"
 for i in $existing_img_tags
 do
     if [ "$i" == "$tag" ]; then
@@ -137,14 +144,14 @@ fi
 
 
 # build the docker image
-green "Building rmi_pacta Docker image...\n"
+green "Building $image_name Docker image...\n"
 
 docker build \
     --build-arg image_tag=$tag \
     --build-arg head_hashes=$head_hashes \
     --build-arg PLATFORM=$platform \
-    --tag rmi_pacta:$tag \
-    --tag rmi_pacta:latest \
+    --tag $image_name:$tag \
+    --tag $image_name:latest \
     .
 
 if [ $? -ne 0 ]
@@ -156,35 +163,33 @@ fi
 
 cd $dir_start
 
-image_tar_gz="rmi_pacta_v${tag}.tar.gz"
+image_tar_gz="${image_name}_v${tag}.tar.gz"
 if [ -n "${save}" ]
 then
     green "\nSaving docker image to ${image_tar_gz}..."
-    docker save rmi_pacta:${tag} | gzip -q > "$image_tar_gz"
+    docker save ${image_name}:${tag} | gzip -q > "$image_tar_gz"
     green "\nimage saved as $image_tar_gz"
 else
     echo -e "\nTo export the image as a tar.gz file:"
-    yellow "docker save rmi_pacta:${tag} | gzip -q > '$image_tar_gz'"
+    yellow "docker save ${image_name}:${tag} | gzip -q > '$image_tar_gz'"
 fi
 
 echo -e "\nTo load the image from the ${image_tar_gz} file:"
 yellow "docker load --input ${image_tar_gz}"
 
 echo -e "\nTo test which operating system the loaded image was built for:"
-yellow "docker run --rm rmi_pacta:${tag} cat /etc/os-release"
+yellow "docker run --rm ${image_name}:${tag} cat /etc/os-release"
 
 echo -e "\nTo test which architecture the loaded image was built for:"
-yellow "docker run --rm rmi_pacta:${tag} dpkg --print-architecture"
+yellow "docker run --rm ${image_name}:${tag} dpkg --print-architecture"
 
 echo -e "\nTo see the build version of the loaded image was built for:"
-yellow "docker run --rm -ti rmi_pacta:${tag} bash -c 'echo \$build_version'"
+yellow "docker run --rm -ti ${image_name}:${tag} bash -c 'echo \$build_version'"
 
 echo -e "\nTo see the R version installed on the loaded image:"
-yellow "docker run --rm rmi_pacta:${tag} Rscript -e R.version\$version.string"
+yellow "docker run --rm ${image_name}:${tag} Rscript -e R.version\$version.string"
 
 echo -e "\nTo test the new image with our test scripts e.g.:"
-yellow "./tests/run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
-echo -e "\nor to run all the tests at once (from the root directory of the test files):"
-yellow "./tests/run-all-tests.sh"
+yellow "./tests/run-like-constructiva-flags.sh -m ${image_name} -t ${tag} -p Test_PA2021NO"
 
 exit 0

@@ -1,4 +1,4 @@
-FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
+FROM ghcr.io/rmi-pacta/workflow.transition.monitor:pr245
 
 COPY pacta-data "/pacta-data"
 

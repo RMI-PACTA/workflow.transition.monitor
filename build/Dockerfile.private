@@ -1,0 +1,9 @@
+FROM ghcr.io/rmi-pacta/workflow.transition.monitor:main
+
+COPY pacta-data "/pacta-data"
+
+COPY "templates.transition.monitor" "/templates.transition.monitor"
+#
+# set permissions for PACTA repos that need local content
+RUN chmod -R a+rwX "/pacta-data" && \
+    chmod -R a+rwX "/templates.transition.monitor"

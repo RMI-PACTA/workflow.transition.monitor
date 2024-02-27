@@ -87,7 +87,7 @@ if (! docker images > /dev/null 2>&1 ); then
 fi
 
 
-# test that no existing rmi_pacta docker image using the same tag is loaded
+# test that no existing docker image with the same name using the same tag is loaded
 existing_img_tags="$(docker images $image_name --format '{{.Tag}}')"
 for i in $existing_img_tags
 do
@@ -163,35 +163,33 @@ fi
 
 cd $dir_start
 
-image_tar_gz="rmi_pacta_v${tag}.tar.gz"
+image_tar_gz="${image_name}_v${tag}.tar.gz"
 if [ -n "${save}" ]
 then
     green "\nSaving docker image to ${image_tar_gz}..."
-    docker save rmi_pacta:${tag} | gzip -q > "$image_tar_gz"
+    docker save ${image_name}:${tag} | gzip -q > "$image_tar_gz"
     green "\nimage saved as $image_tar_gz"
 else
     echo -e "\nTo export the image as a tar.gz file:"
-    yellow "docker save rmi_pacta:${tag} | gzip -q > '$image_tar_gz'"
+    yellow "docker save ${image_name}:${tag} | gzip -q > '$image_tar_gz'"
 fi
 
 echo -e "\nTo load the image from the ${image_tar_gz} file:"
 yellow "docker load --input ${image_tar_gz}"
 
 echo -e "\nTo test which operating system the loaded image was built for:"
-yellow "docker run --rm rmi_pacta:${tag} cat /etc/os-release"
+yellow "docker run --rm ${image_name}:${tag} cat /etc/os-release"
 
 echo -e "\nTo test which architecture the loaded image was built for:"
-yellow "docker run --rm rmi_pacta:${tag} dpkg --print-architecture"
+yellow "docker run --rm ${image_name}:${tag} dpkg --print-architecture"
 
 echo -e "\nTo see the build version of the loaded image was built for:"
-yellow "docker run --rm -ti rmi_pacta:${tag} bash -c 'echo \$build_version'"
+yellow "docker run --rm -ti ${image_name}:${tag} bash -c 'echo \$build_version'"
 
 echo -e "\nTo see the R version installed on the loaded image:"
-yellow "docker run --rm rmi_pacta:${tag} Rscript -e R.version\$version.string"
+yellow "docker run --rm ${image_name}:${tag} Rscript -e R.version\$version.string"
 
 echo -e "\nTo test the new image with our test scripts e.g.:"
-yellow "./tests/run-like-constructiva-flags.sh -t ${tag} -p Test_PA2021NO"
-echo -e "\nor to run all the tests at once (from the root directory of the test files):"
-yellow "./tests/run-all-tests.sh"
+yellow "./tests/run-like-constructiva-flags.sh -m ${image_name} -t ${tag} -p Test_PA2021NO"
 
 exit 0

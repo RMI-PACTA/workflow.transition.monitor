@@ -1,0 +1,74 @@
+default:
+
+    paths:
+        data_location_ext: ../pacta-data/2023Q4/
+
+    reporting:
+        project_report_name: PA2024CH
+        display_currency: CHF
+        currency_exchange_value: 1.190405
+
+    parameters:
+        timestamp: 2023Q4
+        dataprep_timestamp: 2023Q4
+        start_year: 2023
+        horizon_year: 5
+        select_scenario: WEO2023_NZE_2050
+        scenario_other: GECO2023_1.5C-Unif
+        portfolio_allocation_method: portfolio_weight
+        scenario_geography: Global
+
+    methodology:
+        has_map: TRUE
+        has_revenue: FALSE
+        has_credit: FALSE
+        inc_emissionfactors: TRUE
+
+    sectors:
+        tech_roadmap_sectors:
+            - Power
+            - Automotive
+            - Oil&Gas
+            - Coal
+        pacta_sectors_not_analysed:
+            - Steel
+            - Aviation
+            - Cement
+        green_techs:
+            - RenewablesCap
+            - HydroCap
+            - NuclearCap
+            - Hybrid
+            - Electric
+            - FuelCell
+            - Electric Arc Furnace
+        alignment_techs:
+            - RenewablesCap
+            - CoalCap
+            - Coal
+            - Oil
+            - Gas
+            - Electric
+            - ICE
+
+    asset_types:
+        - Equity
+        - Bonds
+        - Others
+        - Funds
+
+    scenario_sources_list:
+        - WEO2023
+        - GECO2023
+        - ISF2023
+
+    scenario_geography_list:
+        - Global
+        - GlobalAggregate
+        - NonOECD
+        - OECD
+
+    equity_market_list:
+        - GlobalMarket
+        - DevelopedMarket
+        - EmergingMarket

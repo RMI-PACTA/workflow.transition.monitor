@@ -92,7 +92,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   logger::log_info("Merging ABCD data from database.")
   port_eq <- merge_abcd_from_db(
     portfolio = port_eq,
-    portfolio_type= "Equity",
+    portfolio_type = "Equity",
     db_dir = analysis_inputs_path,
     equity_market_list = equity_market_list,
     scenario_sources_list = scenario_sources_list,
@@ -163,8 +163,8 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   }
 
   if (data_check(company_all_eq)) {
-    company_own_eq_file <- file.path(pf_file_results_path, "Equity_results_company.rds")
-    logger::log_info("Saving company equity results to \"{company_own_eq_file}\".")
+    company_all_eq_file <- file.path(pf_file_results_path, "Equity_results_company.rds")
+    logger::log_info("Saving company equity results to \"{company_all_eq_file}\".")
     saveRDS(company_all_eq, company_all_eq_file)
   } else {
     logger::log_warn("No equity company results found. Skipping saving company results.")
@@ -220,7 +220,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
   logger::log_info("Merging ABCD data from database.")
   port_cb <- merge_abcd_from_db(
     portfolio = port_cb,
-    portfolio_type= "Bonds",
+    portfolio_type = "Bonds",
     db_dir = analysis_inputs_path,
     equity_market_list = equity_market_list,
     scenario_sources_list = scenario_sources_list,

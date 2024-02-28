@@ -43,7 +43,7 @@ if [ -z "${az_account}" ]; then
   exit 1
 fi
 
-az acr login --name transitionmonitordockerregistry
+az acr login --name "$registry"
 
 git clone -b "$templates_branch" "$templates_remote" --depth 1 "$dir_temp/templates.transition.monitor"|| exit 2
 

@@ -1,3 +1,7 @@
+logger::log_threshold(Sys.getenv("LOG_LEVEL", ifelse(interactive(), "FATAL", "INFO")))
+logger::log_formatter(logger::formatter_glue)
+
+logger::log_info("Loading libraries")
 suppressPackageStartupMessages({
   library(pacta.portfolio.utils)
   library(pacta.portfolio.report)
@@ -9,23 +13,42 @@ suppressPackageStartupMessages({
   library(fs)
 })
 
-cli::cli_h1("web_tool_script_3.R{get_build_version_msg()}")
+logger::log_info("web_tool_script_3.R (build: \"{get_build_version_msg()}\").")
 
 if (!exists("portfolio_name_ref_all")) {
   portfolio_name_ref_all <- "1234"
+  logger::log_warn("portfolio_name_ref_all not defined, using default value: {portfolio_name_ref_all}.")
 }
 if (!exists("portfolio_root_dir")) {
   portfolio_root_dir <- "working_dir"
+  logger::log_warn("portfolio_root_dir not defined, using default value: {portfolio_root_dir}.")
 }
 
+logger::log_info("Setting up project.")
 setup_project()
 
+logger::log_info("Setting webtool paths.")
 set_webtool_paths(portfolio_root_dir)
 
-set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
+portfolio_parameters_file <- file.path(
+  par_file_path,
+  paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")
+)
+logger::log_info(
+  "Setting portfolio parameters from file: \"{portfolio_parameters_file}\"."
+)
+set_portfolio_parameters(file_path = portfolio_parameters_file)
 
-set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
+project_parameters_file <- file.path(
+  working_location,
+  "parameter_files", paste0("ProjectParameters_", project_code, ".yml")
+)
+logger::log_info(
+  "Setting project parameters from file: \"{project_parameters_file}\"."
+)
+set_project_parameters(project_parameters_file)
 
+logger::log_info("Setting analysis inputs path to \"{data_location_ext}\".")
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)
 
 
@@ -36,23 +59,27 @@ if (file.exists(total_portfolio_path)) {
   total_portfolio <- readRDS(total_portfolio_path)
   quit_if_no_pacta_relevant_data(total_portfolio)
 } else {
+  logger::log_warn("\"total_portfolio.rds\" file does not exist in the \"30_Processed_inputs\" directory.")
   warning("This is weird... the `total_portfolio.rds` file does not exist in the `30_Processed_inputs` directory.")
 }
-
 
 # fix parameters ---------------------------------------------------------------
 
 if (project_code == "GENERAL") {
   language_select <- "EN"
+  logger::log_warn("project_code is GENERAL. Overriding language to: {language_select}.")
 }
 
 
 # load PACTA results -----------------------------------------------------------
 
+logger::log_debug("Defining functions.")
 readRDS_or_return_alt_data <- function(filepath, alt_return = NULL) {
   if (file.exists(filepath)) {
+    logger::log_trace("Reading RDS file: {filepath}.")
     return(readRDS(filepath))
   }
+  logger::log_warn("File does not exist: {filepath}. Returning alternative data.")
   alt_return
 }
 
@@ -62,128 +89,156 @@ add_inv_and_port_names_if_needed <- function(data) {
   }
 
   if (!"portfolio_name" %in% names(data)) {
+    logger::log_trace("Adding portfolio_name to data.")
     data <- mutate(data, portfolio_name = .env$portfolio_name, .before = everything())
   }
 
   if (!"investor_name" %in% names(data)) {
+    logger::log_trace("Adding investor_name to data.")
     data <- mutate(data, investor_name = .env$investor_name, .before = everything())
   }
 
   data
 }
 
+logger::log_info("Loading audit file.")
 audit_file <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "audit_file.rds"),
   alt_return = empty_audit_file()
 )
 audit_file <- add_inv_and_port_names_if_needed(audit_file)
 
+logger::log_info("Loading portfolio overview.")
 portfolio_overview <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "overview_portfolio.rds"),
   alt_return = empty_portfolio_overview()
 )
 portfolio_overview <- add_inv_and_port_names_if_needed(portfolio_overview)
 
+logger::log_info("Loading emissions data.")
 emissions <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "emissions.rds"),
   alt_return = empty_emissions_results()
 )
 emissions <- add_inv_and_port_names_if_needed(emissions)
 
+logger::log_info("Loading total portfolio.")
 total_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(proc_input_path, portfolio_name_ref_all, "total_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 total_portfolio <- add_inv_and_port_names_if_needed(total_portfolio)
 
+logger::log_info("Loading portfolio equity results.")
 equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 equity_results_portfolio <- add_inv_and_port_names_if_needed(equity_results_portfolio)
 
+logger::log_info("Loading portfolio bonds results.")
 bonds_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_portfolio.rds"),
   alt_return = empty_portfolio_results()
 )
 bonds_results_portfolio <- add_inv_and_port_names_if_needed(bonds_results_portfolio)
 
+logger::log_info("Loading company equity results.")
 equity_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_company.rds"),
   alt_return = empty_company_results()
 )
 equity_results_company <- add_inv_and_port_names_if_needed(equity_results_company)
 
+logger::log_info("Loading company bonds results.")
 bonds_results_company <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_company.rds"),
   alt_return = empty_company_results()
 )
 bonds_results_company <- add_inv_and_port_names_if_needed(bonds_results_company)
 
+logger::log_info("Loading equity map results.")
 equity_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Equity_results_map.rds"),
   alt_return = empty_map_results()
 )
 equity_results_map <- add_inv_and_port_names_if_needed(equity_results_map)
 
+logger::log_info("Loading bonds map results.")
 bonds_results_map <- readRDS_or_return_alt_data(
   filepath = file.path(results_path, portfolio_name_ref_all, "Bonds_results_map.rds"),
   alt_return = empty_map_results()
 )
 bonds_results_map <- add_inv_and_port_names_if_needed(bonds_results_map)
 
+logger::log_info("Loading peers equity results.")
 peers_equity_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio.rds")),
   alt_return = empty_portfolio_results()
 )
 
+logger::log_info("Loading peers bonds results.")
 peers_bonds_results_portfolio <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio.rds")),
   alt_return = empty_portfolio_results()
 )
 
+logger::log_info("Loading peers equity results (individual).")
 peers_equity_results_user <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_equity_results_portfolio_ind.rds")),
   alt_return = empty_portfolio_results()
 )
 
+logger::log_info("Loading peers bonds results (individual).")
 peers_bonds_results_user <- readRDS_or_return_alt_data(
   filepath = file.path(analysis_inputs_path, paste0(project_code, "_peers_bonds_results_portfolio_ind.rds")),
   alt_return = empty_portfolio_results()
 )
 
+logger::log_info("Loading indices equity results.")
 indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_equity_results_portfolio.rds"))
 
+logger::log_info("Loading indices bonds results.")
 indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_results_portfolio.rds"))
 
+logger::log_info("Results loaded.")
 
 # create interactive report ----------------------------------------------------
+logger::log_info("Starting interactive report process.")
 
 survey_dir <- file.path(user_results_path, project_code, "survey")
 real_estate_dir <- file.path(user_results_path, project_code, "real_estate")
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
+
+logger::log_info("Loading dataframe translations.")
 dataframe_translations <- readr::read_csv(
   system.file("extdata/translation/dataframe_labels.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
+logger::log_info("Loading dataframe header translations.")
 header_dictionary <- readr::read_csv(
   system.file("extdata/translation/dataframe_headers.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
+logger::log_info("Loading JS translations.")
 js_translations <- jsonlite::fromJSON(
   txt = system.file("extdata/translation/js_labels.json", package = "pacta.portfolio.report")
 )
 
+logger::log_info("Loading sector order.")
 sector_order <- readr::read_csv(
   system.file("extdata/sector_order/sector_order.csv", package = "pacta.portfolio.report"),
   col_types = cols()
 )
 
 # combine config files to send to create_interactive_report()
+logger::log_info("combining config files.")
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
 project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
+
+logger::log_info("preparing public manifest.")
 pacta_data_public_manifest <-
   list(
     creation_time_date = jsonlite::read_json(file.path(analysis_inputs_path, "manifest.json"))$creation_time_date,
@@ -203,7 +258,9 @@ class(configs$project_config) <- c(class(configs$project_config), "list")
 
 template_dir_name <- paste(tolower(project_report_name), tolower(language_select), "template", sep = "_")
 template_dir <- file.path(template_path, template_dir_name)
+logger::log_info("Using template from: \"{template_dir}\".")
 
+logger::log_info("Creating interactive report.")
 create_interactive_report(
   template_dir = template_dir,
   output_dir = output_dir,
@@ -246,8 +303,10 @@ create_interactive_report(
   configs = configs
 )
 
+logger::log_info("Interactive report created.")
 
 # create executive summary -----------------------------------------------------
+logger::log_info("Starting executive summary process.")
 
 survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
 real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real_estate"))
@@ -255,15 +314,21 @@ score_card_dir <- fs::path_abs(file.path(user_results_path, project_code, "score
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
 if (!dir.exists(es_dir)) {
+  logger::log_info("Creating executive summary directory: \"{es_dir}\".")
   dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
+} else {
+  logger::log_info("Executive summary directory exists: \"{es_dir}\".")
 }
 
 exec_summary_template_name <- paste0(project_code, "_", tolower(language_select), "_exec_summary")
 exec_summary_builtin_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
 invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))
 exec_summary_template_path <- file.path(output_dir, exec_summary_template_name)
+logger::log_info("Using executive summary template from: \"{exec_summary_template_path}\".")
+
 
 if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager", "bank", "insurance", "pensionfund"))) {
+  logger::log_info("Filtering data for executive summary.")
   data_aggregated_filtered <-
     prep_data_executive_summary(
       investor_name = investor_name,
@@ -304,6 +369,7 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
 
   real_estate_flag <- (length(list.files(real_estate_dir)) > 0)
 
+  logger::log_info("Creating executive summary.")
   render_executive_summary(
     data = data_aggregated_filtered,
     language = language_select,
@@ -324,5 +390,8 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
   )
 } else {
   # this is required for the online tool to know that the process has been completed.
+  logger::log_warn("No executive summary created. Copying placehholder file.")
   invisible(file.copy(blank_pdf(), es_dir))
 }
+
+logger::log_info("web_tool_script_3.R finished.")

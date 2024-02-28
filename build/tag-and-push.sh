@@ -78,8 +78,8 @@ fi
 docker tag "$old_tag" "$new_tag"
 
 if [ -z "${dry_run}" ]; then
+  az acr login --name $registry
   if [ -n "${verbose}" ]; then
-    az acr login --name $registry
     echo ""
     echo "Pushing $new_tag"
     echo ""

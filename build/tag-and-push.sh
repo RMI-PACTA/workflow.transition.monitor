@@ -52,6 +52,19 @@ if [ -z "${remote_tag}" ]; then
   remote_tag="$tag"
 fi
 
+# check if az cli is installed
+az_cmd="$(command -v az)"
+if [ -z "${az_cmd}" ]; then
+  echo "Azure CLI not found. Please install it and try again."
+  exit 1
+fi
+
+# check if logged in to az
+az_account="$(az account show -o json)"
+if [ -z "${az_account}" ]; then
+  echo "Please login to Azure using 'az login' and try again."
+  exit 1
+fi
 
 
 old_tag="$docker_image":"$tag"

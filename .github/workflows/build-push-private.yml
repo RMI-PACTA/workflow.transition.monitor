@@ -13,7 +13,6 @@ on:
         value: ${{ jobs.docker-build.outputs.full-image-name }}
 jobs:
   docker-build:
-    environment: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read

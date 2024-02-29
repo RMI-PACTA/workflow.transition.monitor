@@ -40,14 +40,6 @@ default:
             - Electric
             - FuelCell
             - Electric Arc Furnace
-        alignment_techs:
-            - RenewablesCap
-            - CoalCap
-            - Coal
-            - Oil
-            - Gas
-            - Electric
-            - ICE
 
     scenario_sources_list:
         - GECO2023

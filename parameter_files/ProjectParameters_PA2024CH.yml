@@ -12,7 +12,7 @@ default:
         start_year: 2023
         horizon_year: 5
         select_scenario: WEO2023_NZE_2050
-        scenario_other: GECO2023_1.5C-Unif
+        scenario_other: GECO2023_1.5C
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 

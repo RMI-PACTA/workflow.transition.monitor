@@ -9,8 +9,6 @@ default:
         currency_exchange_value: 1.190405
 
     parameters:
-        timestamp: 2023Q4
-        dataprep_timestamp: 2023Q4
         start_year: 2023
         horizon_year: 5
         select_scenario: WEO2023_NZE_2050

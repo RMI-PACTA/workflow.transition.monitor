@@ -50,9 +50,9 @@ default:
             - ICE
 
     scenario_sources_list:
-        - WEO2023
         - GECO2023
         - ISF2023
+        - WEO2023
 
     scenario_geography_list:
         - Global

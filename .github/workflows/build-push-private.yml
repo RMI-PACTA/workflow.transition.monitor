@@ -27,6 +27,13 @@ jobs:
         with:
           path: workflow.transition.monitor
 
+      - name: Checkout templates.transition.monitor
+        uses: actions/checkout@v3
+        with:
+          repository: RMI-PACTA/templates.transition.monitor
+          path: templates.transition.monitor
+          token ${{ secrets.REPO_PAT }}
+
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
         uses: azure/login@v1

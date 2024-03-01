@@ -25,7 +25,8 @@ jobs:
     steps:
       - name: Set current date as env variable
         run: |
-          echo "NOW=$(date +'%Y%m%dT%H%M%SZ')" >> $GITHUB_ENV
+          NOW="$(date +'%Y%m%dT%H%M%SZ')"
+          echo "$NOW" >> $GITHUB_ENV
           echo "$NOW"
 
       - name: Checkout workflow.transition.monitor

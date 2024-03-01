@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    timeout-minutes: 25
+    timeout-minutes: 90
     outputs:
       full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 

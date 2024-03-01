@@ -53,6 +53,8 @@ jobs:
             az version
             az account show
             az storage copy -s "$pacta_data_share_url"/"$pacta_data_share_path"  -d "pacta-data" --recursive --exclude-pattern "*.sqlite"
+            mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
+            ls pacta-data/2023Q4
 
       # - name: Make fake (empty) pacta-data folder
       #   run: mkdir pacta-data

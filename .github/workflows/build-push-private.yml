@@ -32,7 +32,7 @@ jobs:
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
-          token ${{ secrets.REPO_PAT }}
+          token: ${{ secrets.REPO_PAT }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login

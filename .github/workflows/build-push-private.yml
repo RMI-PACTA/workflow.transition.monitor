@@ -45,7 +45,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
-      - name: Azure CLI script
+      - name: Download pacta-data
         uses: azure/CLI@v1
         with:
           # azcliversion: 2.30.0
@@ -63,15 +63,18 @@ jobs:
           cp workflow.transition.monitor/Dockerfile Dockerfile
           docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
 
-      - name: Azure CLI script
+      - name: Login to docker registry
         uses: azure/CLI@v1
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             az acr login -n transitionmonitordockerregistry
 
-      - name: Build Docker image
+      - name: Push Docker image
         run: |
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
+
+      - name: Push Docker `latest` tag
+        run: |
           docker tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}" "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"

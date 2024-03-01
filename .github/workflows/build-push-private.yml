@@ -8,6 +8,12 @@ on:
       image-tag:
         required: true
         type: string
+      push-latest:
+        required: false
+        type: boolean
+        description: Push the `latest` tag in addition to the timestamp tag?
+        default: false
+
     outputs:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"
@@ -75,6 +81,7 @@ jobs:
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
 
       - name: Push Docker `latest` tag
+        if: ${{ inputs.push-latest }}
         run: |
           docker tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}" "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"

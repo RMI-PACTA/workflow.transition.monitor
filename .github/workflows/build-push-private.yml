@@ -48,9 +48,11 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
+            pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
+            pacta_data_share_path="2023Q4_20240218T231047Z"
             az version
             az account show
-            az storage -h
+            az storage copy -s "$pacta_data_share_url"/"$pacta_data_share_path"  -d "pacta-data" --recursive --exclude-pattern "*.sqlite"
 
       # - name: Make fake (empty) pacta-data folder
       #   run: mkdir pacta-data

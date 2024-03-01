@@ -2,7 +2,8 @@ on:
   workflow_call:
     inputs:
       image-name:
-        required: true
+        required: false
+        default: rmi_pacta_2023q4_pa2024ch
         type: string
       image-tag:
         required: true
@@ -56,16 +57,10 @@ jobs:
             mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
             ls pacta-data/2023Q4
 
-      # - name: Make fake (empty) pacta-data folder
-      #   run: mkdir pacta-data
-
-      # - name: Make fake (empty) templates.transition.monitor folder
-      #   run: mkdir templates.transition.monitor
-
-      # - name: Build Docker image
-      #   run: |
-      #     cp workflow.transition.monitor/Dockerfile Dockerfile
-      #     docker build . --file Dockerfile --tag ${{ inputs.image-name }}
+      - name: Build Docker image
+        run: |
+          cp workflow.transition.monitor/Dockerfile Dockerfile
+          docker build . --file Dockerfile --tag ${{ inputs.image-name }}
 
       # - name: Log in to registry
       #   run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin

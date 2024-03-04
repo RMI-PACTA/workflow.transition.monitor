@@ -27,6 +27,12 @@ jobs:
       full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 
     steps:
+
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          path: workflow.transition.monitor
+
       - name: Prepare environment
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
@@ -50,11 +56,6 @@ jobs:
           PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
-
-      - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v4
-        with:
-          path: workflow.transition.monitor
 
       - name: Checkout templates.transition.monitor
         uses: actions/checkout@v4

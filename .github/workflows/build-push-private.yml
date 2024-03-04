@@ -29,6 +29,11 @@ jobs:
       full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 
     steps:
+      - name: Set current date as env variable
+        run: |
+          NOW="$(date +'%Y%m%dT%H%M%SZ')"
+          echo "$NOW" >> $GITHUB_ENV
+          echo "$NOW"
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
@@ -71,7 +76,7 @@ jobs:
       - name: Build Docker image
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
+          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
       - name: Login to docker registry
         uses: azure/CLI@v1
@@ -87,5 +92,5 @@ jobs:
       - name: Push Docker `latest` tag
         if: ${{ inputs.push-latest }}
         run: |
-          docker tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}" "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
+          docker tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW" "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"

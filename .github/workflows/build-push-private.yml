@@ -89,17 +89,12 @@ jobs:
               --recursive \
               --exclude-pattern "*.sqlite"
 
-      - name: Download index benchmarks
-        uses: azure/CLI@v1.0.9
-        with:
-          # azcliversion: 2.30.0
-          inlineScript: |
             index_share_url="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy \
               --source "$index_share_url"/"${{ env.INDEX_SHARE_PATH }}" \
               --destination "index-data" \
-              --recursive
-
+              --recursive \
+              --exclude-pattern "*.sqlite"
 
       - name: Move files
         run: |

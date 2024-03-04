@@ -41,7 +41,7 @@ jobs:
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
 
-          config_file="build/config/${{ inputs.image-name }}.json"
+          config_file="workflow.transition.monitor/build/config/${{ inputs.image-name }}.json"
 
           PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"

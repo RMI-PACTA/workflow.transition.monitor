@@ -1,0 +1,151 @@
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: false
+        default: rmi_pacta_2023q4_pa2024ch
+        type: string
+      image-tag:
+        required: true
+        type: string
+      registry:
+        required: false
+        type: string
+        default: transitionmonitordockerregistry.azurecr.io
+      push-latest:
+        required: false
+        type: boolean
+        description: Push the `latest` tag in addition to the timestamp tag?
+        default: false
+
+    outputs:
+      full-image-name:
+        description: "Full pushed image name including host/registry, name, and tag"
+        value: ${{ jobs.docker-build.outputs.full-image-name }}
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 90
+    outputs:
+      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
+
+    steps:
+      - name: Set current date as env variable
+        run: |
+          NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
+          echo "NOW=$NOW" >> $GITHUB_ENV
+          echo "$NOW"
+          registry_image=$(
+            echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
+            tr '[:upper:]' '[:lower:]' \
+          )
+          REGISTRY_IMAGE=${registry_image}
+          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
+          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
+
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          path: workflow.transition.monitor
+
+      - name: Checkout templates.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          repository: RMI-PACTA/templates.transition.monitor
+          path: templates.transition.monitor
+          token: ${{ secrets.TEMPLATES_TOKEN }}
+
+      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
+      - name: Download pacta-data
+        uses: azure/CLI@v1.0.9
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
+            pacta_data_share_path="2023Q4_20240218T231047Z"
+            az version
+            az account show
+            az storage copy \
+              --source "$pacta_data_share_url"/"$pacta_data_share_path" \
+              --destination "pacta-data" \
+              --recursive \
+              --exclude-pattern "*.sqlite"
+            mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
+            ls pacta-data/2023Q4
+
+      - name: Identify LABELs in dockerfile
+        id: custom-labels
+        run: |
+          DOCKERFILE_LABELS="$(grep "^LABEL" workflow.transition.monitor/Dockerfile | sed 's/^LABEL[[:space:]]*//')"
+          echo "$DOCKERFILE_LABELS"
+          echo "DOCKERFILE_LABELS<<EOF" >> $GITHUB_ENV
+          echo "$DOCKERFILE_LABELS" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          echo 'dockerfile-labels<<EOF' >> $GITHUB_OUTPUT
+          echo "$DOCKERFILE_LABELS" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      # Setup docker metadata, including tags and labels (and annotations)
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          annotations:
+            ${{ env.DOCKERFILE_LABELS }}
+          labels:
+            ${{ env.DOCKERFILE_LABELS }}
+
+      # set up our build environment
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
+      - name: Get credentials for docker registry
+        uses: azure/CLI@v1.0.9
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            # Username is not a placeholder. See https://stackoverflow.com/a/73250630
+            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+            # echo "::add-mask::$DOCKER_USER"
+            echo "::add-mask::$DOCKER_TOKEN"
+            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
+            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Login and Push Docker image
+        run: |
+          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+      # Actually build the image (for a single architecture)!
+      - name: Build
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: workflow.transition.monitor/Dockerfile
+          # include the labels from the meta step
+          labels: ${{ steps.meta.outputs.labels }}
+          # the same for annotations
+          annotations: ${{ steps.meta.outputs.annotations }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          # Use the GitHub actions cache to speed up repeated builds
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
+          # but don't cache the install pacta step.
+          no-cache-filters: install-pacta

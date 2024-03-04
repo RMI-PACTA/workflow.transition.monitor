@@ -31,12 +31,12 @@ jobs:
     steps:
 
       - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: workflow.transition.monitor
 
       - name: Checkout templates.transition.monitor
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor

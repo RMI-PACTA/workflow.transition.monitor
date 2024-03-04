@@ -73,32 +73,27 @@ jobs:
             mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
             ls pacta-data/2023Q4
 
-      # - name: Build Docker image
-      #   run: |
-      #     cp workflow.transition.monitor/Dockerfile Dockerfile
-      #     docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
-
-        # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
-      - id: sets-a-secret
-        name: Generate, mask, and output a secret
+      - name: Build Docker image
         run: |
-          the_secret=$((RANDOM))
-          echo "::add-mask::$the_secret"
-          echo "secretnumber=$the_secret"
-          echo "secretnumber=$the_secret" >> "$GITHUB_ENV"
-      - name: Use that secret output (protected by a mask)
-        run: |
-          echo "the secret number is $secretnumber"
+          cp workflow.transition.monitor/Dockerfile Dockerfile
+          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
-      - name: Login to docker registry
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
+      - name: Get credentials for docker registry
         uses: azure/CLI@v1
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            az acr login -n transitionmonitordockerregistry
+            DOCKER_USER="$(az identity list --query [0].id" --output tsv)" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n transitionmonitordockerregistry --expose-token)" >> "$GITHUB_ENV"
+            echo "::add-mask::$DOCKER_USER"
+            echo "::add-mask::$DOCKER_TOKEN"
+            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
+            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
-      - name: Push Docker image
+      - name: Login and Push Docker image
         run: |
+          docker login transitionmonitordockerregistry.azurecr.io -u "$DOCKER_USER" -p "$DOCKER_TOKEN"
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
 
       - name: Push Docker `latest` tag

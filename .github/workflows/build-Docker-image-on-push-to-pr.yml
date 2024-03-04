@@ -12,6 +12,14 @@ jobs:
 
   build_private_docker_image:
     name: "Build private docker image"
+    strategy:
+      # fail if any build fails
+      fail-fast: true
+      # build amd64 and arm64 in parallel
+      matrix:
+        image-name:
+          - gh-actions-test
+          - rmi_pacta_2023q4_pa2024ch
     uses: ./.github/workflows/build-push-private.yml
     secrets: inherit
     with:

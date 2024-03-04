@@ -94,7 +94,7 @@ jobs:
 
       - name: Login and Push Docker image
         run: |
-          docker login transitionmonitordockerregistry.azurecr.io -u "$DOCKER_USER" -p "$DOCKER_TOKEN"
+          echo "$DOCKER_TOKEN" | docker login transitionmonitordockerregistry.azurecr.io --username "$DOCKER_USER" --password-stdin
           docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
       - name: Push Docker `latest` tag

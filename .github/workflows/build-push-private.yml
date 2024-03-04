@@ -145,7 +145,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: workflow.transition.monitor/Dockerfile
+          file: ./workflow.transition.monitor/Dockerfile
           # include the labels from the meta step
           labels: ${{ steps.meta.outputs.labels }}
           # the same for annotations

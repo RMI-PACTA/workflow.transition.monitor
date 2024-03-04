@@ -10,25 +10,11 @@ jobs:
   #     image-name: workflow.transition.monitor
   #     image-tag: pr${{ github.event.pull_request.number }}
 
-  build_private_docker_image:
-    name: "Build private docker image"
-    strategy:
-      # fail if any build fails
-      fail-fast: true
-      # build amd64 and arm64 in parallel
-      matrix:
-        image-name:
-          - gh-actions-test
-          - rmi_pacta_2023q4_pa2024ch
-    uses: ./.github/workflows/build-push-private.yml
-    secrets: inherit
-    with:
-      image-name: gh-actions-test
-
   # add_comment:
   #   needs: build_docker_image
   #   runs-on: ubuntu-latest
   #   steps:
+
   #     - name: Find Comment
   #       # https://github.com/peter-evans/find-comment
   #       uses: peter-evans/find-comment@v3
@@ -38,15 +24,31 @@ jobs:
   #         comment-author: 'github-actions[bot]'
   #         body-includes: Docker image from this PR
 
-      # - name: Create or update comment
-      #   # https://github.com/peter-evans/create-or-update-comment
-      #   uses: peter-evans/create-or-update-comment@v4
-      #   with:
-      #     comment-id: ${{ steps.fc.outputs.comment-id }}
-      #     issue-number: ${{ github.event.pull_request.number }}
-      #     body: |
-      #       Docker image from this PR (${{ github.event.pull_request.head.sha }}) created
-      #       ```
-      #       docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
-      #       ```
-      #     edit-mode: replace
+  #     - name: Create or update comment
+  #       # https://github.com/peter-evans/create-or-update-comment
+  #       uses: peter-evans/create-or-update-comment@v4
+  #       with:
+  #         comment-id: ${{ steps.fc.outputs.comment-id }}
+  #         issue-number: ${{ github.event.pull_request.number }}
+  #         body: |
+  #           Docker image from this PR (${{ github.event.pull_request.head.sha }}) created
+  #           ```
+  #           docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
+  #           ```
+  #         edit-mode: replace
+
+  build_private_docker_image:
+    name: "Build private docker image"
+    strategy:
+      # fail if any build fails
+      fail-fast: true
+      # build images in parallel
+      matrix:
+        image-name:
+          - gh-actions-test
+          - rmi_pacta_2023q4_pa2024ch
+    uses: ./.github/workflows/build-push-private.yml
+    secrets: inherit
+    with:
+      image-name: gh-actions-test
+

@@ -78,6 +78,17 @@ jobs:
           cp workflow.transition.monitor/Dockerfile Dockerfile
           docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
+      - id: sets-a-secret
+        name: Generate, mask, and output a secret
+        run: |
+          the_secret=$((RANDOM))
+          echo "::add-mask::$the_secret"
+          echo "secret-number=$the_secret"
+          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+      - name: Use that secret output (protected by a mask)
+        run: |
+          echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
+
       - name: Login to docker registry
         uses: azure/CLI@v1
         with:

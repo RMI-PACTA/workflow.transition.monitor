@@ -113,6 +113,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             ${{ inputs.additional-image-tags }}
+            ${{ env.NOW }}
 
       # set up our build environment
       - name: Set up QEMU

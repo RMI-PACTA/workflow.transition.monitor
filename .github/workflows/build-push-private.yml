@@ -53,6 +53,10 @@ jobs:
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
 
+          INDEX_SHARE_PATH="$(jq -rc '.index_share_path' $config_file)"
+          echo "INDEX_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
+          echo "INDEX_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
+
           PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
@@ -79,14 +83,29 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
-            az version
-            az account show
             az storage copy \
               --source "$pacta_data_share_url"/"${{ env.PACTA_DATA_SHARE_PATH }}" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
+
+      - name: Download index benchmarks
+        uses: azure/CLI@v1.0.9
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            index_share_url="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
+            az storage copy \
+              --source "$index_share_url"/"${{ env.INDEX_SHARE_PATH }}" \
+              --destination "index-data" \
+              --recursive \
+              --exclude-pattern "*.sqlite"
+
+
+      - name: Move files
+        run: |
             mv "pacta-data/${{ env.PACTA_DATA_SHARE_PATH }}" "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
+            mv "index-data/${{ env.INDEX_SHARE_PATH }}"/* "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
             ls pacta-data/${{ env.PACTA_DATA_QUARTER }}
 
       - name: Identify LABELs in dockerfile

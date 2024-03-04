@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       registry:
-        required: true
+        required: false
         type: string
         default: transitionmonitordockerregistry.azurecr.io
       push-latest:

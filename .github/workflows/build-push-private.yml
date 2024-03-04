@@ -8,6 +8,10 @@ on:
       image-tag:
         required: true
         type: string
+      registry:
+        required: true
+        type: string
+        default: transitionmonitordockerregistry.azurecr.io
       push-latest:
         required: false
         type: boolean
@@ -34,6 +38,13 @@ jobs:
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
           echo "NOW=$NOW" >> $GITHUB_ENV
           echo "$NOW"
+          registry_image=$(
+            echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
+            tr '[:upper:]' '[:lower:]' \
+          )
+          REGISTRY_IMAGE=${registry_image}
+          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
+          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
@@ -73,10 +84,35 @@ jobs:
             mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
             ls pacta-data/2023Q4
 
-      - name: Build Docker image
+      - name: Identify LABELs in dockerfile
+        id: custom-labels
         run: |
-          cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
+          DOCKERFILE_LABELS="$(grep "^LABEL" Dockerfile | sed 's/^LABEL[[:space:]]*//')"
+          echo "$DOCKERFILE_LABELS"
+          echo "DOCKERFILE_LABELS<<EOF" >> $GITHUB_ENV
+          echo "$DOCKERFILE_LABELS" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          echo 'dockerfile-labels<<EOF' >> $GITHUB_OUTPUT
+          echo "$DOCKERFILE_LABELS" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      # Setup docker metadata, including tags and labels (and annotations)
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          annotations:
+            ${{ env.DOCKERFILE_LABELS }}
+          labels:
+            ${{ env.DOCKERFILE_LABELS }}
+
+      # set up our build environment
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
@@ -86,7 +122,7 @@ jobs:
           inlineScript: |
             # Username is not a placeholder. See https://stackoverflow.com/a/73250630
             DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n transitionmonitordockerregistry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
             # echo "::add-mask::$DOCKER_USER"
             echo "::add-mask::$DOCKER_TOKEN"
             echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
@@ -94,11 +130,21 @@ jobs:
 
       - name: Login and Push Docker image
         run: |
-          echo "$DOCKER_TOKEN" | docker login transitionmonitordockerregistry.azurecr.io --username "$DOCKER_USER" --password-stdin
-          docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
-
-      - name: Push Docker `latest` tag
-        if: ${{ inputs.push-latest }}
-        run: |
-          docker tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW" "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
-          docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:latest"
+          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+      # Actually build the image (for a single architecture)!
+      - name: Build
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          # include the labels from the meta step
+          labels: ${{ steps.meta.outputs.labels }}
+          # the same for annotations
+          annotations: ${{ steps.meta.outputs.annotations }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          # Use the GitHub actions cache to speed up repeated builds
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
+          # but don't cache the install pacta step.
+          no-cache-filters: install-pacta

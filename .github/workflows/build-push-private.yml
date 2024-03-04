@@ -2,21 +2,15 @@ on:
   workflow_call:
     inputs:
       image-name:
-        required: false
-        default: rmi_pacta_2023q4_pa2024ch
-        type: string
-      image-tag:
         required: true
         type: string
-      registry:
+      additional-image-tags:
         required: false
         type: string
+      registry:
+        required: true
+        type: string
         default: transitionmonitordockerregistry.azurecr.io
-      push-latest:
-        required: false
-        type: boolean
-        description: Push the `latest` tag in addition to the timestamp tag?
-        default: false
 
     outputs:
       full-image-name:
@@ -33,7 +27,7 @@ jobs:
       full-image-name: ${{ steps.push-image.outputs.full-image-name }}
 
     steps:
-      - name: Set current date as env variable
+      - name: Prepare environment
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
           echo "NOW=$NOW" >> $GITHUB_ENV
@@ -45,6 +39,12 @@ jobs:
           REGISTRY_IMAGE=${registry_image}
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
+          PACTA_DATA_SHARE_PATH="2023Q4_20240218T231047Z"
+          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
+          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
+          PACTA_DATA_QUARTER="2023Q4"
+          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
+          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
@@ -73,16 +73,15 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
-            pacta_data_share_path="2023Q4_20240218T231047Z"
             az version
             az account show
             az storage copy \
-              --source "$pacta_data_share_url"/"$pacta_data_share_path" \
+              --source "$pacta_data_share_url"/"${{ env.PACTA_DATA_SHARE_PATH }}" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
-            mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
-            ls pacta-data/2023Q4
+            mv pacta-data/$pacta_data_share_path pacta-data/${{ env.PACTA_DATA_QUARTER }}
+            ls pacta-data/${{ env.PACTA_DATA_QUARTER }}
 
       - name: Identify LABELs in dockerfile
         id: custom-labels

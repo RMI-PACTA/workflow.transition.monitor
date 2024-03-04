@@ -32,6 +32,7 @@ jobs:
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
           echo "NOW=$NOW" >> $GITHUB_ENV
           echo "$NOW"
+
           registry_image=$(
             echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
             tr '[:upper:]' '[:lower:]' \
@@ -39,10 +40,14 @@ jobs:
           REGISTRY_IMAGE=${registry_image}
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
           echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
-          PACTA_DATA_SHARE_PATH="2023Q4_20240218T231047Z"
+
+          config_file="build/config/${{ inputs.image-name }}.json"
+
+          PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
-          PACTA_DATA_QUARTER="2023Q4"
+
+          PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
 

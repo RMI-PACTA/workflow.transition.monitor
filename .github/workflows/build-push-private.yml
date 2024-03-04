@@ -95,7 +95,7 @@ jobs:
       - name: Login and Push Docker image
         run: |
           docker login transitionmonitordockerregistry.azurecr.io -u "$DOCKER_USER" -p "$DOCKER_TOKEN"
-          docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:${{ github.event.repository.updated_at}}"
+          docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
       - name: Push Docker `latest` tag
         if: ${{ inputs.push-latest }}

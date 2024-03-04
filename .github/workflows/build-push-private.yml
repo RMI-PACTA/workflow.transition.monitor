@@ -54,8 +54,8 @@ jobs:
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
 
           INDEX_SHARE_PATH="$(jq -rc '.index_share_path' $config_file)"
-          echo "INDEX_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
-          echo "INDEX_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
+          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH"
+          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH" >> "$GITHUB_ENV"
 
           PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"

@@ -73,10 +73,14 @@ jobs:
             mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
             ls pacta-data/2023Q4
 
-      - name: Build Docker image
+      # - name: Build Docker image
+      #   run: |
+      #     cp workflow.transition.monitor/Dockerfile Dockerfile
+      #     docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
+
+      - name: Copy Dockerfile
         run: |
           cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
@@ -92,10 +96,19 @@ jobs:
             echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
             echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
-      - name: Login and Push Docker image
-        run: |
-          echo "$DOCKER_TOKEN" | docker login transitionmonitordockerregistry.azurecr.io --username "$DOCKER_USER" --password-stdin
-          docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
+      - name: build and push docker image
+        uses: RMI-PACTA/actions/.github/workflows/g/w/docker-build-multiarch.yml
+        with:
+          image-name: ${{ inputs.image-name }}
+          registry: transitionmonitordockerregistry.azurecr.io
+          registry-user: ${{ env.DOCKER_USER }}
+        secrets:
+          registry-password: ${{ env.DOCKER_TOKEN }}
+
+      # - name: Login and Push Docker image
+      #   run: |
+      #     echo "$DOCKER_TOKEN" | docker login transitionmonitordockerregistry.azurecr.io --username "$DOCKER_USER" --password-stdin
+      #     docker push "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
       - name: Push Docker `latest` tag
         if: ${{ inputs.push-latest }}

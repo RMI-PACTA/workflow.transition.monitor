@@ -32,8 +32,8 @@ jobs:
       - name: Set current date as env variable
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
-          echo "$NOW" >> $GITHUB_ENV
-          echo foo"$NOW"bar
+          echo "NOW=$NOW" >> $GITHUB_ENV
+          echo "$NOW"
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4

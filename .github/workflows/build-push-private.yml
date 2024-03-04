@@ -84,7 +84,7 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            DOCKER_USER="$(az identity list --query [0].id" --output tsv)" >> "$GITHUB_ENV"
+            DOCKER_USER="$(az identity list --query '[0].id' --output tsv)" >> "$GITHUB_ENV"
             DOCKER_TOKEN="$(az acr login -n transitionmonitordockerregistry --expose-token)" >> "$GITHUB_ENV"
             echo "::add-mask::$DOCKER_USER"
             echo "::add-mask::$DOCKER_TOKEN"

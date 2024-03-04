@@ -73,10 +73,10 @@ jobs:
             mv pacta-data/$pacta_data_share_path pacta-data/2023Q4
             ls pacta-data/2023Q4
 
-      - name: Build Docker image
-        run: |
-          cp workflow.transition.monitor/Dockerfile Dockerfile
-          docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
+      # - name: Build Docker image
+      #   run: |
+      #     cp workflow.transition.monitor/Dockerfile Dockerfile
+      #     docker build . --file Dockerfile --tag "transitionmonitordockerregistry.azurecr.io/${{ inputs.image-name }}:$NOW"
 
         # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - id: sets-a-secret
@@ -84,11 +84,11 @@ jobs:
         run: |
           the_secret=$((RANDOM))
           echo "::add-mask::$the_secret"
-          echo "secret-number=$the_secret"
-          echo "secret-number=$the_secret" >> "$GITHUB_ENV"
+          echo "secretnumber=$the_secret"
+          echo "secretnumber=$the_secret" >> "$GITHUB_ENV"
       - name: Use that secret output (protected by a mask)
         run: |
-          echo "the secret number is $secret-number"
+          echo "the secret number is $secretnumber"
 
       - name: Login to docker registry
         uses: azure/CLI@v1

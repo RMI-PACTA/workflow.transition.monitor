@@ -87,7 +87,7 @@ jobs:
       - name: Identify LABELs in dockerfile
         id: custom-labels
         run: |
-          DOCKERFILE_LABELS="$(grep "^LABEL" Dockerfile | sed 's/^LABEL[[:space:]]*//')"
+          DOCKERFILE_LABELS="$(grep "^LABEL" workflow.transition.monitor/Dockerfile | sed 's/^LABEL[[:space:]]*//')"
           echo "$DOCKERFILE_LABELS"
           echo "DOCKERFILE_LABELS<<EOF" >> $GITHUB_ENV
           echo "$DOCKERFILE_LABELS" >> $GITHUB_ENV
@@ -137,6 +137,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          dockerfile: workflow.transition.monitor/Dockerfile
           # include the labels from the meta step
           labels: ${{ steps.meta.outputs.labels }}
           # the same for annotations

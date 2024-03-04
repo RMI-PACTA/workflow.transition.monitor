@@ -98,8 +98,7 @@ jobs:
             az storage copy \
               --source "$index_share_url"/"${{ env.INDEX_SHARE_PATH }}" \
               --destination "index-data" \
-              --recursive \
-              --exclude-pattern "*.sqlite"
+              --recursive
 
 
       - name: Move files

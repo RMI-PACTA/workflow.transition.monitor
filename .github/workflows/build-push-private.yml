@@ -86,7 +86,7 @@ jobs:
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
-            mv pacta-data/$pacta_data_share_path pacta-data/${{ env.PACTA_DATA_QUARTER }}
+            mv "pacta-data/${{ env.PACTA_DATA_SHARE_PATH }}" "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
             ls pacta-data/${{ env.PACTA_DATA_QUARTER }}
 
       - name: Identify LABELs in dockerfile

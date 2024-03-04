@@ -2,13 +2,13 @@ on:
   pull_request:
 
 jobs:
-  build_docker_image:
-    name: "Call build and push action"
-    uses: ./.github/workflows/build-and-push-Docker-image.yml
-    secrets: inherit
-    with:
-      image-name: workflow.transition.monitor
-      image-tag: pr${{ github.event.pull_request.number }}
+  # build_docker_image:
+  #   name: "Call build and push action"
+  #   uses: ./.github/workflows/build-and-push-Docker-image.yml
+  #   secrets: inherit
+  #   with:
+  #     image-name: workflow.transition.monitor
+  #     image-tag: pr${{ github.event.pull_request.number }}
 
   build_private_docker_image:
     name: "Build private docker image"

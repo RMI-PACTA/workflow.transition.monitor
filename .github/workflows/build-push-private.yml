@@ -138,6 +138,7 @@ jobs:
       - name: Login and Push Docker image
         run: |
           echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+
       # Actually build the image (for a single architecture)!
       - name: Build
         id: build

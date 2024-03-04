@@ -56,15 +56,12 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            pacta_data_share_account="pactadatadev"
-            pacta_data_share_url="workflow-data-preparation-outputs"
+            pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             pacta_data_share_path="2023Q4_20240218T231047Z"
             az version
             az account show
             az storage copy \
-              --account-name "$pacta_data_share_account" \
-              --source-share "$pacta_data_share" \
-              --source-file-path "$pacta_data_share_path" \
+              --source "$pacta_data_share_url"/"$pacta_data_share_path" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"

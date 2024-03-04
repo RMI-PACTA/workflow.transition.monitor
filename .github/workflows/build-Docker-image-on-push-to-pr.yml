@@ -16,7 +16,6 @@ jobs:
     secrets: inherit
     with:
       image-name: gh-actions-test
-      image-tag: pr${{ github.event.pull_request.number }}
 
   # add_comment:
   #   needs: build_docker_image

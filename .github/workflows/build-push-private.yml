@@ -297,6 +297,7 @@ jobs:
         run: |
           ls -lR ${{ env.TEST_DIR}}
           cat ${{ env.TEST_DIR }}/working_dir/foo.txt
+
       # TODO: Upload
       #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248
 

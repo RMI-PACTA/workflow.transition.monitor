@@ -22,6 +22,7 @@ cat /bound/working_dir/30_Processed_Inputs/hello.txt
 
 echo "Running R script"
 Rscript --vanilla web_tool_script_X.R "${1:-1234}" \
+  && Rscript --vanilla web_tool_script_1.R "${1:-1234}"
 
 echo "Listing files after R script"
 ls -lR

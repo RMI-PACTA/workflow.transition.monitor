@@ -187,6 +187,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - docker-build
+    permissions:
+      contents: read
+      id-token: write
     timeout-minutes: 15
 
     steps:

@@ -285,6 +285,13 @@ jobs:
           inlineScript: |
             az storage copy \
               --source "${{ env.TEST_DIR }}" \
-              --acount-name testportfolioresults  \
-              --destination-container "test-results-noanon" \
+              --account-name "pactadatadev"  \
+              --destination-container "ghactions-workflow-transition-monitor-results-full" \
+              --recursive
+
+            az storage copy \
+              --source "${{ env.TEST_DIR }}" \
+              --account-name "pactadatadev"  \
+              --destination-container "ghactions-workflow-transition-monitor-results-full" \
+              --include-pattern "50_Outputs"
               --recursive

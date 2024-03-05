@@ -13,7 +13,6 @@
 
 ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.3.1"
-Copy directory structure
 FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor

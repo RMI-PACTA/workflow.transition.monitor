@@ -224,7 +224,7 @@ jobs:
       - name: Prepare User and results directories
         run: |
           test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
-          TEST_DIR="${{ github.workspace }}/$test_dir_parent/${{ github.run_attempt }}"
+          TEST_DIR="${{ github.workspace }}/$test_dir_parent/${{ matrix.language }}/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
@@ -244,7 +244,7 @@ jobs:
             -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
             -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
             -e "s/{{peer_group}}/bank/" \
-            -e "s/{{language}}/EN/" \
+            -e "s/{{language}}/${{ matrix.language }}/" \
             -e "s/{{project_code}}/$PROJECT_CODE/" \
             -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \

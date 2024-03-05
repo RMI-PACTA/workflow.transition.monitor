@@ -294,7 +294,7 @@ jobs:
             sh -c 'ls -laR /bound/working_dir; echo hello >> /bound/working_dir/foo.txt; ls -laR /bound/working_dir'
 
       - name: Check output
-        run |
+        run: |
           ls -lR ${{ env.TEST_DIR}}
           cat ${{ env.TEST_DIR }}/working_dir/foo.txt
       # TODO: Upload

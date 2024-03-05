@@ -5,6 +5,18 @@ umask 000
 
 cd ./bound
 
-Rscript --vanilla web_tool_script_1.R "${1:-1234}" \
-  && Rscript --vanilla web_tool_script_2.R "${1:-1234}" \
-  && Rscript --no-save --no-restore --no-site-file --no-environ web_tool_script_3.R "${1:-1234}"
+ls -lR
+
+echo "hello world" >> /bound/working_dir/30_Processed_Inputs/hello.txt
+ls -lR
+
+cat /bound/working_dir/30_Processed_Inputs/hello.txt
+
+Rscript --vanilla web_tool_script_X.R "${1:-1234}" \
+ls -lR
+
+cat /bound/working_dir/30_Processed_Inputs/rmi_pacta_2022q4_general/coveragegraphlegend.json
+
+# Rscript --vanilla web_tool_script_1.R "${1:-1234}" \
+#   && Rscript --vanilla web_tool_script_2.R "${1:-1234}" \
+#   && Rscript --no-save --no-restore --no-site-file --no-environ web_tool_script_3.R "${1:-1234}"

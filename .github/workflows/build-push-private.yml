@@ -198,8 +198,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs:
-      - docker-build
+    # needs:
+    #   - docker-build
     permissions:
       contents: read
       id-token: write
@@ -220,7 +220,8 @@ jobs:
 
       - name: Prepare User and results directories
         run: |
-          test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          # test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          # test_dir_parent="$(echo alpine | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR="${{ github.workspace }}/$test_dir_parent/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"

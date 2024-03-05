@@ -62,12 +62,17 @@ jobs:
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
 
+          TEMPLATES_REF="$(jq -rc '.templates_ref' $config_file)"
+          echo "TEMPLATES_REF=$TEMPLATES_REF"
+          echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
+
       - name: Checkout templates.transition.monitor
         uses: actions/checkout@v4
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
           token: ${{ secrets.TEMPLATES_TOKEN }}
+          ref: ${{ env.TEMPLATES_REF }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login

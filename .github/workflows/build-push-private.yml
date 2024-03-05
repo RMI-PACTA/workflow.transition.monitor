@@ -217,13 +217,20 @@ jobs:
 
       - name: Prepare User and results directories
         run: |
-          mkdir user_dir
+          TEST_DIR=:"${{ github.run_id }}/${{ github.run_attempt }}/${{ inputs.image-name }}"
+          mkdir -p "$TEST_DIR"
+          chmod -R 777 "$TEST_DIR"
+          echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
+
+          mkdir -p $TEST_DIR/user_dir
 
           config_file="build/config/${{ inputs.image-name }}.json"
+          cp $config_file $TEST_DIR
           PROJECT_CODE="$(jq -r '.project_code' $config_file)"
           PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
 
-          params_file="working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
+          params_file="$TEST_DIR/working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
+          mkdir -p "$(dirname $params_file)"
           sed \
             -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
             -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
@@ -235,7 +242,9 @@ jobs:
             >> $params_file
           cat "$params_file"
 
-          mv working_dir/20_Raw_Inputs/1234.csv working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv
+          portfolio_file="working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
+          mkdir -p "$(dirname $portfolio_file)"
+          mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -laR
 
       - name: Get credentials for docker registry
@@ -257,6 +266,7 @@ jobs:
 
       - name: Test
         run: |
+          chmod -R 777 "${{ env.TEST_DIR }}"
           docker run \
             --network none \
             --user 1000:1000 \

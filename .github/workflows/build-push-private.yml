@@ -67,7 +67,7 @@ jobs:
           echo "TEMPLATES_REF=$TEMPLATES_REF"
           echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
 
-          LANGUAGES="$(jq -rc '.tags[0]' <<< "$DOCKER_METADATA_OUTPUT_JSON")"
+          LANGUAGES="$(jq -rc '.languages' $config_file)"
           echo "languages=$LANGUAGES"
           echo "languages=$LANGUAGES" >> "$GITHUB_OUTPUT"
 

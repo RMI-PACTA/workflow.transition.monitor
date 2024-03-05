@@ -18,16 +18,16 @@ on:
         value: ${{ jobs.docker-build.outputs.full-image-name }}
 
 jobs:
-  docker-build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    timeout-minutes: 15
-    outputs:
-      full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
+  # docker-build:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+  #   timeout-minutes: 15
+  #   outputs:
+  #     full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
 
-    steps:
+  #   steps:
 
       # - name: Checkout workflow.transition.monitor
       #   uses: actions/checkout@v4
@@ -188,12 +188,12 @@ jobs:
       #     echo "full-image-name=$TAGGED_IMAGE"
       #     echo "full-image-name=$TAGGED_IMAGE" >> "$GITHUB_OUTPUT"
 
-      - name: Export Outputs
-        id: export-outputs
-        run: |
-          TAGGED_IMAGE="transitionmonitordockerregistry.azurecr.io/rmi_pacta_2022q4_general:20240305T171751Z"
-          echo "full-image-name=$TAGGED_IMAGE"
-          echo "full-image-name=$TAGGED_IMAGE" >> "$GITHUB_OUTPUT"
+      # - name: Export Outputs
+      #   id: export-outputs
+      #   run: |
+      #     TAGGED_IMAGE="transitionmonitordockerregistry.azurecr.io/rmi_pacta_2022q4_general:20240305T171751Z"
+      #     echo "full-image-name=$TAGGED_IMAGE"
+      #     echo "full-image-name=$TAGGED_IMAGE" >> "$GITHUB_OUTPUT"
 
 
   test:
@@ -207,13 +207,13 @@ jobs:
 
     steps:
 
-      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      # - name: Azure Login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
@@ -252,22 +252,34 @@ jobs:
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
 
-      - name: Get credentials for docker registry
-        uses: azure/CLI@v1.0.9
-        with:
-          # azcliversion: 2.30.0
-          inlineScript: |
-            # Username is not a placeholder. See https://stackoverflow.com/a/73250630
-            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
-            # echo "::add-mask::$DOCKER_USER"
-            echo "::add-mask::$DOCKER_TOKEN"
-            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
-            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
+      # - name: Get credentials for docker registry
+      #   uses: azure/CLI@v1.0.9
+      #   with:
+      #     # azcliversion: 2.30.0
+      #     inlineScript: |
+      #       # Username is not a placeholder. See https://stackoverflow.com/a/73250630
+      #       DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
+      #       DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+      #       # echo "::add-mask::$DOCKER_USER"
+      #       echo "::add-mask::$DOCKER_TOKEN"
+      #       echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
+      #       echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
-      - name: Login to Registry
-        run: |
-          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+      # - name: Login to Registry
+      #   run: |
+      #     echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+
+        # # set user as host user. See https://github.com/orgs/community/discussions/44243#discussioncomment-5149220
+      # - name: Test
+        # run: |
+        #   chmod -R 777 "${{ env.TEST_DIR }}"
+        #   docker run \
+        #     --network none \
+        #     --user "$UID:$GID" \
+        #     --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
+        #     --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
+        #     ${{ needs.docker-build.outputs.full-image-name }} \
+        #     /bound/bin/run-r-scripts ${{ inputs.image-name }}
 
         # set user as host user. See https://github.com/orgs/community/discussions/44243#discussioncomment-5149220
       - name: Test
@@ -275,11 +287,10 @@ jobs:
           chmod -R 777 "${{ env.TEST_DIR }}"
           docker run \
             --network none \
-            --user "$UID:$GID" \
             --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
             --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
-            ${{ needs.docker-build.outputs.full-image-name }} \
-            /bound/bin/run-r-scripts ${{ inputs.image-name }}
+            alpine:latest \
+            "sh -c 'ls -laR /bound/working_dir; echo hello >> /bound/working_dir/foo.txt'"
 
       # TODO: Upload
       #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248

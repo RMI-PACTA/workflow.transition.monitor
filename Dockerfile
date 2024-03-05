@@ -13,6 +13,7 @@
 
 ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.3.1"
+Copy directory structure
 FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
 
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
@@ -126,6 +127,8 @@ RUN chmod -R a+rwX $WORKFLOW_DIR
 # RUN chmod -R a+rwX $WORKFLOW_DIR && \
     # chmod -R a+rwX $PACTA_DATA_DIR && \
     # chmod -R a+rwX $TEMPLATES_DIR
+
+WORKDIR /
 
 # set the build_version environment variable
 ARG image_tag

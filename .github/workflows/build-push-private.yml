@@ -205,10 +205,6 @@ jobs:
 
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            working_dir
-            build/config/${{ inputs.image-name }}.json
 
       - name: Prepare User and results directories
         run: |

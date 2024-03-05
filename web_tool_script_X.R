@@ -1,9 +1,11 @@
 message("wd: ", getwd())
 
-message("reading file")
 
+message("listing files")
 list.files("/bound/working_dir/10_Parameter_File/")
-x <- readLines("/bound/working_dir/10_Parameter_File/rmi_pacta_2023q4_general_PortfolioParameters.yml")
+
+message("reading file")
+x <- readLines("/bound/working_dir/10_Parameter_File/rmi_pacta_2022q4_general_PortfolioParameters.yml")
 
 cat(x)
 

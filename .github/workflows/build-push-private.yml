@@ -185,6 +185,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    needs:
+      - docker-build
     timeout-minutes: 15
 
     steps:

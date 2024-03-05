@@ -291,8 +291,12 @@ jobs:
             --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
             --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
             alpine:latest \
-            sh -c 'ls -laR /bound/working_dir; echo hello >> /bound/working_dir/foo.txt'
+            sh -c 'ls -laR /bound/working_dir; echo hello >> /bound/working_dir/foo.txt; ls -laR /bound/working_dir'
 
+      - name: Check output
+        run |
+          ls -lR ${{ env.TEST_DIR}}
+          cat ${{ env.TEST_DIR }}/working_dir/foo.txt
       # TODO: Upload
       #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248
 

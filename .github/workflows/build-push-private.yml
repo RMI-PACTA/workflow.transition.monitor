@@ -67,7 +67,7 @@ jobs:
           echo "TEMPLATES_REF=$TEMPLATES_REF"
           echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
 
-          LANGUAGES="$(jq -rc '.languages' $config_file)"
+          LANGUAGES="$(jq -c '.languages' $config_file)"
           echo "languages=$LANGUAGES"
           echo "languages=$LANGUAGES" >> "$GITHUB_OUTPUT"
 

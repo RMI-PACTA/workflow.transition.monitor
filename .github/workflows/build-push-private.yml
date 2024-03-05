@@ -277,3 +277,14 @@ jobs:
       # TODO: Upload
       #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248
 
+      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
+      - name: Upload results to blob store
+        uses: azure/CLI@v1.0.9
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            az storage copy \
+              --source "${{ env.TEST_DIR }}" \
+              --acount-name testportfolioresults  \
+              --destination-container "test-results-noanon" \
+              --recursive

@@ -268,8 +268,8 @@ jobs:
           docker run \
             --network none \
             --user root \
-            --mount "type=bind,source=./${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
-            --mount "type=bind,readonly,source=./${{ env.TEST_DIR }}/user_dir,target=/user_results" \
+            --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
+            --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
             ${{ needs.docker-build.outputs.full-image-name }} \
             /bound/bin/run-r-scripts ${{ inputs.image-name }}
 

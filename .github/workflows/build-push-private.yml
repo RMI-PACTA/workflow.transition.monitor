@@ -239,7 +239,7 @@ jobs:
             >> $params_file
           cat "$params_file"
 
-          portfolio_file="working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
+          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
@@ -272,5 +272,6 @@ jobs:
             ${{ needs.docker-build.outputs.full-image-name }} \
             /bound/bin/run-r-scripts ${{ inputs.image-name }}
 
-
+      # TODO: Upload
+      #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248
 

@@ -221,6 +221,7 @@ jobs:
           echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
 
           mkdir -p $TEST_DIR/user_dir
+          cp -R working_dir $TEST_DIR
 
           config_file="build/config/${{ inputs.image-name }}.json"
           cp $config_file $TEST_DIR

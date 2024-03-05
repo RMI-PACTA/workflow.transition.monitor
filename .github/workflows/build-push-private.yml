@@ -288,6 +288,7 @@ jobs:
           chmod -R 777 "${{ env.TEST_DIR }}"
           docker run \
             --network none \
+            --user "$UID:$GID" \
             --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
             --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
             alpine:latest \

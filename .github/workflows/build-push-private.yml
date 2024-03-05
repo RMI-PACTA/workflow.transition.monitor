@@ -214,9 +214,10 @@ jobs:
       - name: Prepare User and results directories
         run: |
           test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
-          TEST_DIR="$test_dir_parent/${{ github.run_attempt }}"
+          TEST_DIR="${{ github.workspace }}/$test_dir_parent/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
+          echo "TEST_DIR=$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
 
           mkdir -p $TEST_DIR/user_dir

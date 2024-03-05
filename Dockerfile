@@ -122,7 +122,8 @@ COPY workflow.transition.monitor $WORKFLOW_DIR
 #   "
 
 # set permissions for PACTA repos that need local content
-RUN chmod -R a+rwX $WORKFLOW_DIR && #\
+RUN chmod -R a+rwX $WORKFLOW_DIR 
+# RUN chmod -R a+rwX $WORKFLOW_DIR && \
     # chmod -R a+rwX $PACTA_DATA_DIR && \
     # chmod -R a+rwX $TEMPLATES_DIR
 

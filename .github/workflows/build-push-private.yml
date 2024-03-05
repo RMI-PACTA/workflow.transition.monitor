@@ -213,7 +213,8 @@ jobs:
 
       - name: Prepare User and results directories
         run: |
-          TEST_DIR=:"${{ github.run_id }}/${{ github.run_attempt }}/${{ inputs.image-name }}"
+          test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          TEST_DIR="$test_dir_parent/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
@@ -241,7 +242,7 @@ jobs:
           portfolio_file="working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
-          ls -laR
+          ls -lR $TEST_DIR
 
       - name: Get credentials for docker registry
         uses: azure/CLI@v1.0.9

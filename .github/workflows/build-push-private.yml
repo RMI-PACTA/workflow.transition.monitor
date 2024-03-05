@@ -129,7 +129,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             ${{ inputs.additional-image-tags }}
-            ${{ env.NOW }}
+            ${{ env.NOW }},priority=1100
 
       # set up our build environment
       - name: Set up QEMU
@@ -152,7 +152,7 @@ jobs:
             echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
             echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
-      - name: Login and Push Docker image
+      - name: Login to Registry
         run: |
           echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
 
@@ -174,3 +174,83 @@ jobs:
           cache-to: type=gha,mode=min
           # but don't cache the install pacta step.
           no-cache-filters: install-pacta
+
+      - name: Export Outputs
+        id: outputs
+        run: |
+          TAGGED_IMAGE="$(jq -rc '.tags[0]' <<< "$DOCKER_METADATA_OUTPUT_JSON")"
+          echo "full-image-name=$TAGGED_IMAGE"
+          echo "full-image-name=$TAGGED_IMAGE" >> "$GITHUB_OUTPUT"
+
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            working_dir
+            build/config/${{ inputs.image-name }}.json
+
+      - name: Prepare User and results directories
+        run: |
+          mkdir user_dir
+
+          config_file="build/config/${{ inputs.image-name }}.json"
+          PROJECT_CODE="$(jq -r '.project_code' $config_file)"
+          PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
+
+          sed \
+            -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
+            -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
+            -e "s/{{peer_group}}/bank/" \
+            -e "s/{{language}}/en/" \
+            -e "s/{{project_code}}/$PROJECT_CODE/" \
+            -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
+            working_dir/10_Parameter_File/test_PortfolioParameters.yml \
+            >> working_dir/10_Parameter_File/rmi_pacta_2022q4_general_PortfolioParameters.yml
+
+          mv working_dir/20_Raw_Inputs/1234.csv working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv
+          ls -laR
+
+      - name: Get credentials for docker registry
+        uses: azure/CLI@v1.0.9
+        with:
+          # azcliversion: 2.30.0
+          inlineScript: |
+            # Username is not a placeholder. See https://stackoverflow.com/a/73250630
+            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+            # echo "::add-mask::$DOCKER_USER"
+            echo "::add-mask::$DOCKER_TOKEN"
+            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
+            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Login to Registry
+        run: |
+          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+
+      - name: Test
+        run |
+          docker run \
+            --network none \
+            --user 1000:1000 \
+            --mount "type=bind,source=./working_dir,target=/bound/working_dir" \
+            --mount "type=bind,readonly,source=./user_dir,target=/user_results" \
+            ${{ needs.docker-build.outputs.full-image-name }} \
+            /bound/bin/run-r-scripts ${{ inputs.image-name }}
+
+
+

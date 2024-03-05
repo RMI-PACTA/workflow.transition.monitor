@@ -218,6 +218,7 @@ jobs:
           PROJECT_CODE="$(jq -r '.project_code' $config_file)"
           PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
 
+          params_file="working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
           sed \
             -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
             -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
@@ -226,7 +227,8 @@ jobs:
             -e "s/{{project_code}}/$PROJECT_CODE/" \
             -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \
-            >> working_dir/10_Parameter_File/rmi_pacta_2022q4_general_PortfolioParameters.yml
+            >> $params_file
+          cat "$params_file"
 
           mv working_dir/20_Raw_Inputs/1234.csv working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv
           ls -laR

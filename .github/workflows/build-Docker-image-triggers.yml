@@ -1,5 +1,7 @@
 on:
   pull_request:
+  schedule:
+    - cron: '0 0 * * 1,2,3,4,5'
 
 jobs:
   build_docker_image:
@@ -8,9 +10,15 @@ jobs:
     secrets: inherit
     with:
       image-name: workflow.transition.monitor
-      image-tag: pr${{ github.event.pull_request.number }}
+      image-tag: |
+        ${{
+          ${{ github.event_name}} == "pull_request" && pr${{ github.event.pull_request.number }} ||
+          ${{ github.event_name}} == "schedule" && nightly ||
+          ${{ github.sha }}
+        }}
 
   add_comment:
+    if: ${{ ${{github.event_name}} == "pull_request" }}
     needs: build_docker_image
     runs-on: ubuntu-latest
     steps:

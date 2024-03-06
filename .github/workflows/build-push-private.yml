@@ -321,13 +321,13 @@ jobs:
           inlineScript: |
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "$${{ inputs.results-account }}"  \
+              --account-name "${{ inputs.results-account }}"  \
               --destination-container "${{ inputs.results-container }}" \
               --recursive
 
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "$${{ inputs.reports-account }}"  \
+              --account-name "${{ inputs.reports-account }}"  \
               --destination-container "${{ inputs.reports-container }}" \
               --include-path "${{ matrix.language }}/${{ github.run_attempt }}/working_dir/50_Outputs" \
               --recursive

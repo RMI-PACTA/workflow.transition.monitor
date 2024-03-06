@@ -223,8 +223,12 @@ jobs:
 
       - name: Prepare User and results directories
         run: |
-          test_dir_parent="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
-          TEST_DIR="${{ github.workspace }}/$test_dir_parent/${{ matrix.language }}/${{ github.run_attempt }}"
+          test_dir_parent_name="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          TEST_DIR_PARENT="${{ github.workspace }}/$test_dir_parent_name"
+          echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
+          echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
+
+          TEST_DIR="$TEST_DIR_PARENT/${{ matrix.language }}/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
@@ -294,13 +298,13 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             az storage copy \
-              --source "${{ env.TEST_DIR }}" \
+              --source "${{ env.TEST_DIR_PARENT }}" \
               --account-name "pactadatadev"  \
               --destination-container "ghactions-workflow-transition-monitor-results-full" \
               --recursive
 
             az storage copy \
-              --source "${{ env.TEST_DIR }}" \
+              --source "${{ env.TEST_DIR_PARENT }}" \
               --account-name "pactadatadev"  \
               --destination-container "ghactions-workflow-transition-monitor-results-full" \
               --include-pattern "50_Outputs"

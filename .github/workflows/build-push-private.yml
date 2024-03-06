@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 15
     outputs:
       full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
-      languages: ${{ steps.export-outputs.outputs.languages }}
+      test-matrix: ${{ steps.export-outputs.outputs.test-matrix }}
 
     steps:
 
@@ -67,9 +67,9 @@ jobs:
           echo "TEMPLATES_REF=$TEMPLATES_REF"
           echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
 
-          LANGUAGES="$(jq -c '.languages' $config_file)"
-          echo "languages=$LANGUAGES"
-          echo "languages=$LANGUAGES" >> "$GITHUB_OUTPUT"
+          TEST_MATRIX="$(jq -c '.test_matrix' $config_file)"
+          echo "test-matrix=$TEST_MATRIX"
+          echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
 
       - name: Checkout templates.transition.monitor
         uses: actions/checkout@v4
@@ -199,8 +199,7 @@ jobs:
       # fail if any build fails
       fail-fast: true
       # build images in parallel
-      matrix:
-        language: ${{fromJson(needs.docker-build.outputs.languages)}}
+      matrix: ${{ fromJson(needs.docker-build.outputs.test-matrix) }}
     needs:
       - docker-build
     permissions:

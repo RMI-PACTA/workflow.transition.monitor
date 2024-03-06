@@ -4,5 +4,9 @@
   "pacta_data_quarter": "2023Q4",
   "project_code": "GENERAL",
   "templates_ref": "",
-  "languages": ["EN"]
+  "test_matrix": {
+    "language": [
+      "EN"
+    ]
+  }
 }

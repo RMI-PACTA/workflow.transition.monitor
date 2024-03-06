@@ -335,6 +335,6 @@ jobs:
       - name: Export Outputs
         id: export-outputs
         run: |
-          REPORT_URL="https://${{ inputs.report-account }}.blob.core.windows.net/${{ inputs.report-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
+          REPORT_URL="https://${{ inputs.reports-account }}.blob.core.windows.net/${{ inputs.reports-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"

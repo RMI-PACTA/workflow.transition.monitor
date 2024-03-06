@@ -221,8 +221,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      # fail if any build fails
-      fail-fast: true
+      # if one test fails, permit the others to run
+      fail-fast: false
       # build images in parallel
       matrix: ${{ fromJson(needs.docker-build.outputs.test-matrix) }}
     needs:

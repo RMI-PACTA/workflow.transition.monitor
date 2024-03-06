@@ -40,8 +40,8 @@ jobs:
   build_private_docker_image:
     name: "Build private docker image"
     strategy:
-      # fail if any build fails
-      fail-fast: true
+      # if one build or test fails, permit the others to run
+      fail-fast: false
       # build images in parallel
       matrix:
         image-name:

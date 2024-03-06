@@ -359,5 +359,5 @@ jobs:
           path: outputs-${{ inputs.image-name }}
 
       - run: |
-          ls outputs
-          cat outputs/*.txt
+          ls outputs-${{ inputs.image-name }}
+          cat outputs-${{ inputs.image-name }}/*.txt

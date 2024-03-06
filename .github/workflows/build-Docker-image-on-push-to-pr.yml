@@ -14,6 +14,7 @@ jobs:
     needs: build_docker_image
     runs-on: ubuntu-latest
     steps:
+
       - name: Find Comment
         # https://github.com/peter-evans/find-comment
         uses: peter-evans/find-comment@v3
@@ -35,3 +36,20 @@ jobs:
             docker pull ${{ needs.build_docker_image.outputs.full-image-name }}
             ```
           edit-mode: replace
+
+  build_private_docker_image:
+    name: "Build private docker image"
+    strategy:
+      # if one build or test fails, permit the others to run
+      fail-fast: false
+      # build images in parallel
+      matrix:
+        image-name:
+          - rmi_pacta_2023q4_pa2024ch
+          - rmi_pacta_2022q4_general
+          - rmi_pacta_2023q4_general
+    uses: ./.github/workflows/build-push-private.yml
+    secrets: inherit
+    with:
+      image-name: ${{ matrix.image-name }}
+

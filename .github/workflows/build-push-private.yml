@@ -307,5 +307,5 @@ jobs:
               --source "${{ env.TEST_DIR_PARENT }}" \
               --account-name "pactadatadev"  \
               --destination-container "ghactions-workflow-transition-monitor-results-full" \
-              --include-pattern "50_Outputs"
+              --include-pattern "50_Outputs" \
               --recursive

@@ -11,11 +11,35 @@ on:
         required: false
         type: string
         default: transitionmonitordockerregistry.azurecr.io
+      results-account:
+        description: azure storage account for uploading results
+        required: false
+        default: pactadatadev
+        type: string
+      results-container:
+        description: azure blob container for uploading results
+        required: false
+        default: ghactions-workflow-transition-monitor-results-full
+        type: string
+      reports-account:
+        description: azure storage account for uploading repots
+        required: false
+        default: pactadatadev
+        type: string
+      reports-container:
+        description: azure blob container for uploading repots
+        required: false
+        default: ghactions-workflow-transition-monitor-results-reports
+        type: string
+
 
     outputs:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"
         value: ${{ jobs.docker-build.outputs.full-image-name }}
+      report-url:
+        description: "URL to report generated in testing step"
+        value: ${{ jobs.test.outputs.report-url }}
 
 jobs:
   docker-build:
@@ -207,6 +231,8 @@ jobs:
       contents: read
       id-token: write
     timeout-minutes: 15
+    outputs:
+      report-url: ${{ steps.export-outputs.outputs.report-url }}
 
     steps:
 
@@ -224,7 +250,7 @@ jobs:
       - name: Prepare User and results directories
         run: |
           test_dir_parent_name="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
-          TEST_DIR_PARENT="${{ github.workspace }}/$test_dir_parent_name"
+          TEST_DIR_PARENT="$test_dir_parent_name"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
 
@@ -283,8 +309,8 @@ jobs:
           docker run \
             --network none \
             --user root \
-            --mount "type=bind,source=${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
-            --mount "type=bind,readonly,source=${{ env.TEST_DIR }}/user_dir,target=/user_results" \
+            --mount "type=bind,source=${{ github.workspace }}/${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
+            --mount "type=bind,readonly,source=${{ github.workspace }}/${{ env.TEST_DIR }}/user_dir,target=/user_results" \
             ${{ needs.docker-build.outputs.full-image-name }} \
             /bound/bin/run-r-scripts ${{ inputs.image-name }}
 
@@ -298,13 +324,21 @@ jobs:
           inlineScript: |
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "pactadatadev"  \
-              --destination-container "ghactions-workflow-transition-monitor-results-full" \
+              --account-name "$${{ inputs.results-account }}"  \
+              --destination-container "${{ inputs.results-container }}" \
               --recursive
 
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "pactadatadev"  \
-              --destination-container "ghactions-workflow-transition-monitor-results-reports" \
+              --account-name "$${{ inputs.reports-account }}"  \
+              --destination-container "${{ inputs.reports-container }}" \
               --include-path "${{ matrix.language }}/${{ github.run_attempt }}/working_dir/50_Outputs" \
               --recursive
+
+      - name: Export Outputs
+        id: export-outputs
+        run: |
+          REPORT_URL="https://${{ inputs.report-account }}.blob.core.windows.net/${{ inputs.report-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
+          echo "report-url=$REPORT_URL"
+          echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+

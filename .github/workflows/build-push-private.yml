@@ -314,9 +314,6 @@ jobs:
             ${{ needs.docker-build.outputs.full-image-name }} \
             /bound/bin/run-r-scripts ${{ inputs.image-name }}
 
-      # TODO: Upload
-      #   https://stackoverflow.com/questions/55352689/access-a-blob-file-via-uri-over-a-web-browser-using-new-aad-based-access-control/55368248#55368248
-
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload results to blob store
         uses: azure/CLI@v1.0.9
@@ -341,4 +338,3 @@ jobs:
           REPORT_URL="https://${{ inputs.report-account }}.blob.core.windows.net/${{ inputs.report-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
-

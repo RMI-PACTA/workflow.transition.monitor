@@ -38,6 +38,10 @@ jobs:
       - name: Prepare environment
         id: prepare
         run: |
+          NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
+          echo "NOW=$NOW" >> $GITHUB_ENV
+          echo "$NOW"
+
           registry_image=$(
             echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
             tr '[:upper:]' '[:lower:]' \
@@ -137,6 +141,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             ${{ inputs.additional-image-tags }}
+            ${{ env.NOW }},priority=1100
 
       # set up our build environment
       - name: Set up QEMU

@@ -338,3 +338,26 @@ jobs:
           REPORT_URL="https://${{ inputs.reports-account }}.blob.core.windows.net/${{ inputs.reports-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+
+          mkdir outputs
+          echo "$REPORT_URL" >> outputs/${{ inputs.image-name }}.txt
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: outputs
+          path: outputs/*.txt
+
+  collect:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Load outputs
+        uses: actions/download-artifact@v3
+        with:
+          name: outputs
+          path: outputs
+
+      - run: |
+          ls outputs
+          cat outputs/*.txt

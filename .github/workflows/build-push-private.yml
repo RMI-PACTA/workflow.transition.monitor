@@ -306,6 +306,6 @@ jobs:
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \
               --account-name "pactadatadev"  \
-              --destination-container "ghactions-workflow-transition-monitor-results-full" \
+              --destination-container "ghactions-workflow-transition-monitor-results-reports" \
               --include-pattern "50_Outputs" \
               --recursive

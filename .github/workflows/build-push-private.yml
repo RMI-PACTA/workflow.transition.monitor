@@ -295,7 +295,6 @@ jobs:
       - name: Upload results to blob store
         uses: azure/CLI@v1.0.9
         with:
-          # azcliversion: 2.30.0
           inlineScript: |
             az storage copy \
               --source "${{ env.TEST_DIR_PARENT }}" \

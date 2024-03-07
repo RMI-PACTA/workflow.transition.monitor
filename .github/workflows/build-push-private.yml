@@ -101,7 +101,7 @@ jobs:
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
-          token: ${{ secrets.TEMPLATES_TOKEN }}
+          token: ${{ secrets.REPO_PAT }}
           ref: ${{ env.TEMPLATES_REF }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
@@ -160,6 +160,7 @@ jobs:
             ${{ env.DOCKERFILE_LABELS }}
           tags: |
             type=schedule,enable=true,pattern={{date 'YYYYMMDD[T]HHmmss[Z]' tz='UTC'}}
+            type=schedule,enable=true,pattern=nightly,priority=950
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
             type=ref,event=tag

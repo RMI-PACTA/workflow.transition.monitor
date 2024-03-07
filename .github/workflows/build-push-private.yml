@@ -346,7 +346,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: outputs
-          path: outputs-${{ inputs.image-name }}/*.txt
+          path: outputs-${{ inputs.image-name }}/
 
   collect:
     runs-on: ubuntu-latest

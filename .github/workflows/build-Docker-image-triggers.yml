@@ -14,17 +14,17 @@ jobs:
       packages: write
       contents: read
     with:
-      image-name: workflow.transition.monitor
+      image-name: ${{ github.event.repository.name }}
       image-tag: |
         ${{
-          ${{ github.event_name}} == "pull_request" && pr${{ github.event.pull_request.number }} ||
-          ${{ github.event_name}} == "schedule" && nightly ||
-          ${{ github.event_name}} == "push" && ${{ github.ref_name }} ||
-          ${{ github.sha }}
+          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+          github.event_name == 'schedule' && 'nightly' ||
+          github.event_name == 'push' && github.ref_name ||
+          github.sha 
         }}
 
   add_comment:
-    if: ${{ ${{github.event_name}} == "pull_request" }}
+    if: ${{ github.event_name == 'pull_request' }}
     needs: build_docker_image
     runs-on: ubuntu-latest
     steps:

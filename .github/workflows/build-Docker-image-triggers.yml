@@ -10,6 +10,9 @@ jobs:
     name: "Call build and push action"
     uses: ./.github/workflows/build-and-push-Docker-image.yml
     secrets: inherit
+    permissions:
+      packages: write
+      contents: read
     with:
       image-name: workflow.transition.monitor
       image-tag: |

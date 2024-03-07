@@ -343,7 +343,7 @@ jobs:
           mkdir outputs-${{ inputs.image-name }}
           echo "$REPORT_URL" >> outputs-${{ inputs.image-name }}/${{ matrix.language }}.txt
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: outputs
           path: outputs-${{ inputs.image-name }}/*.txt
@@ -352,9 +352,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Load outputs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: outputs
           path: outputs-${{ inputs.image-name }}

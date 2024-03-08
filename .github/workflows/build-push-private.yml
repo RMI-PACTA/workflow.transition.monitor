@@ -274,7 +274,7 @@ jobs:
           sed \
             -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
             -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
-            -e "s/{{peer_group}}/bank/" \
+            -e "s/{{peer_group}}/other/" \
             -e "s/{{language}}/${{ matrix.language }}/" \
             -e "s/{{project_code}}/$PROJECT_CODE/" \
             -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \

@@ -340,8 +340,8 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
-          mkdir outputs-${{ inputs.image-name }}
           artifact_filename="outputs/${{ inputs.image-name }}-${{ matrix.language }}.txt"
+          mkdir -p "$(dirname $artifact_filename)"
           echo "artifact-filename=$artifact_filename"
           echo "artifact-filename=$artifact_filename" >> "$GITHUB_OUTPUT"
           echo "$REPORT_URL" >> "$artifact_filename"

@@ -9,6 +9,16 @@
       "EN",
       "DE",
       "FR"
+    ],
+    "peer_group": [
+      "insurance",
+      "bank",
+      "pension_fund",
+      "asset_manager",
+      "civil_society",
+      "politician",
+      "researcher",
+      "other"
     ]
   }
 }

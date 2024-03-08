@@ -357,7 +357,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: outputs
-          path: outputs/${{ inputs.image-name }}-${{ matrix.language }}.txt
+          path: outputs/
 
       - run: |
           ls outputs-${{ inputs.image-name }}

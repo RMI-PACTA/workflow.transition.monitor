@@ -340,13 +340,20 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
-          mkdir outputs-${{ inputs.image-name }}
-          echo "$REPORT_URL" >> outputs-${{ inputs.image-name }}/${{ matrix.language }}-${{ matrix.peer_group }}.txt
+          artifact_id="report-outputs-${{ inputs.image-name }}-${{ matrix.language }}-${{ matrix.peer_group }}"
+          echo "artifact-id=$artifact_id"
+          echo "artifact-id=$artifact_id" >> "$GITHUB_ENV"
+
+          artifact_filename="outputs/$artifact_id.txt"
+          mkdir -p "$(dirname $artifact_filename)"
+          echo "artifact-filename=$artifact_filename"
+          echo "artifact-filename=$artifact_filename" >> "$GITHUB_ENV"
+          echo "$REPORT_URL" >> "$artifact_filename"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: outputs
-          path: outputs-${{ inputs.image-name }}/*.txt
+          name: ${{ env.artifact-id }}
+          path: ${{ env.artifact-filename }}
 
   collect:
     runs-on: ubuntu-latest
@@ -356,9 +363,10 @@ jobs:
       - name: Load outputs
         uses: actions/download-artifact@v4
         with:
-          name: outputs
-          path: outputs-${{ inputs.image-name }}
+          pattern: "report-outputs-*"
+          merge-multiple: true
+          path: outputs/
 
       - run: |
-          ls outputs-${{ inputs.image-name }}
-          cat outputs-${{ inputs.image-name }}/*.txt
+          ls outputs/
+          cat outputs/*.txt

@@ -340,16 +340,20 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
-          artifact_filename="outputs/${{ inputs.image-name }}-${{ matrix.language }}.txt"
+          artifact_id="report-outputs-${{ inputs.image-name }}-${{ matrix.language }}"
+          echo "artifact-id=$artifact_id"
+          echo "artifact-id=$artifact_id" >> "$GITHUB_ENV"
+
+          artifact_filename="outputs/$artifact_id.txt"
           mkdir -p "$(dirname $artifact_filename)"
           echo "artifact-filename=$artifact_filename"
-          echo "artifact-filename=$artifact_filename" >> "$GITHUB_OUTPUT"
+          echo "artifact-filename=$artifact_filename" >> "$GITHUB_ENV"
           echo "$REPORT_URL" >> "$artifact_filename"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: outputs
-          path: ${{ steps.export-outputs.outputs.artifact-filename }}
+          name: ${{ env.artifact-id }}
+          path: ${{ env.artifact-filename }}
 
   collect:
     runs-on: ubuntu-latest
@@ -359,7 +363,7 @@ jobs:
       - name: Load outputs
         uses: actions/download-artifact@v4
         with:
-          name: outputs
+          name: "report-outputs-*"
           path: outputs/
 
       - run: |

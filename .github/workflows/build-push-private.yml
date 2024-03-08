@@ -341,12 +341,15 @@ jobs:
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
           mkdir outputs-${{ inputs.image-name }}
-          echo "$REPORT_URL" >> outputs-${{ inputs.image-name }}/${{ matrix.language }}.txt
+          artifact_filename="outputs/${{ inputs.image-name }}-${{ matrix.language }}.txt"
+          echo "artifact-filename=$artifact_filename"
+          echo "artifact-filename=$artifact_filename" >> "$GITHUB_OUTPUT"
+          echo "$REPORT_URL" >> "$artifact_filename"
 
       - uses: actions/upload-artifact@v4
         with:
           name: outputs
-          path: outputs/${{ inputs.image-name }}-${{ matrix.language }}.txt
+          path: ${{ steps.export-outputs.outputs.artifact-filename }}
 
   collect:
     runs-on: ubuntu-latest

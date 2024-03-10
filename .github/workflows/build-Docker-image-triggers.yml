@@ -1,3 +1,5 @@
+name: Docker build
+
 on:
   pull_request:
   push:

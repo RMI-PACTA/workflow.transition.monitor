@@ -255,7 +255,7 @@ jobs:
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
 
-          TEST_DIR="$TEST_DIR_PARENT/${{ matrix.language }}/${{ github.run_attempt }}"
+          TEST_DIR="$TEST_DIR_PARENT/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
@@ -273,8 +273,8 @@ jobs:
           mkdir -p "$(dirname $params_file)"
           sed \
             -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
-            -e "s/{{investor_name}}/${{ inputs.image-name }}-INVESTOR/" \
-            -e "s/{{peer_group}}/other/" \
+            -e "s/{{investor_name}}/${{ inputs.image-name }}-${{ matrix.peer_group }}-INVESTOR/" \
+            -e "s/{{peer_group}}/${{ matrix.peer_group }}/" \
             -e "s/{{language}}/${{ matrix.language }}/" \
             -e "s/{{project_code}}/$PROJECT_CODE/" \
             -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
@@ -330,7 +330,7 @@ jobs:
               --source "${{ env.TEST_DIR_PARENT }}" \
               --account-name "${{ inputs.reports-account }}"  \
               --destination-container "${{ inputs.reports-container }}" \
-              --include-path "${{ matrix.language }}/${{ github.run_attempt }}/working_dir/50_Outputs" \
+              --include-path "${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs" \
               --recursive
 
       - name: Export Outputs
@@ -340,7 +340,7 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
-          artifact_id="report-outputs-${{ inputs.image-name }}-${{ matrix.language }}"
+          artifact_id="report-outputs-${{ inputs.image-name }}-${{ matrix.language }}-${{ matrix.peer_group }}"
           echo "artifact-id=$artifact_id"
           echo "artifact-id=$artifact_id" >> "$GITHUB_ENV"
 

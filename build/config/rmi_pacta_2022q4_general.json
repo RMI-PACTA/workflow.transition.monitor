@@ -7,6 +7,9 @@
   "test_matrix": {
     "language": [
       "EN"
+    ],
+    "peer_group": [
+      "other"
     ]
   }
 }

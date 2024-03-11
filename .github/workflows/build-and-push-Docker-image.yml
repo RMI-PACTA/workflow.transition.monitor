@@ -55,8 +55,8 @@ jobs:
         run: |
           mkdir -p /tmp/comment-json
           json_filename=$( \
-            echo "comment-json-merge-${{ inputs.image-name }}-${{ inputs.image-tag }}.json" | \
-            tr '/' '-' \
+            echo "comment-json-merge-${{ inputs.image-name }}-build-push.json" | \
+            tr '/.' '-' \
             )
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
           json_file="/tmp/comment-json/$json_filename"

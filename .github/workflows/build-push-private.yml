@@ -340,33 +340,26 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
-          artifact_id="report-outputs-${{ inputs.image-name }}-${{ matrix.language }}-${{ matrix.peer_group }}"
-          echo "artifact-id=$artifact_id"
-          echo "artifact-id=$artifact_id" >> "$GITHUB_ENV"
+          mkdir -p /tmp/comment-json
+          json_filename=$( \
+            echo "comment-json-merge-${{ inputs.image-name }}-${{ inputs.registry }}-${{ matrix.language }}-${{ matrix.peer_group }}.json" | \
+            tr '/' '-' \
+            )
+          echo "json-filename=$json_filename" >> "$GITHUB_ENV"
+          json_file="/tmp/comment-json/$json_filename"
+          jq -n '{
+            "commit_time": ${{ github.event.pull_request.updated_at }}
+            "git_sha": "${{ github.event.pull_request.head.sha }}",
+            "image": "${{ steps.export-outputs.outputs.full-image-name }}"
+            "language": "${{ matrix.language }}",
+            "peer_group": "${ matrix.peer_group }",
+            "report": "[Report]($REPORT_URL)"
+          }' >> $json_file
 
-          artifact_filename="outputs/$artifact_id.txt"
-          mkdir -p "$(dirname $artifact_filename)"
-          echo "artifact-filename=$artifact_filename"
-          echo "artifact-filename=$artifact_filename" >> "$GITHUB_ENV"
-          echo "$REPORT_URL" >> "$artifact_filename"
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload comment JSON
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.artifact-id }}
-          path: ${{ env.artifact-filename }}
-
-  collect:
-    runs-on: ubuntu-latest
-    needs: [test]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Load outputs
-        uses: actions/download-artifact@v4
-        with:
-          pattern: "report-outputs-*"
-          merge-multiple: true
-          path: outputs/
-
-      - run: |
-          ls outputs/
-          cat outputs/*.txt
+          name: ${{ env.json-filename }}
+          path: /tmp/comment-json/*
+          if-no-files-found: error
+          retention-days: 1

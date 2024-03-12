@@ -339,6 +339,7 @@ jobs:
           REPORT_URL="https://${{ inputs.reports-account }}.blob.core.windows.net/${{ inputs.reports-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+          echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
 
       - name: Prepare comment artifact
         id: prepare-artifact
@@ -353,10 +354,10 @@ jobs:
           jq -n '{
             "commit_time": "${{ github.event.pull_request.updated_at }}",
             "git_sha": "${{ github.event.pull_request.head.sha }}",
-            "image": "${{ jobs.docker-build.outputs.full-image-name }}",
+            "image": "${{ needs.docker-build.outputs.full-image-name }}",
             "language": "${{ matrix.language }}",
             "peer_group": "${{ matrix.peer_group }}",
-            "report": "[Report](${{ steps.export-outputs.outputs.report_url }})"
+            "report": "[Report](${{ env.report-url }})"
           }' >> $json_file
 
       - name: Upload comment JSON

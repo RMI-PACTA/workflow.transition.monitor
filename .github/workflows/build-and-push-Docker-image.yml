@@ -56,10 +56,12 @@ jobs:
           mkdir -p /tmp/comment-json
           json_filename=$( \
             echo "comment-json-merge-${{ inputs.image-name }}-build-push.json" | \
-            tr '/.' '-' \
+            tr '/' '-' \
             )
+          echo "json-filename=$json_filename"
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
           json_file="/tmp/comment-json/$json_filename"
+          echo "json-file=$json_file"
           jq -n '{
             "commit_time": "${{ github.event.pull_request.updated_at }}",
             "git_sha": "${{ github.event.pull_request.head.sha }}",

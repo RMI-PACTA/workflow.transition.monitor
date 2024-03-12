@@ -340,6 +340,9 @@ jobs:
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
 
+      - name: Prepare comment artifact
+        id: prepare-artifact
+        run: |
           mkdir -p /tmp/comment-json
           json_filename=$( \
             echo "comment-json-merge-${{ inputs.image-name }}-${{ inputs.registry }}-${{ matrix.language }}-${{ matrix.peer_group }}.json" | \
@@ -350,10 +353,10 @@ jobs:
           jq -n '{
             "commit_time": "${{ github.event.pull_request.updated_at }}",
             "git_sha": "${{ github.event.pull_request.head.sha }}",
-            "image": "${{ steps.export-outputs.outputs.full-image-name }}",
+            "image": "${{ jobs.docker-build.outputs.full-image-name }}",
             "language": "${{ matrix.language }}",
-            "peer_group": "${ matrix.peer_group }",
-            "report": "[Report]($REPORT_URL)"
+            "peer_group": "${{ matrix.peer_group }}",
+            "report": "[Report](${{ steps.export-outputs.outputs.report_url }})"
           }' >> $json_file
 
       - name: Upload comment JSON

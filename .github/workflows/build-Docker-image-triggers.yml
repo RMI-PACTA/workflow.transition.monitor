@@ -45,7 +45,7 @@ jobs:
 
   add-comment:
     if: ${{ github.event_name == 'pull_request' }}
-    uses: RMI-PACTA/actions/.github/workflows/add-comment-history.yml@cbb8f138b56fabd0215e73b42800ca15793d8ff9
+    uses: RMI-PACTA/actions/.github/workflows/add-comment-history.yml@main
     needs: [build_docker_image, build_private_docker_image]
     with:
       header: "Docker build status"

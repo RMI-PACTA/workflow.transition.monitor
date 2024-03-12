@@ -354,10 +354,10 @@ jobs:
           jq -n '{
             "commit_time": "${{ github.event.pull_request.updated_at }}",
             "git_sha": "${{ github.event.pull_request.head.sha }}",
-            "image": "${{ needs.docker-build.outputs.full-image-name }}",
             "language": "${{ matrix.language }}",
             "peer_group": "${{ matrix.peer_group }}",
-            "report": "[Report](${{ env.report-url }})"
+            "report": "[Report](${{ env.report-url }})",
+            "image": "${{ needs.docker-build.outputs.full-image-name }}"
           }' >> $json_file
 
       - name: Upload comment JSON

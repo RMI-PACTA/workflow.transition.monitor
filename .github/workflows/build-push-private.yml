@@ -267,7 +267,9 @@ jobs:
           config_file="build/config/${{ inputs.image-name }}.json"
           cp $config_file $TEST_DIR
           PROJECT_CODE="$(jq -r '.project_code' $config_file)"
+          echo "PROJECT_CODE=$PROJECT_CODE" >> "$GITHUB_ENV"
           PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
+          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
 
           params_file="$TEST_DIR/working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
           mkdir -p "$(dirname $params_file)"
@@ -354,6 +356,8 @@ jobs:
           jq -n '{
             "commit_time": "${{ github.event.pull_request.updated_at }}",
             "git_sha": "${{ github.event.pull_request.head.sha }}",
+            "project_code": "${{ env.PROJECT_CODE }}",
+            "holdings_date": "${{ env.PACTA_DATA_QUARTER }}",
             "language": "${{ matrix.language }}",
             "peer_group": "${{ matrix.peer_group }}",
             "report": "[Report](${{ env.report-url }})",

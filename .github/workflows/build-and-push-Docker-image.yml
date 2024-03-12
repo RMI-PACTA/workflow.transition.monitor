@@ -65,3 +65,11 @@ jobs:
             "git_sha": "${{ github.event.pull_request.head.sha }}",
             "image": "${{ steps.push-image.outputs.full-image-name }}"
           }' >> $json_file
+
+      - name: Upload comment JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.json-filename }}
+          path: /tmp/comment-json/*
+          if-no-files-found: error
+          retention-days: 1

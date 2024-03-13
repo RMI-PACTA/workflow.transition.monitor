@@ -37,6 +37,7 @@ Imports:
     here,
     jsonlite,
     knitr,
+    logger,
     pacta.executive.summary, 
     pacta.portfolio.allocate, 
     pacta.portfolio.audit, 

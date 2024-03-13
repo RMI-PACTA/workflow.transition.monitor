@@ -1,0 +1,22 @@
+{
+  "data_share_path": "2023Q4_20240301T105304Z",
+  "index_share_path": "2023Q4_20240301T145404Z",
+  "pacta_data_quarter": "2023Q4",
+  "project_code": "PA2024CH",
+  "templates_ref": "",
+  "test_matrix": {
+    "language": [
+      "EN",
+      "DE",
+      "FR"
+    ],
+    "peer_group": [
+      "pension_fund",
+      "asset_manager",
+      "civil_society",
+      "politician",
+      "researcher",
+      "other"
+    ]
+  }
+}

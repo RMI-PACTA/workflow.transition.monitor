@@ -1,0 +1,15 @@
+{
+  "data_share_path": "2022Q4_20240218T194337Z",
+  "index_share_path": "2022Q4_20240304T205931Z",
+  "pacta_data_quarter": "2022Q4",
+  "project_code": "GENERAL",
+  "templates_ref": "",
+  "test_matrix": {
+    "language": [
+      "EN"
+    ],
+    "peer_group": [
+      "other"
+    ]
+  }
+}

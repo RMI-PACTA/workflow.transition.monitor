@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: workflow.transition.monitor
 
@@ -49,3 +49,29 @@ jobs:
           docker tag ${{ inputs.image-name }} $full_image_name
           docker push $full_image_name
           echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
+
+      - name: Export Outputs
+        id: export-outputs
+        run: |
+          mkdir -p /tmp/comment-json
+          json_filename=$( \
+            echo "comment-json-merge-${{ inputs.image-name }}-build-push.json" | \
+            tr '/' '-' \
+            )
+          echo "json-filename=$json_filename"
+          echo "json-filename=$json_filename" >> "$GITHUB_ENV"
+          json_file="/tmp/comment-json/$json_filename"
+          echo "json-file=$json_file"
+          jq -n '{
+            "commit_time": "${{ github.event.pull_request.updated_at }}",
+            "git_sha": "${{ github.event.pull_request.head.sha }}",
+            "image": "${{ steps.push-image.outputs.full-image-name }}"
+          }' >> $json_file
+
+      - name: Upload comment JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.json-filename }}
+          path: /tmp/comment-json/*
+          if-no-files-found: error
+          retention-days: 1

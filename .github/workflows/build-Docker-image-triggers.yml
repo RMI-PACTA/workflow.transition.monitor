@@ -35,7 +35,6 @@ jobs:
       # build images in parallel
       matrix:
         image-name:
-          - rmi_pacta_2023q4_pa2024ch
           - rmi_pacta_2022q4_general
           - rmi_pacta_2023q4_general
     uses: ./.github/workflows/build-push-private.yml

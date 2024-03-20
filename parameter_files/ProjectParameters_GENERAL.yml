@@ -59,6 +59,9 @@ default:
         - IPR2021
         - ISF2021
         - WEO2022
+        - GECO2023
+        - ISF2023
+        - WEO2023
 
     scenario_geography_list:
         - Global

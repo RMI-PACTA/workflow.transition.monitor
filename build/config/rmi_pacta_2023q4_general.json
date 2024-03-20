@@ -3,7 +3,7 @@
   "index_share_path": "2023Q4_20240301T145404Z",
   "pacta_data_quarter": "2023Q4",
   "project_code": "GENERAL",
-  "templates_ref": "",
+  "templates_ref": "feature/text-updates",
   "test_matrix": {
     "language": [
       "EN"

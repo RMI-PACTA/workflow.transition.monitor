@@ -25,7 +25,12 @@ set_webtool_paths(portfolio_root_dir)
 
 set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
-set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
+if (project_code == "GENERAL") {
+  proj_param_filename <- paste0("ProjectParameters_", project_code, "_", port_holdings_date, ".yml")
+} else {
+  proj_param_filename <- paste0("ProjectParameters_", project_code, ".yml")
+}
+set_project_parameters(file.path(working_location, "parameter_files", proj_param_filename))
 
 # need to define an alternative location for data files
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)

@@ -1,0 +1,58 @@
+default:
+
+    paths:
+        data_location_ext: ../pacta-data/2023Q4/
+
+    reporting:
+        project_report_name: general
+        display_currency: USD
+        currency_exchange_value: 1
+
+    parameters:
+        start_year: 2023
+        horizon_year: 5
+        select_scenario: WEO2023_NZE_2050
+        scenario_other: WEO2023_NZE_2050
+        portfolio_allocation_method: portfolio_weight
+        scenario_geography: Global
+
+    methodology:
+        has_map: TRUE
+        has_revenue: FALSE
+        has_credit: FALSE
+        inc_emissionfactors: TRUE
+
+    sectors:
+        tech_roadmap_sectors:
+            - Power
+            - Automotive
+            - Oil&Gas
+            - Coal
+        pacta_sectors_not_analysed:
+            - Steel
+            - Aviation
+            - Cement
+        green_techs:
+            - RenewablesCap
+            - HydroCap
+            - NuclearCap
+            - Hybrid
+            - Electric
+            - FuelCell
+            - Electric Arc Furnace
+
+    scenario_sources_list:
+        - GECO2023
+        - ISF2023
+        - WEO2023
+
+    scenario_geography_list:
+        - Global
+        - GlobalAggregate
+        - NonOECD
+        - OECD
+
+    equity_market_list:
+        - GlobalMarket
+        - DevelopedMarket
+        - EmergingMarket

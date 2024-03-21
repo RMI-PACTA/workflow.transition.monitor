@@ -189,7 +189,7 @@ sector_order <- readr::read_csv(
 
 # combine config files to send to create_interactive_report()
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
-project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
+
 pacta_data_public_manifest <-
   list(
     creation_time_date = jsonlite::read_json(file.path(analysis_inputs_path, "manifest.json"))$creation_time_date,

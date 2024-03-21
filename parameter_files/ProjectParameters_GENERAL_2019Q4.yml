@@ -1,5 +1,8 @@
 default:
 
+    paths:
+        data_location_ext: ../pacta-data/2019Q4/
+
     reporting:
         project_report_name: general
         display_currency: USD

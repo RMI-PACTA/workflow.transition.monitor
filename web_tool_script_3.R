@@ -24,7 +24,13 @@ set_webtool_paths(portfolio_root_dir)
 
 set_portfolio_parameters(file_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")))
 
-set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
+proj_param_filename <- ifelse(
+  project_code == "GENERAL",
+  paste0("ProjectParameters_", project_code, "_", port_holdings_date, ".yml"),
+  proj_param_filename <- paste0("ProjectParameters_", project_code, ".yml")
+)
+project_config_path <- file.path(working_location, "parameter_files", proj_param_filename)
+set_project_parameters(project_config_path)
 
 analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)
 
@@ -183,7 +189,7 @@ sector_order <- readr::read_csv(
 
 # combine config files to send to create_interactive_report()
 portfolio_config_path <- file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml"))
-project_config_path <- file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml"))
+
 pacta_data_public_manifest <-
   list(
     creation_time_date = jsonlite::read_json(file.path(analysis_inputs_path, "manifest.json"))$creation_time_date,

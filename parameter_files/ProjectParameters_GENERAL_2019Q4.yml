@@ -1,28 +1,26 @@
 default:
 
-    paths:
-        data_location_ext: ../pacta-data/2019Q4/
-
     reporting:
         project_report_name: general
         display_currency: USD
         currency_exchange_value: 1
 
     parameters:
-        timestamp: 2022Q4
-        dataprep_timestamp: 2022Q4
-        start_year: 2022
         horizon_year: 5
-        select_scenario: WEO2022_NZE_2050
-        scenario_other: GECO2022_1.5C
+        select_scenario: WEO2019_SDS
+        scenario_auto: ETP2017_B2DS
+        scenario_other: ETP2017_B2DS
+        scenario_shipping: ETP2017_B2DS
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 
     methodology:
-        has_map: TRUE
-        has_revenue: FALSE
-        has_credit: FALSE
-        inc_emissionfactors: TRUE
+        has_map: yes
+        has_sb: no
+        has_revenue: no
+        has_credit: no
+        inc_emissionfactors: yes
+        inc_stresstest: yes
 
     sectors:
         tech_roadmap_sectors:
@@ -41,7 +39,11 @@ default:
             - Hybrid
             - Electric
             - FuelCell
-            - Electric Arc Furnace
+            - Hybrid_HDV
+            - Electric_HDV
+            - FuelCell_HDV
+            - Dc-Electric Arc Furnace
+            - Ac-Electric Arc Furnace
         alignment_techs:
             - RenewablesCap
             - CoalCap
@@ -51,6 +53,10 @@ default:
             - Electric
             - ICE
 
+    stress_test:
+        shock_year: 2030
+        price_data_version: 2021Q1
+
     asset_types:
         - Equity
         - Bonds
@@ -58,10 +64,11 @@ default:
         - Funds
 
     scenario_sources_list:
-        - GECO2022
+        - ETP2017
+        - WEO2019
+        - WEO2020
+        - GECO2019
         - IPR2021
-        - ISF2021
-        - WEO2022
 
     scenario_geography_list:
         - Global
@@ -73,3 +80,7 @@ default:
         - GlobalMarket
         - DevelopedMarket
         - EmergingMarket
+
+    grouping_variables:
+        - investor_name
+        - portfolio_name

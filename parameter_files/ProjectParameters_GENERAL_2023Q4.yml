@@ -11,8 +11,8 @@ default:
     parameters:
         start_year: 2023
         horizon_year: 5
-        select_scenario: WEO2023_NZE_2050
-        scenario_other: WEO2023_NZE_2050
+        select_scenario: WEO2023_NZE
+        scenario_other: WEO2023_NZE
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global
 

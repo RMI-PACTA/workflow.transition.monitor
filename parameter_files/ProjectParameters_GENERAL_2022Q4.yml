@@ -11,7 +11,7 @@ default:
     parameters:
         start_year: 2022
         horizon_year: 5
-        select_scenario: WEO2022_NZE
+        select_scenario: WEO2022_NZE_2050
         scenario_other: GECO2022_1.5C
         portfolio_allocation_method: portfolio_weight
         scenario_geography: Global

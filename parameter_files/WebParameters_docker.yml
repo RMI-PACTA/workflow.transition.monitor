@@ -1,6 +1,5 @@
 default:
     paths:
-        project_location_ext: /bound/
         data_location_ext: /pacta-data/2021Q4/
         template_location: /templates.transition.monitor/
         user_data_location: /user_results/

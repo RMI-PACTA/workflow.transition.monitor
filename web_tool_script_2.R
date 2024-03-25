@@ -42,6 +42,15 @@ unlink(file.path(results_path, portfolio_name_ref_all, "*"), force = TRUE, recur
 # run again so output folders are available after deleting past results
 create_portfolio_subfolders(portfolio_name_ref_all)
 
+source("R/utils.R")
+merge_configs_and_export_environment_info(
+  portfolio_config_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")),
+  project_config_path = project_config_path,
+  data_manifest_path = file.path(analysis_inputs_path, "manifest.json"),
+  dir = log_path,
+  filename = "environment_info_webtool2.json"
+)
+
 
 # quit if there's no relevant PACTA assets -------------------------------------
 

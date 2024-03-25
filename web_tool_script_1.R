@@ -39,6 +39,15 @@ analysis_inputs_path <- set_analysis_inputs_path(data_location_ext)
 # To save, files need to go in the portfolio specific folder, created here
 create_portfolio_subfolders(portfolio_name_ref_all = portfolio_name_ref_all, project_location = project_location)
 
+source("R/utils.R")
+merge_configs_and_export_environment_info(
+  portfolio_config_path = file.path(par_file_path, paste0(portfolio_name_ref_all, "_PortfolioParameters.yml")),
+  project_config_path = project_config_path,
+  data_manifest_path = file.path(analysis_inputs_path, "manifest.json"),
+  dir = log_path,
+  filename = "environment_info_webtool1.json"
+)
+
 
 # load necessary input data ----------------------------------------------------
 

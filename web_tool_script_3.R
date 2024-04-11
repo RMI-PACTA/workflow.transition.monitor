@@ -220,7 +220,7 @@ template_dir_name <- paste(tolower(project_report_name), tolower(language_select
 template_dir <- file.path(template_path, template_dir_name)
 
 select_scenario_other <- scenario_other
-twodi_sectors <- sector_list
+pacta_sectors <- sector_list
 
 create_interactive_report(
   template_dir = template_dir,
@@ -236,7 +236,7 @@ create_interactive_report(
   select_scenario_other = select_scenario_other,
   portfolio_allocation_method = portfolio_allocation_method,
   scenario_geography = scenario_geography,
-  twodi_sectors = twodi_sectors,
+  pacta_sectors = pacta_sectors,
   green_techs = green_techs,
   tech_roadmap_sectors = tech_roadmap_sectors,
   pacta_sectors_not_analysed = pacta_sectors_not_analysed,

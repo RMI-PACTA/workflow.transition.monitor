@@ -26,7 +26,7 @@ LABEL org.opencontainers.image.base.name=""
 LABEL org.opencontainers.image.ref.name=""
 LABEL org.opencontainers.image.authors=""
 
-ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2023-03-04"
+ARG CRAN_REPO="https://packagemanager.posit.co/cran/__linux__/jammy/2024-03-04"
 RUN echo "options(repos = c(CRAN = '$CRAN_REPO'))" >> "${R_HOME}/etc/Rprofile.site"
 
 # set apt-get to noninteractive mode

@@ -3,9 +3,9 @@
 # https://rocker-project.org/images/versioned/r-ver.html
 #
 # sets CRAN repo to use Posit Package Manager to freeze R package versions to
-# those available on 2023-10-30
+# those available on 2024-03-05
 # https://packagemanager.posit.co/client/#/repos/2/overview
-# https://packagemanager.posit.co/cran/__linux__/jammy/2023-10-30
+# https://packagemanager.posit.co/cran/__linux__/jammy/2024-03-05
 #
 # sets CTAN repo to freeze TeX package dependencies to those available on
 # 2021-12-31

@@ -230,28 +230,28 @@ if (project_report_name != "general") {
 default_scenarios <- sub("^[^_]*_", "", c(select_scenario, scenario_other))
 
 if (!all(default_scenarios %in% equity_results_portfolio$scenario)) {
-  cli::cli_alert_danger("The default scenario selections do not exit in the equity results. This may lead to unexpected behavior or errors in some plots.")
+  cli::cli_alert_danger("The default scenario selections do not exist in the equity results. This may lead to unexpected behavior or errors in some plots.")
 }
 
 if (!all(default_scenarios %in% bonds_results_portfolio$scenario)) {
-  cli::cli_alert_danger("The default scenario selections do not exit in the bonds results. This may lead to unexpected behavior or errors in some plots.")
+  cli::cli_alert_danger("The default scenario selections do not exist in the bonds results. This may lead to unexpected behavior or errors in some plots.")
 }
 
 if (!all(default_scenarios %in% indices_equity_results_portfolio$scenario)) {
-  cli::cli_alert_danger("The default scenario selections do not exit in the benchmark equity results. This may lead to unexpected behavior or errors in some plots.")
+  cli::cli_alert_danger("The default scenario selections do not exist in the benchmark equity results. This may lead to unexpected behavior or errors in some plots.")
 }
 
 if (!all(default_scenarios %in% indices_bonds_results_portfolio$scenario)) {
-  cli::cli_alert_danger("The default scenario selections do not exit in the benchmark bonds results. This may lead to unexpected behavior or errors in some plots.")
+  cli::cli_alert_danger("The default scenario selections do not exist in the benchmark bonds results. This may lead to unexpected behavior or errors in some plots.")
 }
 
 if (project_report_name != "general") {
   if (!all(default_scenarios %in% peers_equity_results_portfolio$scenario)) {
-    cli::cli_alert_danger("The default scenario selections do not exit in the peers equity results. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers equity results. This may lead to unexpected behavior or errors in some plots.")
   }
 
   if (!all(default_scenarios %in% peers_bonds_results_portfolio$scenario)) {
-    cli::cli_alert_danger("The default scenario selections do not exit in the peers bond results. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers bond results. This may lead to unexpected behavior or errors in some plots.")
   }
 }
 

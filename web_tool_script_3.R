@@ -172,6 +172,90 @@ indices_equity_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Ind
 indices_bonds_results_portfolio <- readRDS(file.path(analysis_inputs_path, "Indices_bonds_results_portfolio.rds"))
 
 
+# check for indices ------------------------------------------------------------
+
+if (nrow(indices_equity_results_portfolio) == 1L && all(is.na(indices_equity_results_portfolio))) {
+  cli::cli_alert_danger("Since the benchmark equity data is empty, some plots may not work as expected.")
+}
+
+if (nrow(indices_bonds_results_portfolio) == 1L && all(is.na(indices_bonds_results_portfolio))) {
+  cli::cli_alert_danger("Since the benchmark bonds data is empty, some plots may not work as expected.")
+}
+
+
+# check for peer results -------------------------------------------------------
+
+if (project_report_name != "general") {
+  if (nrow(peers_equity_results_portfolio) == 1L && all(is.na(peers_equity_results_portfolio))) {
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity data is empty.")
+  }
+
+  if (nrow(peers_bonds_results_portfolio) == 1L && all(is.na(peers_bonds_results_portfolio))) {
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity data is empty.")
+  }
+}
+
+
+# check scenario sources -------------------------------------------------------
+
+if (!all(na.omit(unique(equity_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+  cli::cli_alert_danger("The equity results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(na.omit(unique(bonds_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+  cli::cli_alert_danger("The bonds results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(na.omit(unique(indices_equity_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+  cli::cli_alert_danger("The benchmark equity results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(na.omit(unique(indices_bonds_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+  cli::cli_alert_danger("The benchmark bonds results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (project_report_name != "general") {
+  if (!all(na.omit(unique(peers_equity_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+    cli::cli_alert_danger("The peers equity results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+  }
+
+  if (!all(na.omit(unique(peers_bonds_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
+    cli::cli_alert_danger("The peers bonds results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+  }
+}
+
+
+# check scenarios --------------------------------------------------------------
+
+default_scenarios <- sub("^[^_]*_", "", c(select_scenario, scenario_other))
+
+if (!all(default_scenarios %in% equity_results_portfolio$scenario)) {
+  cli::cli_alert_danger("The default scenario selections do not exit in the equity results. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(default_scenarios %in% bonds_results_portfolio$scenario)) {
+  cli::cli_alert_danger("The default scenario selections do not exit in the bonds results. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(default_scenarios %in% indices_equity_results_portfolio$scenario)) {
+  cli::cli_alert_danger("The default scenario selections do not exit in the benchmark equity results. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (!all(default_scenarios %in% indices_bonds_results_portfolio$scenario)) {
+  cli::cli_alert_danger("The default scenario selections do not exit in the benchmark bonds results. This may lead to unexpected behavior or errors in some plots.")
+}
+
+if (project_report_name != "general") {
+  if (!all(default_scenarios %in% peers_equity_results_portfolio$scenario)) {
+    cli::cli_alert_danger("The default scenario selections do not exit in the peers equity results. This may lead to unexpected behavior or errors in some plots.")
+  }
+
+  if (!all(default_scenarios %in% peers_bonds_results_portfolio$scenario)) {
+    cli::cli_alert_danger("The default scenario selections do not exit in the peers bond results. This may lead to unexpected behavior or errors in some plots.")
+  }
+}
+
+
 # create interactive report ----------------------------------------------------
 
 survey_dir <- file.path(user_results_path, project_code, "survey")

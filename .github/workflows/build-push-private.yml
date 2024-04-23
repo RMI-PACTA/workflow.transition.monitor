@@ -47,7 +47,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    timeout-minutes: 15
+    timeout-minutes: 45
     outputs:
       full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}

@@ -186,12 +186,20 @@ if (nrow(indices_bonds_results_portfolio) == 1L && all(is.na(indices_bonds_resul
 # check for peer results -------------------------------------------------------
 
 if (project_report_name != "general") {
+  if (nrow(peers_equity_results_user) == 1L && all(is.na(peers_equity_results_user))) {
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity user data is empty.")
+  }
+
+  if (nrow(peers_bonds_results_user) == 1L && all(is.na(peers_bonds_results_user))) {
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results bonds user data is empty.")
+  }
+
   if (nrow(peers_equity_results_portfolio) == 1L && all(is.na(peers_equity_results_portfolio))) {
-    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity data is empty.")
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity portfolio data is empty.")
   }
 
   if (nrow(peers_bonds_results_portfolio) == 1L && all(is.na(peers_bonds_results_portfolio))) {
-    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results equity data is empty.")
+    cli::cli_alert_danger("Since this is not a \"GENERAL\" report, it's probably necessary to have peer results, but the peer results bonds portfolio data is empty.")
   }
 }
 
@@ -215,12 +223,20 @@ if (!all(na.omit(unique(indices_bonds_results_portfolio$scenario_source)) %in% s
 }
 
 if (project_report_name != "general") {
+  if (!all(na.omit(unique(peers_equity_results_user$scenario_source)) %in% scenario_sources_list)) {
+    cli::cli_alert_danger("The peers equity user results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+  }
+
+  if (!all(na.omit(unique(peers_bonds_results_user$scenario_source)) %in% scenario_sources_list)) {
+    cli::cli_alert_danger("The peers bonds user results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+  }
+
   if (!all(na.omit(unique(peers_equity_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
-    cli::cli_alert_danger("The peers equity results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The peers equity portfolio results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
   }
 
   if (!all(na.omit(unique(peers_bonds_results_portfolio$scenario_source)) %in% scenario_sources_list)) {
-    cli::cli_alert_danger("The peers bonds results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The peers bonds portfolio results data contain scenario sources that are not specified in the config. This may lead to unexpected behavior or errors in some plots.")
   }
 }
 
@@ -246,12 +262,20 @@ if (!all(default_scenarios %in% indices_bonds_results_portfolio$scenario)) {
 }
 
 if (project_report_name != "general") {
+  if (!all(default_scenarios %in% peers_equity_results_user$scenario)) {
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers equity user results. This may lead to unexpected behavior or errors in some plots.")
+  }
+
+  if (!all(default_scenarios %in% peers_bonds_results_user$scenario)) {
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers bond user results. This may lead to unexpected behavior or errors in some plots.")
+  }
+
   if (!all(default_scenarios %in% peers_equity_results_portfolio$scenario)) {
-    cli::cli_alert_danger("The default scenario selections do not exist in the peers equity results. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers equity portfolio results. This may lead to unexpected behavior or errors in some plots.")
   }
 
   if (!all(default_scenarios %in% peers_bonds_results_portfolio$scenario)) {
-    cli::cli_alert_danger("The default scenario selections do not exist in the peers bond results. This may lead to unexpected behavior or errors in some plots.")
+    cli::cli_alert_danger("The default scenario selections do not exist in the peers bond portfolio results. This may lead to unexpected behavior or errors in some plots.")
   }
 }
 

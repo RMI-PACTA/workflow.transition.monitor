@@ -106,7 +106,7 @@ jobs:
           github.event_name == 'push' && github.ref_name ||
           github.event_name == 'workflow_dispatch' && github.ref_name ||
           github.sha
-          }}
+        }}
       data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
       config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
 

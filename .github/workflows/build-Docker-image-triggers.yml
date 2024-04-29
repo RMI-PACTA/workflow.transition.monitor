@@ -24,11 +24,12 @@ jobs:
           github.event_name == 'schedule' && 'nightly' ||
           github.event_name == 'push' && github.ref_name ||
           github.event_name == 'workflow_dispatch' && github.ref_name ||
-          github.sha 
+          github.sha
         }}
 
   build_private_docker_image:
     name: "Build private docker image"
+    needs: build_docker_image
     strategy:
       # if one build or test fails, permit the others to run
       fail-fast: false

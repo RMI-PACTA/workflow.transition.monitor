@@ -262,6 +262,7 @@ jobs:
       # build images in parallel
       matrix: ${{ fromJson(needs.read-config.outputs.test-matrix) }}
     needs:
+      - read-config
       - docker-build
     permissions:
       contents: read

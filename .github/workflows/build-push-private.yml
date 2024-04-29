@@ -97,7 +97,7 @@ jobs:
     name: Run Index Preparation
     needs: read-config
     secrets: inherit
-    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@gh-actions-updates
+    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@suppress-indices
     with:
       image-tag: |
         ${{

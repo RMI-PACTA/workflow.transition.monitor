@@ -123,7 +123,6 @@ jobs:
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
 
     steps:
-
       - name: Checkout workflow.transition.monitor
         uses: actions/checkout@v4
         with:

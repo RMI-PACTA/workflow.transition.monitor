@@ -167,7 +167,7 @@ jobs:
               --recursive \
               --exclude-pattern "*.sqlite"
             # move data
-            mv "$pacta-data-share-path" "pacta-data/$pacta_data_quarter"
+            mv "pacta-data/$pacta_data_share_path" "pacta-data/$pacta_data_quarter"
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
             ls pacta-data/$pacta_data_quarter
 

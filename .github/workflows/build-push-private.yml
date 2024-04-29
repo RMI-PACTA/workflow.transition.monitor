@@ -155,7 +155,7 @@ jobs:
           inlineScript: |
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             az storage copy \
-              --source "$pacta_data_share_url/$pacta_data_afs_path" \
+              --source "$pacta_data_share_url/$pacta_data_share_path" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"

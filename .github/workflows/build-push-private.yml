@@ -148,7 +148,7 @@ jobs:
         uses: azure/CLI@v2
         env:
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
-          index_share_path: ${{ steps.index-prep.outputs.timestamp-dir }}
+          index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
         with:
           # azcliversion: 2.30.0

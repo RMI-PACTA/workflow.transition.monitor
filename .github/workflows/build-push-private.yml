@@ -42,8 +42,77 @@ on:
         value: ${{ jobs.test.outputs.report-url }}
 
 jobs:
+  read-config:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      now: ${{ steps.prepare.outputs.now }}
+      pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
+      pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
+      registry-image: ${{ steps.prepare.outputs.registry-image }}
+      tempates-ref: ${{ steps.prepare.outputs.tempates-ref }}
+      test-matrix: ${{ steps.prepare.outputs.test-matrix }}
+    steps:
+
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          path: workflow.transition.monitor
+
+      - name: Prepare environment
+        id: prepare
+        run: |
+          NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
+          echo "now=$NOW" >> $GITHUB_OUTPUT
+          echo "$NOW"
+
+          registry_image=$(
+            echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
+            tr '[:upper:]' '[:lower:]' \
+          )
+          REGISTRY_IMAGE=${registry_image}
+          echo "registry-image=$REGISTRY_IMAGE"
+          echo "registry-image=$REGISTRY_IMAGE" >> $GITHUB_OUTPUT
+
+          config_file="workflow.transition.monitor/build/config/${{ inputs.image-name }}.json"
+
+          PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
+          echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH"
+          echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_OUTPUT"
+
+          PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
+          echo "pacta-data-quarter=$PACTA_DATA_QUARTER"
+          echo "pacta-data-quarter=$PACTA_DATA_QUARTER" >> "$GITHUB_OUTPUT"
+
+          TEMPLATES_REF="$(jq -rc '.templates_ref' $config_file)"
+          echo "templates-ref=$TEMPLATES_REF"
+          echo "templates-ref=$TEMPLATES_REF" >> "$GITHUB_OUTPUT"
+
+          TEST_MATRIX="$(jq -c '.test_matrix' $config_file)"
+          echo "test-matrix=$TEST_MATRIX"
+          echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
+
+  prepare-indices:
+    name: run Index Preparation
+    needs: read-config
+    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
+    with:
+      image-tag: |
+        ${{
+          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+          github.event_name == 'schedule' && 'main' ||
+          github.event_name == 'push' && github.ref_name ||
+          github.event_name == 'workflow_dispatch' && github.ref_name ||
+          github.sha
+          }}
+      data-share-path: ${{ jobs.read-config.outputs.pacta-data-share-path }}
+      config_active: ${{ jobs.read-config.outputs.pacta-data-quarter }}
+
+
   docker-build:
     runs-on: ubuntu-latest
+    needs: [read-config, prepare-indices]
     permissions:
       contents: read
       id-token: write
@@ -59,61 +128,13 @@ jobs:
         with:
           path: workflow.transition.monitor
 
-      - name: Prepare environment
-        id: prepare
-        run: |
-          NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
-          echo "NOW=$NOW" >> $GITHUB_ENV
-          echo "$NOW"
-
-          registry_image=$(
-            echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
-            tr '[:upper:]' '[:lower:]' \
-          )
-          REGISTRY_IMAGE=${registry_image}
-          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
-          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
-
-          config_file="workflow.transition.monitor/build/config/${{ inputs.image-name }}.json"
-
-          PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
-          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
-          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
-
-          PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
-
-          TEMPLATES_REF="$(jq -rc '.templates_ref' $config_file)"
-          echo "TEMPLATES_REF=$TEMPLATES_REF"
-          echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
-
-          TEST_MATRIX="$(jq -c '.test_matrix' $config_file)"
-          echo "test-matrix=$TEST_MATRIX"
-          echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
-
       - name: Checkout templates.transition.monitor
         uses: actions/checkout@v4
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
           token: ${{ secrets.REPO_PAT }}
-          ref: ${{ env.TEMPLATES_REF }}
-
-      - name: run Index Preparation
-        uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
-        id: index-prep
-        with:
-          image-tag: |
-            ${{
-              github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
-              github.event_name == 'schedule' && 'main' ||
-              github.event_name == 'push' && github.ref_name ||
-              github.event_name == 'workflow_dispatch' && github.ref_name ||
-              github.sha
-            }}
-          data-share-path: ${{ ENV.PACTA_DATA_SHARE_PATH }}
-          config_active: ${{ ENV.PACTA_DATA_QUARTER }}
+          ref: ${{ needs.read-config.outputs.templates-ref }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
@@ -131,7 +152,7 @@ jobs:
           inlineScript: |
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             az storage copy \
-              --source "$pacta_data_share_url"/"${{ env.PACTA_DATA_SHARE_PATH }}" \
+              --source "$pacta_data_share_url"/"${{ needs.read-config.outputs.pacta-data-share-path }}" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
@@ -143,9 +164,9 @@ jobs:
               --recursive \
               --exclude-pattern "*.sqlite"
             # move data
-            mv "pacta-data/${{ env.PACTA_DATA_SHARE_PATH }}" "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
-            mv "index-data/${{ env.INDEX_SHARE_PATH }}"/* "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
-            ls pacta-data/${{ env.PACTA_DATA_QUARTER }}
+            mv "pacta-data/${{ needs.read-config.outputs.pacta-data-share-path }}" "pacta-data/${{ needs.read-config.outputs.pacta-data-quarter }}"
+            mv "index-data/${{ needs.prepare-indices.outputs.timestamp-dir }}"/* "pacta-data/${{ needs.read-config.outputs.pacta-data-quarter }}"
+            ls pacta-data/${{ needs.read-config.outputs.pacta-data-quarter }}
 
       - name: Identify LABELs in dockerfile
         id: custom-labels
@@ -164,7 +185,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY_IMAGE }}
+          images: ${{ needs.read-config.outputs.registry-image }}
           annotations:
             ${{ env.DOCKERFILE_LABELS }}
           labels:
@@ -177,7 +198,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             ${{ inputs.additional-image-tags }}
-            ${{ env.NOW }},priority=1100
+            ${{ needs.read-config.outputs.now }},priority=1100
 
       # set up our build environment
       - name: Set up QEMU

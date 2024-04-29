@@ -80,10 +80,6 @@ jobs:
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
           echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
 
-          INDEX_SHARE_PATH="$(jq -rc '.index_share_path' $config_file)"
-          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH"
-          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH" >> "$GITHUB_ENV"
-
           PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
           echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
@@ -103,6 +99,21 @@ jobs:
           path: templates.transition.monitor
           token: ${{ secrets.REPO_PAT }}
           ref: ${{ env.TEMPLATES_REF }}
+
+      - name: run Index Preparation
+        uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
+        id: index-prep
+        with:
+          image-tag: |
+            ${{
+              github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+              github.event_name == 'schedule' && 'main' ||
+              github.event_name == 'push' && github.ref_name ||
+              github.event_name == 'workflow_dispatch' && github.ref_name ||
+              github.sha
+            }}
+          data-share-path: ${{ ENV.PACTA_DATA_SHARE_PATH }}
+          config_active: ${{ ENV.PACTA_DATA_QUARTER }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
@@ -127,7 +138,7 @@ jobs:
             # download indices
             index_share_url="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy \
-              --source "$index_share_url"/"${{ env.INDEX_SHARE_PATH }}" \
+              --source "$index_share_url"/"${{ steps.index.prep.outputs.timestamp-dir }}" \
               --destination "index-data" \
               --recursive \
               --exclude-pattern "*.sqlite"

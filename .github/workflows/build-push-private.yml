@@ -42,16 +42,17 @@ on:
         value: ${{ jobs.test.outputs.report-url }}
 
 jobs:
-  docker-build:
+  read-config:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
-    timeout-minutes: 45
     outputs:
-      full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
+      now: ${{ steps.prepare.outputs.now }}
+      pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
+      pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
+      registry-image: ${{ steps.prepare.outputs.registry-image }}
+      templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
-
     steps:
 
       - name: Checkout workflow.transition.monitor
@@ -63,7 +64,7 @@ jobs:
         id: prepare
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
-          echo "NOW=$NOW" >> $GITHUB_ENV
+          echo "now=$NOW" >> $GITHUB_OUTPUT
           echo "$NOW"
 
           registry_image=$(
@@ -71,30 +72,60 @@ jobs:
             tr '[:upper:]' '[:lower:]' \
           )
           REGISTRY_IMAGE=${registry_image}
-          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE"
-          echo "REGISTRY_IMAGE=$REGISTRY_IMAGE" >> $GITHUB_ENV
+          echo "registry-image=$REGISTRY_IMAGE"
+          echo "registry-image=$REGISTRY_IMAGE" >> $GITHUB_OUTPUT
 
           config_file="workflow.transition.monitor/build/config/${{ inputs.image-name }}.json"
 
           PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
-          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH"
-          echo "PACTA_DATA_SHARE_PATH=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_ENV"
-
-          INDEX_SHARE_PATH="$(jq -rc '.index_share_path' $config_file)"
-          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH"
-          echo "INDEX_SHARE_PATH=$INDEX_SHARE_PATH" >> "$GITHUB_ENV"
+          echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH"
+          echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH" >> "$GITHUB_OUTPUT"
 
           PACTA_DATA_QUARTER="$(jq -rc '.pacta_data_quarter' $config_file)"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
+          echo "pacta-data-quarter=$PACTA_DATA_QUARTER"
+          echo "pacta-data-quarter=$PACTA_DATA_QUARTER" >> "$GITHUB_OUTPUT"
 
           TEMPLATES_REF="$(jq -rc '.templates_ref' $config_file)"
-          echo "TEMPLATES_REF=$TEMPLATES_REF"
-          echo "TEMPLATES_REF=$TEMPLATES_REF" >> "$GITHUB_ENV"
+          echo "templates-ref=$TEMPLATES_REF"
+          echo "templates-ref=$TEMPLATES_REF" >> "$GITHUB_OUTPUT"
 
           TEST_MATRIX="$(jq -c '.test_matrix' $config_file)"
           echo "test-matrix=$TEST_MATRIX"
           echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
+
+  prepare-indices:
+    name: Run Index Preparation
+    needs: read-config
+    secrets: inherit
+    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
+    with:
+      image-tag: |
+        ${{
+          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+          github.event_name == 'schedule' && 'main' ||
+          github.event_name == 'push' && github.ref_name ||
+          github.event_name == 'workflow_dispatch' && github.ref_name ||
+          github.sha
+        }}
+      data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
+      config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
+
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [read-config, prepare-indices]
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 45
+    outputs:
+      full-image-name: ${{ steps.export-outputs.outputs.full-image-name }}
+
+    steps:
+      - name: Checkout workflow.transition.monitor
+        uses: actions/checkout@v4
+        with:
+          path: workflow.transition.monitor
 
       - name: Checkout templates.transition.monitor
         uses: actions/checkout@v4
@@ -102,7 +133,7 @@ jobs:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
           token: ${{ secrets.REPO_PAT }}
-          ref: ${{ env.TEMPLATES_REF }}
+          ref: ${{ needs.read-config.outputs.templates-ref }}
 
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
@@ -115,26 +146,30 @@ jobs:
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Download pacta-data
         uses: azure/CLI@v2
+        env:
+          pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
+          index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
+          pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             az storage copy \
-              --source "$pacta_data_share_url"/"${{ env.PACTA_DATA_SHARE_PATH }}" \
+              --source "$pacta_data_share_url/$pacta_data_share_path" \
               --destination "pacta-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
             # download indices
             index_share_url="https://pactadatadev.file.core.windows.net/workflow-prepare-pacta-indices-outputs"
             az storage copy \
-              --source "$index_share_url"/"${{ env.INDEX_SHARE_PATH }}" \
+              --source "$index_share_url/$index_share_path" \
               --destination "index-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
             # move data
-            mv "pacta-data/${{ env.PACTA_DATA_SHARE_PATH }}" "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
-            mv "index-data/${{ env.INDEX_SHARE_PATH }}"/* "pacta-data/${{ env.PACTA_DATA_QUARTER }}"
-            ls pacta-data/${{ env.PACTA_DATA_QUARTER }}
+            mv "pacta-data/$pacta_data_share_path" "pacta-data/$pacta_data_quarter"
+            mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
+            ls pacta-data/$pacta_data_quarter
 
       - name: Identify LABELs in dockerfile
         id: custom-labels
@@ -153,7 +188,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY_IMAGE }}
+          images: ${{ needs.read-config.outputs.registry-image }}
           annotations:
             ${{ env.DOCKERFILE_LABELS }}
           labels:
@@ -166,7 +201,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             ${{ inputs.additional-image-tags }}
-            ${{ env.NOW }},priority=1100
+            ${{ needs.read-config.outputs.now }},priority=1100
 
       # set up our build environment
       - name: Set up QEMU
@@ -225,8 +260,9 @@ jobs:
       # if one test fails, permit the others to run
       fail-fast: false
       # build images in parallel
-      matrix: ${{ fromJson(needs.docker-build.outputs.test-matrix) }}
+      matrix: ${{ fromJson(needs.read-config.outputs.test-matrix) }}
     needs:
+      - read-config
       - docker-build
     permissions:
       contents: read

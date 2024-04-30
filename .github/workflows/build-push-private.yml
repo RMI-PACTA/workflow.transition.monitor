@@ -51,7 +51,7 @@ jobs:
       pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
       pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
       registry-image: ${{ steps.prepare.outputs.registry-image }}
-      tempates-ref: ${{ steps.prepare.outputs.tempates-ref }}
+      templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
     steps:
 

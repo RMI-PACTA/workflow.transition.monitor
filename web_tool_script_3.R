@@ -376,7 +376,6 @@ create_interactive_report(
 # create executive summary -----------------------------------------------------
 
 survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
-real_estate_dir <- fs::path_abs(file.path(user_results_path, project_code, "real_estate"))
 score_card_dir <- fs::path_abs(file.path(user_results_path, project_code, "score_card"))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
@@ -427,17 +426,12 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
       score_card_dir = score_card_dir
     )
 
-
-  real_estate_flag <- (length(list.files(real_estate_dir)) > 0)
-
   render_executive_summary(
     data = data_aggregated_filtered,
     language = language_select,
     output_dir = es_dir,
     exec_summary_dir = exec_summary_template_path,
     survey_dir = survey_dir,
-    real_estate_dir = real_estate_dir,
-    real_estate_flag = real_estate_flag,
     score_card_dir = score_card_dir,
     file_name = "template.Rmd",
     investor_name = investor_name,

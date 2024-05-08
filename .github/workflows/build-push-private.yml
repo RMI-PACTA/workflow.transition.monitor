@@ -322,7 +322,8 @@ jobs:
           mkdir -p $TEST_DIR/user_dir
           cp -R working_dir $TEST_DIR
 
-          params_file="$TEST_DIR/working_dir/10_Parameter_File/$image_name_PortfolioParameters.yml"
+          params_file="$TEST_DIR/working_dir/10_Parameter_File/${image_name}_PortfolioParameters.yml"
+          echo $params_file
           mkdir -p "$(dirname $params_file)"
           sed \
             -e "s/{{portfolio_name}}/$image_name-PORTFOLIO/" \
@@ -335,7 +336,7 @@ jobs:
             >> $params_file
           cat "$params_file"
 
-          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/$image-name.csv"
+          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/${image_name}.csv"
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR

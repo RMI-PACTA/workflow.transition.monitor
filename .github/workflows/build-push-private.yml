@@ -100,6 +100,12 @@ jobs:
           echo "project-code=$PROJECT_CODE"
           echo "project-code=$PROJECT_CODE" >> "$GITHUB_OUTPUT"
 
+          # includes handling for null/missing keys
+          USER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
+          echo "user-results=$USER_RESULTS"
+          echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
+
+
   prepare-indices:
     name: Run Index Preparation
     needs: read-config
@@ -340,6 +346,23 @@ jobs:
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
+
+      - name: Download User Results from Blob Store
+        uses: azure/CLI@v2
+        env:
+          user_results: ${{ needs.docker-build.outputs.user-results }}
+          test_dir: ${{ env.TEST_DIR }}
+        with:
+          inlineScript: |
+            if [ -n $user_results ] then
+              az storage copy \
+                --source "$user_results" \
+                --destination "$test_dir/user_dir" \
+                --recursive
+              ls -lR $TEST_DIR
+            else
+              echo "No User Results defined in config"
+            fi
 
       - name: Get credentials for docker registry
         uses: azure/CLI@v2

@@ -93,6 +93,10 @@ jobs:
           echo "test-matrix=$TEST_MATRIX"
           echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
 
+          PROJECT_CODE="$(jq -r '.project_code' $config_file)"
+          echo "project-code=$PROJECT_CODE"
+          echo "project-code=$PROJECT_CODE" >> "$GITHUB_OUTPUT"
+
   prepare-indices:
     name: Run Index Preparation
     needs: read-config
@@ -285,13 +289,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare User and results directories
+        env:
+          full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
+          image_name: ${{ inputs.image-name }}
+          peer_group: ${{ matrix.peer_group }}
+          language: ${{ matrix.language }}
+          project_code: ${{ needs.read-config.outputs.project-code }}
+          pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+          run_attempt: ${{ github.run_attempt }}
         run: |
-          test_dir_parent_name="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
 
-          TEST_DIR="$TEST_DIR_PARENT/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}"
+          TEST_DIR="$TEST_DIR_PARENT/$language/$peer_group/$run_attempt"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
@@ -300,27 +312,20 @@ jobs:
           mkdir -p $TEST_DIR/user_dir
           cp -R working_dir $TEST_DIR
 
-          config_file="build/config/${{ inputs.image-name }}.json"
-          cp $config_file $TEST_DIR
-          PROJECT_CODE="$(jq -r '.project_code' $config_file)"
-          echo "PROJECT_CODE=$PROJECT_CODE" >> "$GITHUB_ENV"
-          PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
-
-          params_file="$TEST_DIR/working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
+          params_file="$TEST_DIR/working_dir/10_Parameter_File/$image_name_PortfolioParameters.yml"
           mkdir -p "$(dirname $params_file)"
           sed \
-            -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
-            -e "s/{{investor_name}}/${{ inputs.image-name }}-${{ matrix.peer_group }}-INVESTOR/" \
-            -e "s/{{peer_group}}/${{ matrix.peer_group }}/" \
-            -e "s/{{language}}/${{ matrix.language }}/" \
-            -e "s/{{project_code}}/$PROJECT_CODE/" \
-            -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
+            -e "s/{{portfolio_name}}/$image_name-PORTFOLIO/" \
+            -e "s/{{investor_name}}/$image_name-$peer_group-INVESTOR/" \
+            -e "s/{{peer_group}}/$peer_group/" \
+            -e "s/{{language}}/$language/" \
+            -e "s/{{project_code}}/$project_code/" \
+            -e "s/{{holdings_date}}/$pacta_data_quarter/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \
             >> $params_file
           cat "$params_file"
 
-          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
+          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/$image-name.csv"
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR

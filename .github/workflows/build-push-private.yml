@@ -216,8 +216,8 @@ jobs:
             type=ref,event=branch
             type=ref,event=tag
             type=ref,event=pr
-            $additional_image_tags
-            $now,priority=1100
+            ${{ inputs.additional-image-tags }}
+            ${{ needs.read-config.outputs.now }},priority=1100
 
       # set up our build environment
       - name: Set up QEMU

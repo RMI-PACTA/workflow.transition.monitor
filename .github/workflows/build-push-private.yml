@@ -63,7 +63,7 @@ jobs:
       - name: Prepare environment
         id: prepare
         env:
-          image-name: ${{ inputs.image-name }}
+          image_name: ${{ inputs.image-name }}
           registry: ${{ inputs.registry }}
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
@@ -71,14 +71,14 @@ jobs:
           echo "$NOW"
 
           registry_image=$(
-            echo "$registry/$image-name" | \
+            echo "$registry/$image_name" | \
             tr '[:upper:]' '[:lower:]' \
           )
           REGISTRY_IMAGE=${registry_image}
           echo "registry-image=$REGISTRY_IMAGE"
           echo "registry-image=$REGISTRY_IMAGE" >> $GITHUB_OUTPUT
 
-          config_file="workflow.transition.monitor/build/config/$image-name.json"
+          config_file="workflow.transition.monitor/build/config/$image_name.json"
 
           PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
           echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH"

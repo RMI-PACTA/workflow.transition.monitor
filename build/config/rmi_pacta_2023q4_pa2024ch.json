@@ -3,6 +3,8 @@
   "pacta_data_quarter": "2023Q4",
   "project_code": "PA2024CH",
   "templates_ref": "",
+  "peer_results": "https://pactadatadev.blob.core.windows.net/testing-files/peer-results/PA2024CH_peer-results-test",
+  "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_test",
   "test_matrix": {
     "language": [
       "EN",

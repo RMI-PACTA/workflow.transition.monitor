@@ -32,7 +32,6 @@ on:
         default: ghactions-workflow-transition-monitor-results-reports
         type: string
 
-
     outputs:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"

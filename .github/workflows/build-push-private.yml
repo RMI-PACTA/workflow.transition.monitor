@@ -169,6 +169,7 @@ jobs:
           index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
+          peer_results: ${{ needs.read-config.outputs.peer-results }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |

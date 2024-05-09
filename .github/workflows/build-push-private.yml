@@ -353,12 +353,12 @@ jobs:
           test_dir: ${{ env.TEST_DIR }}
         with:
           inlineScript: |
-            if [ -n $user_results ] then
+            if [ -n "$user_results" ]; then
               az storage copy \
                 --source "$user_results" \
                 --destination "$test_dir/user_dir" \
                 --recursive
-              ls -lR $TEST_DIR
+              ls -lR "$test_dir"
             else
               echo "No User Results defined in config"
             fi

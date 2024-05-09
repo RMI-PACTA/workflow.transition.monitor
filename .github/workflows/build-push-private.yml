@@ -356,7 +356,7 @@ jobs:
       - name: Download User Results from Blob Store
         uses: azure/CLI@v2
         env:
-          user_results: ${{ needs.docker-build.outputs.user-results }}
+          user_results: ${{ needs.read-config.outputs.user-results }}
           test_dir: ${{ env.TEST_DIR }}
         with:
           inlineScript: |

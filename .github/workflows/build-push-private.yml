@@ -50,6 +50,7 @@ jobs:
       pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
       pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
       peer-results: ${{ steps.prepare.outputs.peer-results }}
+      project-code: ${{ steps.prepare.outputs.project-code }}
       registry-image: ${{ steps.prepare.outputs.registry-image }}
       templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}

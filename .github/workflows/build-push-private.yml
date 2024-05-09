@@ -365,6 +365,7 @@ jobs:
                 --source "$user_results" \
                 --destination "$test_dir/user_dir" \
                 --recursive
+              chmod -R 777 "$test_dir/user_dir"
               ls -lR "$test_dir"
             else
               echo "No User Results defined in config"
@@ -398,7 +399,7 @@ jobs:
           test_dir: ${{ env.TEST_DIR }}
           workspace: ${{ github.workspace }}
         run: |
-          chmod -R 777 "$test_dir"
+          chmod -R 777 "$test_dir/working_dir"
           docker run \
             --network none \
             --user root \

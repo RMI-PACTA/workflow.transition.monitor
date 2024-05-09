@@ -438,6 +438,7 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
     portfolio_name = portfolio_name,
     peer_group = peer_group,
     total_portfolio = total_portfolio,
+    scenario_source = "GECO2023",
     scenario_selected = "1.5C",
     currency_exchange_value = currency_exchange_value,
     log_dir = log_path

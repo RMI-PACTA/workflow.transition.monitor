@@ -471,14 +471,14 @@ jobs:
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
           json_file="/tmp/comment-json/$json_filename"
           jq -n '{
-            "commit_time": "$commit_time",
-            "git_sha": "$git_sha",
-            "project_code": "$project_code",
-            "holdings_date": "$pacta_data_quarter",
-            "language": "$language",
-            "peer_group": "$peer_group",
-            "report": "[Report]($report_url})",
-            "image": "`$full-image-name`"
+            "commit_time": "env.commit_time",
+            "git_sha": "env.git_sha",
+            "project_code": "env.project_code",
+            "holdings_date": "env.pacta_data_quarter",
+            "language": "env.language",
+            "peer_group": "env.peer_group",
+            "report": "[Report](env.report_url})",
+            "image": "`env.full-image-name`"
           }' >> $json_file
 
       - name: Upload comment JSON

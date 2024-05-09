@@ -362,7 +362,7 @@ jobs:
           inlineScript: |
             if [ -n "$user_results" ]; then
               az storage copy \
-                --source "$user_results" \
+                --source "$USER_RESULTS/*" \
                 --destination "$test_dir/user_dir" \
                 --recursive
               chmod -R 777 "$test_dir/user_dir"

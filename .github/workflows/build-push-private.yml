@@ -185,9 +185,23 @@ jobs:
               --destination "index-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
+
+            # Download peer results if necessary
+            if [ -n "$peer_results" ]; then
+              az storage copy \
+                --source "$peer_results/*" \
+                --destination "peer_results" \
+                --recursive
+            else
+              echo "No User Results defined in config"
+            fi
+
             # move data
             mv "pacta-data/$pacta_data_share_path" "pacta-data/$pacta_data_quarter"
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
+            if [ -n "$peer_results" ]; then
+              mv peer_results/* "pacta-data/$pacta_data_quarter"
+            fi
             ls pacta-data/$pacta_data_quarter
 
       - name: Identify LABELs in dockerfile

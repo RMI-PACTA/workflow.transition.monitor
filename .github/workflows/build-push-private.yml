@@ -49,9 +49,11 @@ jobs:
       now: ${{ steps.prepare.outputs.now }}
       pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
       pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
+      peer-results: ${{ steps.prepare.outputs.peer-results }}
       registry-image: ${{ steps.prepare.outputs.registry-image }}
       templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
+      user-results: ${{ steps.prepare.outputs.user-results }}
     steps:
 
       - name: Checkout workflow.transition.monitor
@@ -104,6 +106,10 @@ jobs:
           echo "user-results=$USER_RESULTS"
           echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
 
+          # includes handling for null/missing keys
+          PEER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
+          echo "peer-results=$PEER_RESULTS"
+          echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
 
   prepare-indices:
     name: Run Index Preparation

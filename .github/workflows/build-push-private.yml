@@ -108,7 +108,7 @@ jobs:
           echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
 
           # includes handling for null/missing keys
-          PEER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
+          PEER_RESULTS="$(jq -r '.peer_results | select( . != null )' $config_file)"
           echo "peer-results=$PEER_RESULTS"
           echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
 

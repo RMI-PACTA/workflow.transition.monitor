@@ -458,7 +458,7 @@ jobs:
           test_dir: ${{ env.TEST_DIR }}
           image_name: ${{ inputs.image-name }}
         run: |
-          REPORT_URL="https://$reports_account.blob.core.windows.net/$reports-container/$test_dir/working_dir/50_Outputs/$image_name/report/index.html"
+          REPORT_URL="https://$reports_account.blob.core.windows.net/$reports_container/$test_dir/working_dir/50_Outputs/$image_name/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
           echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"

@@ -194,7 +194,7 @@ jobs:
                 --destination "peer_results" \
                 --recursive
             else
-              echo "No User Results defined in config"
+              echo "No Peer Results defined in config"
             fi
 
             # move data

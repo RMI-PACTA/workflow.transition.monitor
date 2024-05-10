@@ -32,7 +32,6 @@ on:
         default: ghactions-workflow-transition-monitor-results-reports
         type: string
 
-
     outputs:
       full-image-name:
         description: "Full pushed image name including host/registry, name, and tag"
@@ -50,9 +49,12 @@ jobs:
       now: ${{ steps.prepare.outputs.now }}
       pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
       pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
+      peer-results: ${{ steps.prepare.outputs.peer-results }}
+      project-code: ${{ steps.prepare.outputs.project-code }}
       registry-image: ${{ steps.prepare.outputs.registry-image }}
       templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
+      user-results: ${{ steps.prepare.outputs.user-results }}
     steps:
 
       - name: Checkout workflow.transition.monitor
@@ -62,20 +64,23 @@ jobs:
 
       - name: Prepare environment
         id: prepare
+        env:
+          image_name: ${{ inputs.image-name }}
+          registry: ${{ inputs.registry }}
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
           echo "now=$NOW" >> $GITHUB_OUTPUT
           echo "$NOW"
 
           registry_image=$(
-            echo "${{ inputs.registry }}/${{ inputs.image-name }}" | \
+            echo "$registry/$image_name" | \
             tr '[:upper:]' '[:lower:]' \
           )
           REGISTRY_IMAGE=${registry_image}
           echo "registry-image=$REGISTRY_IMAGE"
           echo "registry-image=$REGISTRY_IMAGE" >> $GITHUB_OUTPUT
 
-          config_file="workflow.transition.monitor/build/config/${{ inputs.image-name }}.json"
+          config_file="workflow.transition.monitor/build/config/$image_name.json"
 
           PACTA_DATA_SHARE_PATH="$(jq -rc '.data_share_path' $config_file)"
           echo "pacta-data-share-path=$PACTA_DATA_SHARE_PATH"
@@ -92,6 +97,20 @@ jobs:
           TEST_MATRIX="$(jq -c '.test_matrix' $config_file)"
           echo "test-matrix=$TEST_MATRIX"
           echo "test-matrix=$TEST_MATRIX" >> "$GITHUB_OUTPUT"
+
+          PROJECT_CODE="$(jq -r '.project_code' $config_file)"
+          echo "project-code=$PROJECT_CODE"
+          echo "project-code=$PROJECT_CODE" >> "$GITHUB_OUTPUT"
+
+          # includes handling for null/missing keys
+          USER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
+          echo "user-results=$USER_RESULTS"
+          echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
+
+          # includes handling for null/missing keys
+          PEER_RESULTS="$(jq -r '.peer_results | select( . != null )' $config_file)"
+          echo "peer-results=$PEER_RESULTS"
+          echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
 
   prepare-indices:
     name: Run Index Preparation
@@ -147,9 +166,10 @@ jobs:
       - name: Download pacta-data
         uses: azure/CLI@v2
         env:
-          pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
           index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+          pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
+          peer_results: ${{ needs.read-config.outputs.peer-results }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
@@ -166,9 +186,23 @@ jobs:
               --destination "index-data" \
               --recursive \
               --exclude-pattern "*.sqlite"
+
+            # Download peer results if necessary
+            if [ -n "$peer_results" ]; then
+              az storage copy \
+                --source "$peer_results/*" \
+                --destination "peer_results" \
+                --recursive
+            else
+              echo "No Peer Results defined in config"
+            fi
+
             # move data
             mv "pacta-data/$pacta_data_share_path" "pacta-data/$pacta_data_quarter"
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
+            if [ -n "$peer_results" ]; then
+              mv peer_results/* "pacta-data/$pacta_data_quarter"
+            fi
             ls pacta-data/$pacta_data_quarter
 
       - name: Identify LABELs in dockerfile
@@ -187,6 +221,9 @@ jobs:
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
+        env:
+          additional_image_tags: ${{ inputs.additional-image-tags }}
+          now: ${{ needs.read-config.outputs.now }}
         with:
           images: ${{ needs.read-config.outputs.registry-image }}
           annotations:
@@ -213,20 +250,24 @@ jobs:
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
         uses: azure/CLI@v2
+        env:
+          registry: ${{ inputs.registry }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             # Username is not a placeholder. See https://stackoverflow.com/a/73250630
             DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
             # echo "::add-mask::$DOCKER_USER"
             echo "::add-mask::$DOCKER_TOKEN"
             echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
             echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
       - name: Login to Registry
+        env:
+          registry: ${{ inputs.registry }}
         run: |
-          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+          echo "$DOCKER_TOKEN" | docker login $registry --username "$DOCKER_USER" --password-stdin
 
       # Actually build the image (for a single architecture)!
       - name: Build
@@ -285,13 +326,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare User and results directories
+        env:
+          full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
+          image_name: ${{ inputs.image-name }}
+          language: ${{ matrix.language }}
+          pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+          peer_group: ${{ matrix.peer_group }}
+          project_code: ${{ needs.read-config.outputs.project-code }}
+          run_attempt: ${{ github.run_attempt }}
         run: |
-          test_dir_parent_name="$(echo ${{ needs.docker-build.outputs.full-image-name }} | sed 's:.*/::' |  tr ":" "-")"
+          test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
 
-          TEST_DIR="$TEST_DIR_PARENT/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}"
+          TEST_DIR="$TEST_DIR_PARENT/$language/$peer_group/$run_attempt"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
@@ -300,105 +349,172 @@ jobs:
           mkdir -p $TEST_DIR/user_dir
           cp -R working_dir $TEST_DIR
 
-          config_file="build/config/${{ inputs.image-name }}.json"
-          cp $config_file $TEST_DIR
-          PROJECT_CODE="$(jq -r '.project_code' $config_file)"
-          echo "PROJECT_CODE=$PROJECT_CODE" >> "$GITHUB_ENV"
-          PACTA_DATA_QUARTER="$(jq -r '.pacta_data_quarter' $config_file)"
-          echo "PACTA_DATA_QUARTER=$PACTA_DATA_QUARTER" >> "$GITHUB_ENV"
-
-          params_file="$TEST_DIR/working_dir/10_Parameter_File/${{ inputs.image-name }}_PortfolioParameters.yml"
+          params_file="$TEST_DIR/working_dir/10_Parameter_File/${image_name}_PortfolioParameters.yml"
+          echo $params_file
           mkdir -p "$(dirname $params_file)"
           sed \
-            -e "s/{{portfolio_name}}/${{ inputs.image-name }}-PORTFOLIO/" \
-            -e "s/{{investor_name}}/${{ inputs.image-name }}-${{ matrix.peer_group }}-INVESTOR/" \
-            -e "s/{{peer_group}}/${{ matrix.peer_group }}/" \
-            -e "s/{{language}}/${{ matrix.language }}/" \
-            -e "s/{{project_code}}/$PROJECT_CODE/" \
-            -e "s/{{holdings_date}}/$PACTA_DATA_QUARTER/" \
+            -e "s/{{portfolio_name}}/$image_name-PORTFOLIO/" \
+            -e "s/{{investor_name}}/$image_name-$peer_group-INVESTOR/" \
+            -e "s/{{peer_group}}/$peer_group/" \
+            -e "s/{{language}}/$language/" \
+            -e "s/{{project_code}}/$project_code/" \
+            -e "s/{{holdings_date}}/$pacta_data_quarter/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \
             >> $params_file
           cat "$params_file"
 
-          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/${{ inputs.image-name }}.csv"
+          portfolio_file="$TEST_DIR/working_dir/20_Raw_Inputs/${image_name}.csv"
           mkdir -p "$(dirname $portfolio_file)"
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
 
+      - name: Download User Results from Blob Store
+        uses: azure/CLI@v2
+        env:
+          user_results: ${{ needs.read-config.outputs.user-results }}
+          test_dir: ${{ env.TEST_DIR }}
+        with:
+          inlineScript: |
+            if [ -n "$user_results" ]; then
+              az storage copy \
+                --source "$user_results/*" \
+                --destination "$test_dir/user_dir" \
+                --recursive
+              chmod -R 777 "$test_dir/user_dir"
+              ls -lR "$test_dir"
+            else
+              echo "No User Results defined in config"
+            fi
+
       - name: Get credentials for docker registry
         uses: azure/CLI@v2
+        env:
+          registry: ${{ inputs.registry }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
             # Username is not a placeholder. See https://stackoverflow.com/a/73250630
             DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n ${{ inputs.registry }} --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
+            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
             # echo "::add-mask::$DOCKER_USER"
             echo "::add-mask::$DOCKER_TOKEN"
             echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
             echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
 
       - name: Login to Registry
+        env:
+          registry: ${{ inputs.registry }}
         run: |
-          echo "$DOCKER_TOKEN" | docker login ${{ inputs.registry }} --username "$DOCKER_USER" --password-stdin
+          echo "$DOCKER_TOKEN" | docker login $registry --username "$DOCKER_USER" --password-stdin
 
       - name: Test
+        env:
+          full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
+          image_name: ${{ inputs.image-name }}
+          test_dir: ${{ env.TEST_DIR }}
+          workspace: ${{ github.workspace }}
         run: |
-          chmod -R 777 "${{ env.TEST_DIR }}"
+          chmod -R 777 "$test_dir/working_dir"
           docker run \
             --network none \
             --user root \
-            --mount "type=bind,source=${{ github.workspace }}/${{ env.TEST_DIR }}/working_dir,target=/bound/working_dir" \
-            --mount "type=bind,readonly,source=${{ github.workspace }}/${{ env.TEST_DIR }}/user_dir,target=/user_results" \
-            ${{ needs.docker-build.outputs.full-image-name }} \
-            /bound/bin/run-r-scripts ${{ inputs.image-name }}
+            --mount "type=bind,source=$workspace/$test_dir/working_dir,target=/bound/working_dir" \
+            --mount "type=bind,readonly,source=$workspace/$test_dir/user_dir,target=/user_results" \
+            $full_image_name \
+            /bound/bin/run-r-scripts $image_name
+
+      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload results to blob store
         uses: azure/CLI@v2
+        env:
+          language: ${{ matrix.language }}
+          peer_group: ${{ matrix.peer_group }}
+          reports_account: ${{ inputs.reports-account }}
+          reports_container: ${{ inputs.reports-container }}
+          results_account: ${{ inputs.results-account }}
+          results_container: ${{ inputs.results-container }}
+          run_attempt: ${{ github.run_attempt }}
+          test_dir_parent: ${{ env.TEST_DIR_PARENT }}
         with:
           inlineScript: |
             az storage copy \
-              --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "${{ inputs.results-account }}"  \
-              --destination-container "${{ inputs.results-container }}" \
+              --source "$test_dir_parent" \
+              --account-name "$results_account" \
+              --destination-container "$results_container" \
               --recursive
 
             az storage copy \
-              --source "${{ env.TEST_DIR_PARENT }}" \
-              --account-name "${{ inputs.reports-account }}"  \
-              --destination-container "${{ inputs.reports-container }}" \
-              --include-path "${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs" \
+              --source "$test_dir_parent" \
+              --account-name "$reports_account"  \
+              --destination-container "$reports_container" \
+              --include-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
               --recursive
 
       - name: Export Outputs
         id: export-outputs
+        env:
+          reports_account: ${{ inputs.reports-account }}
+          reports_container: ${{ inputs.reports-container }}
+          test_dir: ${{ env.TEST_DIR }}
+          image_name: ${{ inputs.image-name }}
         run: |
-          REPORT_URL="https://${{ inputs.reports-account }}.blob.core.windows.net/${{ inputs.reports-container }}/${{ env.TEST_DIR }}/working_dir/50_Outputs/${{ inputs.image-name }}/report/index.html"
+          REPORT_URL="https://$reports_account.blob.core.windows.net/$reports_container/$test_dir/working_dir/50_Outputs/$image_name/report/index.html"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
           echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
 
       - name: Prepare comment artifact
         id: prepare-artifact
+        env:
+          commit_time: ${{ github.event.pull_request.updated_at }}
+          full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
+          git_sha: ${{ github.event.pull_request.head.sha }},
+          image_name: ${{ inputs.image-name }}
+          language: ${{ matrix.language }}
+          pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+          peer_group: ${{ matrix.peer_group }}
+          project_code: ${{ needs.read-config.outputs.project-code }}
+          registry: ${{ inputs.registry }}
+          report_url: ${{ env.report-url }}
+          run_attempt: ${{ github.run_attempt }}
         run: |
           mkdir -p /tmp/comment-json
           json_filename=$( \
-            echo "comment-json-merge-${{ inputs.image-name }}-${{ inputs.registry }}-${{ matrix.language }}-${{ matrix.peer_group }}.json" | \
+            echo "comment-json-merge-$image_name-$registry-$language-$peer_group.json" | \
             tr '/' '-' \
             )
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
           json_file="/tmp/comment-json/$json_filename"
-          jq -n '{
-            "commit_time": "${{ github.event.pull_request.updated_at }}",
-            "git_sha": "${{ github.event.pull_request.head.sha }}",
-            "project_code": "${{ env.PROJECT_CODE }}",
-            "holdings_date": "${{ env.PACTA_DATA_QUARTER }}",
-            "language": "${{ matrix.language }}",
-            "peer_group": "${{ matrix.peer_group }}",
-            "report": "[Report](${{ env.report-url }})",
-            "image": "`${{ needs.docker-build.outputs.full-image-name }}`"
-          }' >> $json_file
+          jq \
+            -n \
+            --arg commit_time "$commit_time" \
+            --arg git_sha "$git_sha" \
+            --arg project_code "$project_code" \
+            --arg pacta_data_quarter "$pacta_data_quarter" \
+            --arg language "$language" \
+            --arg peer_group "$peer_group" \
+            --arg report_url "$report_url" \
+            --arg full_image_name "$full_image_name" \
+            '{
+              "commit_time": $commit_time,
+              "git_sha": $git_sha,
+              "project_code": $project_code,
+              "holdings_date": $pacta_data_quarter,
+              "language": $language,
+              "peer_group": $peer_group,
+              "report": ("[Report](" + $report_url + ")"),
+              "image": ("`" + $full_image_name + "`")
+            }' \
+          >> $json_file
+          cat "$json_file"
 
       - name: Upload comment JSON
         uses: actions/upload-artifact@v4

@@ -107,7 +107,7 @@ portfolio <-
 
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
-portfolio_total <- add_portfolio_flags(portfolio)
+portfolio_total <- add_portfolio_flags(portfolio, currencies)
 
 portfolio_overview <- portfolio_summary(portfolio_total)
 

@@ -39,7 +39,7 @@ Imports:
     knitr,
     pacta.executive.summary, 
     pacta.portfolio.allocate, 
-    pacta.portfolio.audit, 
+    pacta.portfolio.audit@fix/45-pass-currencies-explicitly, 
     pacta.portfolio.import, 
     pacta.portfolio.report, 
     pacta.portfolio.utils, 

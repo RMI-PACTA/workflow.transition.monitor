@@ -54,6 +54,7 @@ jobs:
       registry-image: ${{ steps.prepare.outputs.registry-image }}
       templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
+      user-id: ${{ steps.prepare.outputs.user-id }}
       user-results: ${{ steps.prepare.outputs.user-results }}
     steps:
 
@@ -111,6 +112,14 @@ jobs:
           PEER_RESULTS="$(jq -r '.peer_results | select( . != null )' $config_file)"
           echo "peer-results=$PEER_RESULTS"
           echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
+
+          # includes handling for null/missing keys
+          USER_ID="$(jq -r '.user_id | select( . != null )' $config_file)"
+          if [ -z "$USER_ID" ]; then
+            USER_ID="1"
+          fi
+          echo "user-id=$USER_ID"
+          echo "user-id=$USER_ID" >> "$GITHUB_OUTPUT"
 
   prepare-indices:
     name: Run Index Preparation

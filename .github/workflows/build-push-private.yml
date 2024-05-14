@@ -342,6 +342,7 @@ jobs:
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
+          user_id: ${{ needs.read-config.outputs.user-id }}
           run_attempt: ${{ github.run_attempt }}
         run: |
           test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
@@ -368,6 +369,7 @@ jobs:
             -e "s/{{language}}/$language/" \
             -e "s/{{project_code}}/$project_code/" \
             -e "s/{{holdings_date}}/$pacta_data_quarter/" \
+            -e "s/{{user_id}}/$user_id/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \
             >> $params_file
           cat "$params_file"

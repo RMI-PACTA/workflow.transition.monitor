@@ -342,8 +342,8 @@ jobs:
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
-          user_id: ${{ needs.read-config.outputs.user-id }}
           run_attempt: ${{ github.run_attempt }}
+          user_id: ${{ needs.read-config.outputs.user-id }}
         run: |
           test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
@@ -384,12 +384,13 @@ jobs:
         env:
           user_results: ${{ needs.read-config.outputs.user-results }}
           test_dir: ${{ env.TEST_DIR }}
+          project_code: ${{ needs.read-config.outputs.project-code }}
         with:
           inlineScript: |
             if [ -n "$user_results" ]; then
               az storage copy \
                 --source "$user_results/*" \
-                --destination "$test_dir/user_dir" \
+                --destination "$test_dir/user_dir/$project_code" \
                 --recursive
               chmod -R 777 "$test_dir/user_dir"
               ls -lR "$test_dir"

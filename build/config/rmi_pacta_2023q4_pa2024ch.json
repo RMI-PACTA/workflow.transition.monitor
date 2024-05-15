@@ -11,6 +11,13 @@
       "DE",
       "FR"
     ],
+    "peer_group": [
+      "assetmanager",
+      "bank",
+      "insurance",
+      "other",
+      "pensionfund"
+    ],
     "include": [
       {
         "peer_group": "assetmanager",

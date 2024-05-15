@@ -54,7 +54,6 @@ jobs:
       registry-image: ${{ steps.prepare.outputs.registry-image }}
       templates-ref: ${{ steps.prepare.outputs.templates-ref }}
       test-matrix: ${{ steps.prepare.outputs.test-matrix }}
-      user-id: ${{ steps.prepare.outputs.user-id }}
       user-results: ${{ steps.prepare.outputs.user-results }}
     steps:
 
@@ -104,22 +103,9 @@ jobs:
           echo "project-code=$PROJECT_CODE" >> "$GITHUB_OUTPUT"
 
           # includes handling for null/missing keys
-          USER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
-          echo "user-results=$USER_RESULTS"
-          echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
-
-          # includes handling for null/missing keys
           PEER_RESULTS="$(jq -r '.peer_results | select( . != null )' $config_file)"
           echo "peer-results=$PEER_RESULTS"
           echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
-
-          # includes handling for null/missing keys
-          USER_ID="$(jq -r '.user_id | select( . != null )' $config_file)"
-          if [ -z "$USER_ID" ]; then
-            USER_ID="1"
-          fi
-          echo "user-id=$USER_ID"
-          echo "user-id=$USER_ID" >> "$GITHUB_OUTPUT"
 
   prepare-indices:
     name: Run Index Preparation
@@ -343,7 +329,7 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
           run_attempt: ${{ github.run_attempt }}
-          user_id: ${{ needs.read-config.outputs.user-id }}
+          user_id: ${{ matrix.user_id }}
         run: |
           test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
@@ -382,7 +368,7 @@ jobs:
       - name: Download User Results from Blob Store
         uses: azure/CLI@v2
         env:
-          user_results: ${{ needs.read-config.outputs.user-results }}
+          user_results: ${{ matrix.user_results }}
           test_dir: ${{ env.TEST_DIR }}
           project_code: ${{ needs.read-config.outputs.project-code }}
         with:

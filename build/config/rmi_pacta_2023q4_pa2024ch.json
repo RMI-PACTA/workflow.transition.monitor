@@ -5,7 +5,7 @@
   "templates_ref": "",
   "peer_results": "https://pactadatadev.blob.core.windows.net/testing-files/peer-results/PA2024CH_peer-results-test",
   "test_matrix": {
-    "user_id": "74",
+    "user_id": ["74"],
     "language": [
       "EN",
       "DE",

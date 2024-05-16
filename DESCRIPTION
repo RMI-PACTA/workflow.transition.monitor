@@ -49,7 +49,7 @@ Imports:
 Remotes: 
     RMI-PACTA/pacta.executive.summary, 
     RMI-PACTA/pacta.portfolio.allocate, 
-    RMI-PACTA/pacta.portfolio.audit@fix/45-pass-currencies-explicitly, 
+    RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 
     RMI-PACTA/pacta.portfolio.report, 
     RMI-PACTA/pacta.portfolio.utils

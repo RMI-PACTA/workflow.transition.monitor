@@ -90,35 +90,10 @@ RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/s
 ARG WORKFLOW_DIR="/bound"
 COPY workflow.transition.monitor $WORKFLOW_DIR
 
-# PACTA R package tags
-ARG summary_tag="/tree/main"
-ARG allocate_tag="/tree/main"
-ARG audit_tag="/tree/main"
-ARG import_tag="/tree/main"
-ARG report_tag="/tree/main"
-ARG utils_tag="/tree/main"
-
-ARG summary_url="https://github.com/rmi-pacta/pacta.executive.summary"
-ARG allocate_url="https://github.com/rmi-pacta/pacta.portfolio.allocate"
-ARG audit_url="https://github.com/rmi-pacta/pacta.portfolio.audit"
-ARG import_url="https://github.com/rmi-pacta/pacta.portfolio.import"
-ARG report_url="https://github.com/rmi-pacta/pacta.portfolio.report"
-ARG utils_url="https://github.com/rmi-pacta/pacta.portfolio.utils"
-
 # install R package dependencies
 RUN Rscript -e "\
-  gh_pkgs <- \
-    c( \
-      paste0('$summary_url', '$summary_tag'), \
-      paste0('$allocate_url', '$allocate_tag'), \
-      paste0('$audit_url', '$audit_tag'), \
-      paste0('$import_url', '$import_tag'), \
-      paste0('$report_url', '$report_tag'), \
-      paste0('$utils_url', '$utils_tag') \
-    ); \
   workflow_pkgs <- pak::local_deps(root = '$WORKFLOW_DIR')[['ref']]; \
-  workflow_pkgs <- grep('^RMI-PACTA[/]|^local::.$', workflow_pkgs, value = TRUE, invert = TRUE); \
-  pak::pak(c(gh_pkgs, workflow_pkgs)); \
+  pak::pak(workflow_pkgs); \
   "
 
 # set permissions for PACTA repos that need local content

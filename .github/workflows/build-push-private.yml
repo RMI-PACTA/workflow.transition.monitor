@@ -103,11 +103,6 @@ jobs:
           echo "project-code=$PROJECT_CODE" >> "$GITHUB_OUTPUT"
 
           # includes handling for null/missing keys
-          USER_RESULTS="$(jq -r '.user_results | select( . != null )' $config_file)"
-          echo "user-results=$USER_RESULTS"
-          echo "user-results=$USER_RESULTS" >> "$GITHUB_OUTPUT"
-
-          # includes handling for null/missing keys
           PEER_RESULTS="$(jq -r '.peer_results | select( . != null )' $config_file)"
           echo "peer-results=$PEER_RESULTS"
           echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
@@ -308,7 +303,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    timeout-minutes: 15
+    timeout-minutes: 30
     outputs:
       report-url: ${{ steps.export-outputs.outputs.report-url }}
 
@@ -334,6 +329,7 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
           run_attempt: ${{ github.run_attempt }}
+          user_id: ${{ matrix.user_id }}
         run: |
           test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
@@ -359,6 +355,7 @@ jobs:
             -e "s/{{language}}/$language/" \
             -e "s/{{project_code}}/$project_code/" \
             -e "s/{{holdings_date}}/$pacta_data_quarter/" \
+            -e "s/{{user_id}}/$user_id/" \
             working_dir/10_Parameter_File/test_PortfolioParameters.yml \
             >> $params_file
           cat "$params_file"
@@ -371,14 +368,15 @@ jobs:
       - name: Download User Results from Blob Store
         uses: azure/CLI@v2
         env:
-          user_results: ${{ needs.read-config.outputs.user-results }}
+          user_results: ${{ matrix.user_results }}
           test_dir: ${{ env.TEST_DIR }}
+          project_code: ${{ needs.read-config.outputs.project-code }}
         with:
           inlineScript: |
             if [ -n "$user_results" ]; then
               az storage copy \
                 --source "$user_results/*" \
-                --destination "$test_dir/user_dir" \
+                --destination "$test_dir/user_dir/$project_code" \
                 --recursive
               chmod -R 777 "$test_dir/user_dir"
               ls -lR "$test_dir"
@@ -471,6 +469,14 @@ jobs:
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
           echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
 
+          SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
+          if [ -f "$SUMMARY_PATH" ]; then
+            SUMMARY_URL="https://$reports_account.blob.core.windows.net/$reports_container/$test_dir/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
+            echo "summary-url=$SUMMARY_URL"
+            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
+            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
+          fi
+
       - name: Prepare comment artifact
         id: prepare-artifact
         env:
@@ -485,6 +491,7 @@ jobs:
           registry: ${{ inputs.registry }}
           report_url: ${{ env.report-url }}
           run_attempt: ${{ github.run_attempt }}
+          summary_url: ${{ env.summary-url }}
         run: |
           mkdir -p /tmp/comment-json
           json_filename=$( \
@@ -502,6 +509,7 @@ jobs:
             --arg language "$language" \
             --arg peer_group "$peer_group" \
             --arg report_url "$report_url" \
+            --arg summary_url "$summary_url" \
             --arg full_image_name "$full_image_name" \
             '{
               "commit_time": $commit_time,
@@ -511,6 +519,7 @@ jobs:
               "language": $language,
               "peer_group": $peer_group,
               "report": ("[Report](" + $report_url + ")"),
+              "summary": (if (("" + $summary_url) == "") then null else "[Summary](" + $summary_url + ")" end),
               "image": ("`" + $full_image_name + "`")
             }' \
           >> $json_file

@@ -4,20 +4,37 @@
   "project_code": "PA2024CH",
   "templates_ref": "",
   "peer_results": "https://pactadatadev.blob.core.windows.net/testing-files/peer-results/PA2024CH_peer-results-test",
-  "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_test",
   "test_matrix": {
+    "user_id": ["74"],
     "language": [
       "EN",
       "DE",
       "FR"
     ],
     "peer_group": [
-      "pension_fund",
-      "asset_manager",
-      "civil_society",
-      "politician",
-      "researcher",
-      "other"
+      "assetmanager",
+      "bank",
+      "insurance",
+      "other",
+      "pensionfund"
+    ],
+    "include": [
+      {
+        "peer_group": "assetmanager",
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/assetmanager"
+      },
+      {
+        "peer_group": "bank",
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/bank"
+      },
+      {
+        "peer_group": "insurance",
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/insurance"
+      },
+      {
+        "peer_group": "pensionfund",
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/pensionfund"
+      }
     ]
   }
 }

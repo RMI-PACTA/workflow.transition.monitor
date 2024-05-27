@@ -38,7 +38,7 @@ Imports:
     jsonlite,
     knitr,
     pacta.executive.summary, 
-    pacta.portfolio.allocate, 
+    pacta.portfolio.allocate (>= 0.0.2.9001),
     pacta.portfolio.audit, 
     pacta.portfolio.import, 
     pacta.portfolio.report, 
@@ -48,7 +48,7 @@ Imports:
     shiny
 Remotes: 
     RMI-PACTA/pacta.executive.summary, 
-    RMI-PACTA/pacta.portfolio.allocate, 
+    RMI-PACTA/pacta.portfolio.allocate@fix/48-remove-globalenv,
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 
     RMI-PACTA/pacta.portfolio.report, 

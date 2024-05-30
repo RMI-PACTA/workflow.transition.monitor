@@ -107,7 +107,7 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   if (has_map) {
     abcd_raw_eq <- get_abcd_raw(
       portfolio_type = "Equity",
-      data_path = analysis_inputs_path,
+      analysis_inputs_path = analysis_inputs_path,
       start_year = start_year,
       time_horizon = time_horizon,
       sector_list = sector_list
@@ -200,7 +200,7 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
     if (data_check(company_all_cb)) {
       abcd_raw_cb <- get_abcd_raw(
         portfolio_type = "Bonds",
-        data_path = analysis_inputs_path,
+        analysis_inputs_path = analysis_inputs_path,
         start_year = start_year,
         time_horizon = time_horizon,
         sector_list = sector_list

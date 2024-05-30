@@ -7,9 +7,7 @@
   "test_matrix": {
     "user_id": ["74"],
     "language": [
-      "EN",
-      "DE",
-      "FR"
+      "EN"
     ],
     "peer_group": [
       "assetmanager",
@@ -34,6 +32,22 @@
       {
         "peer_group": "pensionfund",
         "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/pensionfund"
+      },
+      {
+        "peer_group": "bank",
+        "language": "DE"
+      },
+      {
+        "peer_group": "other",
+        "language": "DE"
+      },
+      {
+        "peer_group": "bank",
+        "language": "FR"
+      },
+      {
+        "peer_group": "other",
+        "language": "FR"
       }
     ]
   }

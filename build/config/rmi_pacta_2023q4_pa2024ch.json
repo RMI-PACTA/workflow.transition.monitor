@@ -18,6 +18,26 @@
     ],
     "include": [
       {
+        "peer_group": "bank",
+        "user_id": 74,
+        "language": "DE"
+      },
+      {
+        "peer_group": "other",
+        "user_id": 74,
+        "language": "DE"
+      },
+      {
+        "peer_group": "bank",
+        "user_id": 74,
+        "language": "FR"
+      },
+      {
+        "peer_group": "other",
+        "user_id": 74,
+        "language": "FR"
+      },
+      {
         "peer_group": "assetmanager",
         "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/assetmanager"
       },
@@ -32,26 +52,6 @@
       {
         "peer_group": "pensionfund",
         "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/pensionfund"
-      },
-      {
-        "peer_group": "bank",
-        "user_id": 74,
-        "language": "DE"
-      },
-      {
-        "peer_group": "other",
-        "user_id": 74,
-        "language": "DE"
-      },
-      {
-        "peer_group": "bank",
-        "user_id": 74,
-        "language": "FR"
-      },
-      {
-        "peer_group": "other",
-        "user_id": 74,
-        "language": "FR"
       }
     ]
   }

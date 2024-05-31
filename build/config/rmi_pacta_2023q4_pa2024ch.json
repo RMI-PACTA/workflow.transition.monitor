@@ -18,24 +18,26 @@
     ],
     "include": [
       {
+        "user_id": 74,
+        "language": "DE",
         "peer_group": "bank",
-        "user_id": 74,
-        "language": "DE"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/bank"
       },
       {
-        "peer_group": "other",
         "user_id": 74,
-        "language": "DE"
+        "language": "DE",
+        "peer_group": "other"
       },
       {
+        "user_id": 74,
+        "language": "FR",
         "peer_group": "bank",
-        "user_id": 74,
-        "language": "FR"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240515T164322Z/bank"
       },
       {
-        "peer_group": "other",
         "user_id": 74,
-        "language": "FR"
+        "language": "FR",
+        "peer_group": "other"
       },
       {
         "peer_group": "assetmanager",

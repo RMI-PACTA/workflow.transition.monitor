@@ -35,18 +35,22 @@
       },
       {
         "peer_group": "bank",
+        "user_id": 74,
         "language": "DE"
       },
       {
         "peer_group": "other",
+        "user_id": 74,
         "language": "DE"
       },
       {
         "peer_group": "bank",
+        "user_id": 74,
         "language": "FR"
       },
       {
         "peer_group": "other",
+        "user_id": 74,
         "language": "FR"
       }
     ]

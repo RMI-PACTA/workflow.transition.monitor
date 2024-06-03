@@ -105,8 +105,18 @@ if (inherits(port_raw_all_eq, "data.frame") && nrow(port_raw_all_eq) > 0) {
   port_all_eq <- bind_rows(port_pw_eq, port_own_eq)
 
   if (has_map) {
-    abcd_raw_eq <- get_abcd_raw("Equity")
-    map_eq <- merge_in_geography(company_all_eq, abcd_raw_eq)
+    abcd_raw_eq <- get_abcd_raw(
+      portfolio_type = "Equity",
+      analysis_inputs_path = analysis_inputs_path,
+      start_year = start_year,
+      time_horizon = time_horizon,
+      sector_list = sector_list
+    )
+    map_eq <- merge_in_geography(
+      portfolio = company_all_eq,
+      ald_raw = abcd_raw_eq,
+      sector_list = sector_list
+    )
     rm(abcd_raw_eq)
 
     map_eq <- aggregate_map_data(map_eq)
@@ -188,8 +198,18 @@ if (inherits(port_raw_all_cb, "data.frame") && nrow(port_raw_all_cb) > 0) {
 
   if (has_map) {
     if (data_check(company_all_cb)) {
-      abcd_raw_cb <- get_abcd_raw("Bonds")
-      map_cb <- merge_in_geography(company_all_cb, abcd_raw_cb)
+      abcd_raw_cb <- get_abcd_raw(
+        portfolio_type = "Bonds",
+        analysis_inputs_path = analysis_inputs_path,
+        start_year = start_year,
+        time_horizon = time_horizon,
+        sector_list = sector_list
+      )
+      map_cb <- merge_in_geography(
+        portfolio = company_all_cb,
+        ald_raw = abcd_raw_cb,
+        sector_list = sector_list
+      )
       rm(abcd_raw_cb)
 
       map_cb <- aggregate_map_data(map_cb)

@@ -382,7 +382,7 @@ es_dir <- file.path(output_dir, "executive_summary")
 if (!dir.exists(es_dir)) {
   dir.create(es_dir, showWarnings = FALSE, recursive = TRUE)
 }
-#TODO: delete this comment
+
 exec_summary_template_name <- paste0(project_code, "_", tolower(language_select), "_exec_summary")
 exec_summary_builtin_template_path <- system.file("extdata", exec_summary_template_name, package = "pacta.executive.summary")
 invisible(file.copy(exec_summary_builtin_template_path, output_dir, recursive = TRUE, copy.mode = FALSE))

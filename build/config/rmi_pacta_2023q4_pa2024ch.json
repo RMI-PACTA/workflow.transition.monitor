@@ -2,7 +2,7 @@
   "data_share_path": "2023Q4_20240424T120055Z",
   "pacta_data_quarter": "2023Q4",
   "project_code": "PA2024CH",
-  "templates_ref": "",
+  "templates_ref": "optimize-assets",
   "peer_results": "https://pactadatadev.blob.core.windows.net/testing-files/peer-results/PA2024CH_peer-results-test",
   "test_matrix": {
     "user_id": ["74"],

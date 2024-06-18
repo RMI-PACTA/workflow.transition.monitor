@@ -47,7 +47,7 @@ Imports:
     rmarkdown, 
     shiny
 Remotes: 
-    RMI-PACTA/pacta.executive.summary, 
+    RMI-PACTA/pacta.executive.summary@feat/334-remove-indices-from-score-card-dir, 
     RMI-PACTA/pacta.portfolio.allocate,
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 

@@ -423,7 +423,7 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
       indices_bonds_results_portfolio = indices_bonds_results_portfolio,
       audit_file = audit_file,
       emissions_portfolio = emissions,
-      score_card_dir = score_card_dir
+      index_dir = analysis_inputs_path
     )
 
   render_executive_summary(

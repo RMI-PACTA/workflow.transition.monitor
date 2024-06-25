@@ -267,7 +267,7 @@ jobs:
       # Actually build the image (for a single architecture)!
       - name: Build
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./workflow.transition.monitor/Dockerfile

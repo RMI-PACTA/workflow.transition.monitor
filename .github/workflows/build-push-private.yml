@@ -46,6 +46,7 @@ jobs:
     permissions:
       contents: read
     outputs:
+      net-zero-targets: ${{ steps.prepare.outputs.net-zero-targets }}
       now: ${{ steps.prepare.outputs.now }}
       pacta-data-quarter: ${{ steps.prepare.outputs.pacta-data-quarter }}
       pacta-data-share-path: ${{ steps.prepare.outputs.pacta-data-share-path }}
@@ -107,6 +108,11 @@ jobs:
           echo "peer-results=$PEER_RESULTS"
           echo "peer-results=$PEER_RESULTS" >> "$GITHUB_OUTPUT"
 
+          # includes handling for null/missing keys
+          NET_ZERO_TARGETS="$(jq -r '.net_zero_targets | select( . != null )' $config_file)"
+          echo "net-zero-targets=$NET_ZERO_TARGETS"
+          echo "net-zero-targets=$NET_ZERO_TARGETS" >> "$GITHUB_OUTPUT"
+
   prepare-indices:
     name: Run Index Preparation
     needs: read-config
@@ -165,6 +171,7 @@ jobs:
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
           peer_results: ${{ needs.read-config.outputs.peer-results }}
+          net_zero_targets: ${{ needs.read-config.outputs.net-zero-targets }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
@@ -186,6 +193,16 @@ jobs:
             if [ -n "$peer_results" ]; then
               az storage copy \
                 --source "$peer_results/*" \
+                --destination "peer_results" \
+                --recursive
+            else
+              echo "No Peer Results defined in config"
+            fi
+
+            # Download net zero targets if necessary
+            if [ -n "$net_zero_targets" ]; then
+              az storage copy \
+                --source "$net_zero_targets" \
                 --destination "peer_results" \
                 --recursive
             else

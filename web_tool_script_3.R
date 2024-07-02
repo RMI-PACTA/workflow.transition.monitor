@@ -377,6 +377,7 @@ create_interactive_report(
 
 survey_dir <- fs::path_abs(file.path(user_results_path, project_code, "survey"))
 score_card_dir <- fs::path_abs(file.path(user_results_path, project_code, "score_card"))
+analysis_inputs_dir <- fs::path_abs(file.path(analysis_inputs_path))
 output_dir <- file.path(outputs_path, portfolio_name_ref_all)
 es_dir <- file.path(output_dir, "executive_summary")
 if (!dir.exists(es_dir)) {
@@ -433,6 +434,7 @@ if (dir.exists(exec_summary_template_path) && (peer_group %in% c("assetmanager",
     exec_summary_dir = exec_summary_template_path,
     survey_dir = survey_dir,
     score_card_dir = score_card_dir,
+    analysis_inputs_dir = analysis_inputs_dir,
     file_name = "template.Rmd",
     investor_name = investor_name,
     portfolio_name = portfolio_name,

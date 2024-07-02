@@ -22,7 +22,7 @@
         "user_id": 74,
         "language": "DE",
         "peer_group": "bank",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/bank"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/bank"
       },
       {
         "user_id": 74,
@@ -33,7 +33,7 @@
         "user_id": 74,
         "language": "FR",
         "peer_group": "bank",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/bank"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/bank"
       },
       {
         "user_id": 74,
@@ -42,19 +42,19 @@
       },
       {
         "peer_group": "assetmanager",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/assetmanager"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/assetmanager"
       },
       {
         "peer_group": "bank",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/bank"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/bank"
       },
       {
         "peer_group": "insurance",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/insurance"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/insurance"
       },
       {
         "peer_group": "pensionfund",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240701/pensionfund"
+        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/pensionfund"
       }
     ]
   }

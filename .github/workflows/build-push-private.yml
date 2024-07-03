@@ -466,22 +466,32 @@ jobs:
           image_name: ${{ inputs.image-name }}
           test_dir: ${{ env.TEST_DIR }}
         run: |
-          REPORT_URL="$REPORTS_DESTINATION_URL/$test_dir/working_dir/50_Outputs/$image_name/report/index.html"
-          echo "report-url=$REPORT_URL"
-          echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
-          echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
+          BLOB_DIR="$REPORTS_DESTINATION_URL/$test_dir/working_dir/50_Outputs/$image_name"
+          echo "blob-dir=$BLOB_DIR"
+          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_OUTPUT"
+          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_ENV"
 
-          SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
-          if [ -f "$SUMMARY_PATH" ]; then
-            SUMMARY_URL="$REPORTS_DESTINATION_URL/$test_dir/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
-            echo "summary-url=$SUMMARY_URL"
-            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
-            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
+          PUBLIC_BLOB_URL="https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports"
+
+          if [ "$REPORT_URL" = "$PUBLIC_BLOB_URL" ]; then
+            REPORT_URL="$BLOB_DIR/report/index.html"
+            echo "report-url=$REPORT_URL"
+            echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+            echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
+
+            SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
+            if [ -f "$SUMMARY_PATH" ]; then
+              SUMMARY_URL="$BLOB_DIR/executive_summary/template.pdf"
+              echo "summary-url=$SUMMARY_URL"
+              echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
+              echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
+            fi
           fi
 
       - name: Prepare comment artifact
         id: prepare-artifact
         env:
+          blob_dir: ${{ env.blob-dir }}
           commit_time: ${{ github.event.pull_request.updated_at }}
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           git_sha: ${{ github.event.pull_request.head.sha }},
@@ -513,6 +523,7 @@ jobs:
             --arg report_url "$report_url" \
             --arg summary_url "$summary_url" \
             --arg full_image_name "$full_image_name" \
+            --arg blob_dir "$blob_dir" \
             '{
               "commit_time": $commit_time,
               "git_sha": $git_sha,
@@ -522,6 +533,7 @@ jobs:
               "peer_group": $peer_group,
               "report": ("[Report](" + $report_url + ")"),
               "summary": (if (("" + $summary_url) == "") then null else "[Summary](" + $summary_url + ")" end),
+              "download_command": ("`az storage copy --source " + $blob_url + "`"),
               "image": ("`" + $full_image_name + "`")
             }' \
           >> $json_file

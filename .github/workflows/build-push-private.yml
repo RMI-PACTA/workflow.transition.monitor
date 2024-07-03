@@ -533,7 +533,7 @@ jobs:
               "peer_group": $peer_group,
               "report": ("[Report](" + $report_url + ")"),
               "summary": (if (("" + $summary_url) == "") then null else "[Summary](" + $summary_url + ")" end),
-              "download_command": ("`az storage copy --source " + $blob_url + "`"),
+              "download_command": ("`az storage copy --source " + $blob_dir + "`"),
               "image": ("`" + $full_image_name + "`")
             }' \
           >> $json_file

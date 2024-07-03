@@ -455,7 +455,7 @@ jobs:
 
             az storage copy \
               --source "$test_dir_parent" \
-              --destination-container "$REPORTS_DESTINATION_URL" \
+              --destination "$REPORTS_DESTINATION_URL" \
               --include-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
               --recursive
 

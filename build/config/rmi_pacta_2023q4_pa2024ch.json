@@ -57,5 +57,7 @@
         "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240702/pensionfund"
       }
     ]
-  }
+  },
+  "resultsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full",
+  "reportsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports"
 }

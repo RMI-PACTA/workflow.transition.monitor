@@ -1,0 +1,10 @@
+workflow.transition.monitor/.git
+workflow.transition.monitor/.git/**/*
+workflow.transition.monitor/.github
+workflow.transition.monitor/.github/**/*
+workflow.transition.monitor/.gitignore
+workflow.transition.monitor/build
+workflow.transition.monitor/build/**/*
+workflow.transition.monitor/tests
+workflow.transition.monitor/tests/**/*
+workflow.transition.monitor/workflow.workflow.transition.monitor.Rproj

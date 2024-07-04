@@ -511,6 +511,7 @@ jobs:
             tr '/' '-' \
             )
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
+          blob_dest="$(basename blob_dir)"
           json_file="/tmp/comment-json/$json_filename"
           jq \
             -n \
@@ -524,6 +525,7 @@ jobs:
             --arg summary_url "$summary_url" \
             --arg full_image_name "$full_image_name" \
             --arg blob_dir "$blob_dir" \
+            --arg blob_dest "$blob_dest" \
             '{
               "commit_time": $commit_time,
               "git_sha": $git_sha,
@@ -533,7 +535,7 @@ jobs:
               "peer_group": $peer_group,
               "report": (if (("" + $report_url) == "") then null else "[Report](" + $report_url + ")" end),
               "summary": (if (("" + $summary_url) == "") then null else "[Summary](" + $summary_url + ")" end),
-              "download_command": ("`az storage copy --source " + $blob_dir + "`"),
+              "download_command": ("`az storage copy --recursive --source " + $blob_dir + " --destination ` + $blob_dest + "`"),
               "image": ("`" + $full_image_name + "`")
             }' \
           >> $json_file

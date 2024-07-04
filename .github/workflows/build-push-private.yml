@@ -506,12 +506,13 @@ jobs:
           summary_url: ${{ env.summary-url }}
         run: |
           mkdir -p /tmp/comment-json
+          unique_string=
           json_filename=$( \
             echo "comment-json-merge-$image_name-$registry-$language-$peer_group.json" | \
             tr '/' '-' \
             )
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
-          blob_dest="$(basename blob_dir)"
+          blob_dest="$(basename $blob_dir)-$language-$peer_group"
           json_file="/tmp/comment-json/$json_filename"
           jq \
             -n \

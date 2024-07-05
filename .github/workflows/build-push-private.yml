@@ -182,7 +182,7 @@ jobs:
             # Download peer results if necessary
             if [ -n "$peer_results" ]; then
               az storage copy \
-                --source "$peer_results/*" \
+                --source "$peer_results" \
                 --destination "peer_results"
             else
               echo "No Peer Results defined in config"

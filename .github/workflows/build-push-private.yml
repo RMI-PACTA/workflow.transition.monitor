@@ -352,7 +352,7 @@ jobs:
           cp -R working_dir $TEST_DIR
 
           # Remove FAKE string (used when testing priave images)
-          echo "$project_code" | sed 's/FAKE//g'
+          project_code="$(echo "$project_code" | sed 's/FAKE//g')"
 
           params_file="$TEST_DIR/working_dir/10_Parameter_File/${image_name}_PortfolioParameters.yml"
           echo $params_file

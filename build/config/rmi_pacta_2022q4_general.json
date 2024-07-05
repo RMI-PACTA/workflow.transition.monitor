@@ -2,7 +2,7 @@
   "data_share_path": "2022Q4_20240426T113151Z",
   "pacta_data_quarter": "2022Q4",
   "project_code": "GENERAL",
-  "templates_ref": "",
+  "templates_ref": "update-text-general",
   "test_matrix": {
     "language": [
       "EN"

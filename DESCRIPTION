@@ -41,7 +41,7 @@ Imports:
     pacta.portfolio.allocate,
     pacta.portfolio.audit, 
     pacta.portfolio.import, 
-    pacta.portfolio.report, 
+    pacta.portfolio.report@change-font-size-table-css, 
     pacta.portfolio.utils, 
     readr, 
     rmarkdown, 

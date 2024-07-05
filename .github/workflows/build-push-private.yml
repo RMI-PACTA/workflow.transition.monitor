@@ -183,7 +183,8 @@ jobs:
             if [ -n "$peer_results" ]; then
               az storage copy \
                 --source "$peer_results" \
-                --destination "peer_results"
+                --destination "peer_results" \
+                --recursive
             else
               echo "No Peer Results defined in config"
             fi

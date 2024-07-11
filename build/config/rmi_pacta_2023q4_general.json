@@ -10,5 +10,7 @@
     "peer_group": [
       "other"
     ]
-  }
+  },
+  "resultsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full",
+  "reportsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports"
 }

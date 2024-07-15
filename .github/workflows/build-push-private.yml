@@ -156,9 +156,8 @@ jobs:
 
       - name: Prepare Azcopy
         run: |
+          az --version
           azcopy --version
-          export AZCOPY_AUTO_LOGIN_TYPE=AZCLI
-          echo "AZCOPY_AUTO_LOGIN_TYPE=AZCLI" >> "$GITHUB_ENV"
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Download pacta-data
@@ -194,7 +193,8 @@ jobs:
               az storage copy \
                 --source "$peer_results/*" \
                 --destination "peer_results" \
-                --recursive
+                --recursive \
+                --auth-mode login
             else
               echo "No Peer Results defined in config"
             fi

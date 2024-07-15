@@ -154,6 +154,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Prepare Azcopy
+        run: |
+          azcopy --version
+          export AZCOPY_AUTO_LOGIN_TYPE=AZCLI
+          echo "AZCOPY_AUTO_LOGIN_TYPE=AZCLI" >> "$GITHUB_ENV"
+
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Download pacta-data
         uses: azure/CLI@v2
@@ -164,12 +170,9 @@ jobs:
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
           peer_results: ${{ needs.read-config.outputs.peer-results }}
           net_zero_targets: ${{ needs.read-config.outputs.net-zero-targets }}
-          client_id: ${{ secrets.AZURE_CLIENT_ID }}
         with:
           # azcliversion: 2.30.0
           inlineScript: |
-            export AZCOPY_AUTO_LOGIN_TYPE="MSI"
-            export AZCOPY_MSI_CLIENT_ID="$client_id"
 
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             az storage copy \

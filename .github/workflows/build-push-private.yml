@@ -187,6 +187,7 @@ jobs:
 
             # Download peer results if necessary
             if [ -n "$peer_results" ]; then
+              echo "Downloading Peer Results"
               az storage copy \
                 --source "$peer_results/*" \
                 --destination "peer_results" \
@@ -197,6 +198,7 @@ jobs:
 
             # Download net zero targets if necessary
             if [ -n "$net_zero_targets" ]; then
+              echo "Downloading Net Zero targets"
               az storage copy \
                 --source "$net_zero_targets" \
                 --destination "peer_results" \

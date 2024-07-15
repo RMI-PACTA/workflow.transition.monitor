@@ -103,27 +103,28 @@ jobs:
           echo "net-zero-targets=$NET_ZERO_TARGETS"
           echo "net-zero-targets=$NET_ZERO_TARGETS" >> "$GITHUB_OUTPUT"
 
-  prepare-indices:
-    name: Run Index Preparation
-    needs: read-config
-    secrets: inherit
-    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
-    with:
-      image-tag: |
-        ${{
-          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
-          github.event_name == 'schedule' && 'main' ||
-          github.event_name == 'push' && github.ref_name ||
-          github.event_name == 'workflow_dispatch' && github.ref_name ||
-          github.sha
-        }}
-      data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
-      config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
+  # prepare-indices:
+  #   name: Run Index Preparation
+  #   needs: read-config
+  #   secrets: inherit
+  #   uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
+  #   with:
+  #     image-tag: |
+  #       ${{
+  #         github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+  #         github.event_name == 'schedule' && 'main' ||
+  #         github.event_name == 'push' && github.ref_name ||
+  #         github.event_name == 'workflow_dispatch' && github.ref_name ||
+  #         github.sha
+  #       }}
+  #     data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
+  #     config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
 
 
   docker-build:
     runs-on: ubuntu-latest
-    needs: [read-config, prepare-indices]
+    needs: [read-config]
+    # needs: [read-config, prepare-indices]
     permissions:
       contents: read
       id-token: write
@@ -157,7 +158,8 @@ jobs:
       - name: Download pacta-data
         uses: azure/CLI@v2
         env:
-          index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
+          index_share_path: 2023Q4_20240715T112631Z
+          # index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
           peer_results: ${{ needs.read-config.outputs.peer-results }}

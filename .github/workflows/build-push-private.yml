@@ -249,17 +249,16 @@ jobs:
             dl_dest="pacta-data/$pacta_data_quarter"
 
             for XX in $dl_files; do
-
               echo "Downloading: $XX"
               az storage fs file download \
                 --account-name "$peer_results_account" \
                 --file-system "$peer_results_container" \
                 --path "$XX" \
                 --destination "$dl_dest" \
-                --sas-token "dl_sas" \
-                --auth-mode login
-
+                --sas-token "dl_sas"
             done
+
+            ls pacta-data/$pacta_data_quarter
 
       # - name: Prepare R
       #   uses: r-lib/actions/setup-r@v2

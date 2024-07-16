@@ -231,18 +231,18 @@ jobs:
              )"
             echo $dl_files
 
-            # end="$(date -uj -v '+10M' '+%Y-%m-%dT%H:%MZ')"
-            # echo "Current time: $(date -uj '+%Y-%m-%dT%H:%MZ')"
-            # echo "Expiry time: $end"
-            # az storage container generate-sas \
-            #   --account-name "$peer_results_account" \
-            #   --name "$peer_results_directory" \
-            #   --auth-mode login \
-            #   --as-user \
-            #   --https-only \
-            #   --permissions lr \
-            #   --expiry $end \
-            #   --output tsv
+            end="$(date -uj -v '+10M' '+%Y-%m-%dT%H:%MZ')"
+            echo "Current time: $(date -uj '+%Y-%m-%dT%H:%MZ')"
+            echo "Expiry time: $end"
+            az storage container generate-sas \
+              --account-name "$peer_results_account" \
+              --name "$peer_results_directory" \
+              --auth-mode login \
+              --as-user \
+              --https-only \
+              --permissions lr \
+              --expiry $end \
+              --output tsv
 
             dl_dest="pacta-data/$pacta_data_quarter"
 

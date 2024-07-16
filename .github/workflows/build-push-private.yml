@@ -213,6 +213,7 @@ jobs:
             any::AzureAuth
             any::AzureStor
             any::jsonlite
+            any::logger
 
       - name: Download peer results
         if: ${{ needs.read-config.outputs.peer-results-json }}
@@ -221,12 +222,15 @@ jobs:
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           peer_results_json: ${{ needs.read-config.outputs.peer-results-json }}
         run: |
+          logger::log_info("Reading JSON")
           raw_json <- Sys.getenv("peer_results_json")
           args <- jsonlite::fromJSON(raw_json)
           print(args)
           data_quarter <- Sys.getenv("pacta_data_quarter")
+          logger::log_info("data_quarter: {data_quarter}")
           client_id <- Sys.getenv("client_id")
 
+          logger::log_info("Getting session token")
           session_token <- AzureAuth::get_managed_token(
             resource = paste0("https://", args[["account"]], ".blob.core.windows.net"),
             token_args = list(
@@ -235,17 +239,20 @@ jobs:
             use_cache = FALSE
           )
 
+          logger::log_info("connecting to container")
           container <- AzureStor::blob_container(
             endpoint = paste0("https://", args[["account"]], ".blob.core.windows.net/", args[["container"]]),
             token = session_token
           )
 
+          logger::log_info("Downloading Files")
           AzureStor::multidownload_blob(
             container = container,
             src = paste0(args[["directory"]], "/*"),
             dest = file.path("pacta_data", data_quarter),
             recursive = TRUE
           )
+          logger::log_info("Files Downloaded")
 
         shell: Rscript {0}
 

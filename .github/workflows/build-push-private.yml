@@ -203,7 +203,7 @@ jobs:
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
             ls pacta-data/$pacta_data_quarter
 
-      - name: Download peer results (R)
+      - name: Download peer results (az CLI)
         if: ${{ needs.read-config.outputs.peer-results-json }}
         uses: azure/CLI@v2
         env:
@@ -231,8 +231,8 @@ jobs:
              )"
             echo $dl_files
 
-            end="$(date +%s`+5*60)"
-            echo "Current time: $(date -uj '+%Y-%m-%dT%H:%MZ')"
+            end="$(date -d@$(( $(date +%s)+180)) '+%Y-%m-%dT%H:%MZ')"
+            echo "Current time: $(date -u '+%Y-%m-%dT%H:%MZ')"
             echo "Expiry time: $end"
             az storage container generate-sas \
               --account-name "$peer_results_account" \

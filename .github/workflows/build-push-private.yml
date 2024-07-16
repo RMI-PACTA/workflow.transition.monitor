@@ -201,10 +201,6 @@ jobs:
             # move data
             mv "pacta-data/$pacta_data_share_path" "pacta-data/$pacta_data_quarter"
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
-            if [ -n "$peer_results_json" ]; then
-              PEERS_BASENAME=$(basename $peer_results_directory)
-              mv peer_results/$PEERS_BASENAME/* "pacta-data/$pacta_data_quarter"
-            fi
             ls pacta-data/$pacta_data_quarter
 
       - name: Download peer results

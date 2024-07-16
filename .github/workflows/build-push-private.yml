@@ -231,7 +231,7 @@ jobs:
              )"
             echo $dl_files
 
-            end="$(date -uj -v '+10M' '+%Y-%m-%dT%H:%MZ')"
+            end="$(date +%s`+5*60)"
             echo "Current time: $(date -uj '+%Y-%m-%dT%H:%MZ')"
             echo "Expiry time: $end"
             az storage container generate-sas \

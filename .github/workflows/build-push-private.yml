@@ -187,28 +187,6 @@ jobs:
               --recursive \
               --exclude-pattern "*.sqlite"
 
-            # Download peer results if necessary
-            if [ -n "$peer_results_json" ]; then
-
-              peer_results_account="$(echo  $peer_results_json | jq -rc '.account')"
-              echo "account: $peer_results_account"
-              peer_results_container="$(echo  $peer_results_json | jq -rc '.container')"
-              echo "container: $peer_results_container"
-              peer_results_directory="$(echo  $peer_results_json | jq -rc '.directory')"
-              echo "directory: $peer_results_directory"
-
-              echo "Downloading Peer Results"
-              az storage fs directory download \
-                --account-name "$peer_results_account" \
-                --file-system "$peer_results_container" \
-                --source-path "$peer_results_directory" \
-                --destination-path "peer_results" \
-                --recursive
-
-            else
-              echo "No Peer Results defined in config"
-            fi
-
             # Download net zero targets if necessary
             if [ -n "$net_zero_targets" ]; then
               echo "Downloading Net Zero targets"
@@ -228,6 +206,46 @@ jobs:
               mv peer_results/$PEERS_BASENAME/* "pacta-data/$pacta_data_quarter"
             fi
             ls pacta-data/$pacta_data_quarter
+
+      - name: Download peer results
+        if: ${{ needs.read-config.outputs.peer-results-json }}
+        env:
+          client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+          peer_results_json: ${{ needs.read-config.outputs.peer-results-json }}
+        run: |
+          install.packages(c(
+            "AzureAuth",
+            "AzureStor",
+            "jsonlite"
+          ))
+          raw_json <- Sys.getenv("peer_results_json")
+          args <- jsonlite::fromJSON(raw_json)
+          print(args)
+          data_quarter <- Sys.getenv("pacta_data_quarter")
+          client_id <- Sys.getenv("client_id")
+
+          session_token <- AzureAuth::get_managed_token(
+            resource = paste0("https://", args[["account"]], ".blob.core.windows.net"),
+            token_args = list(
+              client_id = client_id
+            ),
+            use_cache = FALSE
+          )
+
+          container <- AzureStor::blob_container(
+            endpoint = paste0("https://", args[["account"]], ".blob.core.windows.net/", args[["container"]]),
+            token = session_token
+          )
+
+          AzureStor::multidownload_blob(
+            container = container,
+            src = paste0(args[["directory"]], "/*"),
+            dest = file.path("pacta_data", data_quarter),
+            recursive = TRUE
+          )
+
+        shell: Rscript {0}
 
       - name: Identify LABELs in dockerfile
         id: custom-labels

@@ -158,7 +158,6 @@ jobs:
         run: |
           az --version
           azcopy --version
-          echo "AZURE_STORAGE_AUTH_MODE=login" >> "$GITHUB_ENV"
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Download pacta-data
@@ -204,7 +203,6 @@ jobs:
                 --file-system "$peer_results_container" \
                 --source-path "$peer_results_directory" \
                 --destination-path "peer_results" \
-                --auth-mode login \
                 --recursive
 
             else

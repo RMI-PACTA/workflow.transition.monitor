@@ -234,15 +234,17 @@ jobs:
             end="$(date -d@$(( $(date +%s)+180)) '+%Y-%m-%dT%H:%MZ')"
             echo "Current time: $(date -u '+%Y-%m-%dT%H:%MZ')"
             echo "Expiry time: $end"
-            az storage container generate-sas \
-              --account-name "$peer_results_account" \
-              --name "$peer_results_directory" \
-              --auth-mode login \
-              --as-user \
-              --https-only \
-              --permissions lr \
-              --expiry $end \
-              --output tsv
+            dl_sas="$(
+              az storage container generate-sas \
+                --account-name "$peer_results_account" \
+                --name "$peer_results_directory" \
+                --auth-mode login \
+                --as-user \
+                --https-only \
+                --permissions lr \
+                --expiry $end \
+                --output tsv
+              )"
 
             dl_dest="pacta-data/$pacta_data_quarter"
 
@@ -254,6 +256,7 @@ jobs:
                 --file-system "$peer_results_container" \
                 --path "$XX" \
                 --destination "$dl_dest" \
+                --sas-token "dl_sas" \
                 --auth-mode login
 
             done

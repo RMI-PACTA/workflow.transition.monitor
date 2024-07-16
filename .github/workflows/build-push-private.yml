@@ -248,7 +248,7 @@ jobs:
 
             dl_dest="pacta-data/$pacta_data_quarter"
 
-            for XX in $dl_files; do
+            echo "$dl_files" | while read XX; do
               echo "Downloading: $XX"
               az storage fs file download \
                 --account-name "$peer_results_account" \

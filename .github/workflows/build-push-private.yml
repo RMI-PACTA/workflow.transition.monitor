@@ -221,6 +221,7 @@ jobs:
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           peer_results_json: ${{ needs.read-config.outputs.peer-results-json }}
+          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         run: |
           logger::log_info("Reading JSON")
           raw_json <- Sys.getenv("peer_results_json")
@@ -228,14 +229,12 @@ jobs:
           print(args)
           data_quarter <- Sys.getenv("pacta_data_quarter")
           logger::log_info("data_quarter: {data_quarter}")
-          client_id <- Sys.getenv("client_id")
 
           logger::log_info("Getting session token")
-          session_token <- AzureAuth::get_managed_token(
+          session_token <- AzureAuth::get_azure_token(
             resource = paste0("https://", args[["account"]], ".blob.core.windows.net"),
-            token_args = list(
-              client_id = client_id
-            ),
+            app = Sys.getenv("client_id"),
+            tenant = Sys.getenv("tenant_id"),
             use_cache = FALSE
           )
 

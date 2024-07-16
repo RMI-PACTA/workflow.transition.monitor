@@ -203,57 +203,112 @@ jobs:
             mv "index-data/$index_share_path"/* "pacta-data/$pacta_data_quarter"
             ls pacta-data/$pacta_data_quarter
 
-      - name: Prepare R
-        uses: r-lib/actions/setup-r@v2
-
-      - name: Install packages
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          packages: |
-            any::AzureAuth
-            any::AzureStor
-            any::jsonlite
-            any::logger
-
-      - name: Download peer results
+      - name: Download peer results (R)
         if: ${{ needs.read-config.outputs.peer-results-json }}
+        uses: azure/CLI@v2
         env:
-          client_id: ${{ secrets.AZURE_CLIENT_ID }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           peer_results_json: ${{ needs.read-config.outputs.peer-results-json }}
-          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-        run: |
-          logger::log_info("Reading JSON")
-          raw_json <- Sys.getenv("peer_results_json")
-          args <- jsonlite::fromJSON(raw_json)
-          print(args)
-          data_quarter <- Sys.getenv("pacta_data_quarter")
-          logger::log_info("data_quarter: {data_quarter}")
+        with:
+          inlineScript: |
 
-          logger::log_info("Getting session token")
-          session_token <- AzureAuth::get_azure_token(
-            resource = paste0("https://", args[["account"]], ".blob.core.windows.net"),
-            app = Sys.getenv("client_id"),
-            tenant = Sys.getenv("tenant_id"),
-            use_cache = FALSE
-          )
+            peer_results_account="$(echo  $peer_results_json | jq -rc '.account')"
+            echo "account: $peer_results_account"
+            peer_results_container="$(echo  $peer_results_json | jq -rc '.container')"
+            echo "container: $peer_results_container"
+            peer_results_directory="$(echo  $peer_results_json | jq -rc '.directory')"
+            echo "directory: $peer_results_directory"
 
-          logger::log_info("connecting to container")
-          container <- AzureStor::blob_container(
-            endpoint = paste0("https://", args[["account"]], ".blob.core.windows.net/", args[["container"]]),
-            token = session_token
-          )
+            echo "Downloading Peer Results"
+            dl_files="$(
+              az storage fs file list \
+                --account-name "$peer_results_account" \
+                --file-system "$peer_results_container" \
+                --path "$peer_results_directory" \
+                --auth-mode login \
+                --recursive |
+                jq '.[] | .name'
+             )"
+            echo $dl_files
 
-          logger::log_info("Downloading Files")
-          AzureStor::multidownload_blob(
-            container = container,
-            src = paste0(args[["directory"]], "/*"),
-            dest = file.path("pacta_data", data_quarter),
-            recursive = TRUE
-          )
-          logger::log_info("Files Downloaded")
+            # end="$(date -uj -v '+10M' '+%Y-%m-%dT%H:%MZ')"
+            # echo "Current time: $(date -uj '+%Y-%m-%dT%H:%MZ')"
+            # echo "Expiry time: $end"
+            # az storage container generate-sas \
+            #   --account-name "$peer_results_account" \
+            #   --name "$peer_results_directory" \
+            #   --auth-mode login \
+            #   --as-user \
+            #   --https-only \
+            #   --permissions lr \
+            #   --expiry $end \
+            #   --output tsv
 
-        shell: Rscript {0}
+            dl_dest="pacta-data/$pacta_data_quarter"
+
+            for XX in $dl_files; do
+
+              echo "Downloading: $XX"
+              az storage fs file download \
+                --account-name "$peer_results_account" \
+                --file-system "$peer_results_container" \
+                --path "$XX" \
+                --destination "$dl_dest" \
+                --auth-mode login
+
+            done
+
+      # - name: Prepare R
+      #   uses: r-lib/actions/setup-r@v2
+
+      # - name: Install packages
+      #   uses: r-lib/actions/setup-r-dependencies@v2
+      #   with:
+      #     packages: |
+      #       any::AzureAuth
+      #       any::AzureStor
+      #       any::jsonlite
+      #       any::logger
+
+      # - name: Download peer results (R)
+      #   if: ${{ needs.read-config.outputs.peer-results-json }}
+      #   env:
+      #     client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
+      #     peer_results_json: ${{ needs.read-config.outputs.peer-results-json }}
+      #     tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      #   run: |
+      #     logger::log_info("Reading JSON")
+      #     raw_json <- Sys.getenv("peer_results_json")
+      #     args <- jsonlite::fromJSON(raw_json)
+      #     print(args)
+      #     data_quarter <- Sys.getenv("pacta_data_quarter")
+      #     logger::log_info("data_quarter: {data_quarter}")
+
+      #     logger::log_info("Getting session token")
+      #     session_token <- AzureAuth::get_azure_token(
+      #       resource = paste0("https://", args[["account"]], ".blob.core.windows.net"),
+      #       app = Sys.getenv("client_id"),
+      #       tenant = Sys.getenv("tenant_id"),
+      #       use_cache = FALSE
+      #     )
+
+      #     logger::log_info("connecting to container")
+      #     container <- AzureStor::blob_container(
+      #       endpoint = paste0("https://", args[["account"]], ".blob.core.windows.net/", args[["container"]]),
+      #       token = session_token
+      #     )
+
+      #     logger::log_info("Downloading Files")
+      #     AzureStor::multidownload_blob(
+      #       container = container,
+      #       src = paste0(args[["directory"]], "/*"),
+      #       dest = file.path("pacta_data", data_quarter),
+      #       recursive = TRUE
+      #     )
+      #     logger::log_info("Files Downloaded")
+
+      #   shell: Rscript {0}
 
       - name: Identify LABELs in dockerfile
         id: custom-labels

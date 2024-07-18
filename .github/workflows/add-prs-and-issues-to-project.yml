@@ -9,7 +9,8 @@ on:
     branches: [main]
     types:
       - opened
-  
+
+jobs:
   add-to-maintainer-project:
     name: Add issue/PR to @cjyetman's maintainer project
     runs-on: ubuntu-latest

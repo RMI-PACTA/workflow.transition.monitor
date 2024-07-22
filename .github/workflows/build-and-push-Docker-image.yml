@@ -153,7 +153,6 @@ jobs:
             }' \
           >> $json_file
 
-
       - name: Upload comment JSON
         uses: actions/upload-artifact@v4
         with:

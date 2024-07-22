@@ -19,7 +19,7 @@ jobs:
       contents: read
     timeout-minutes: 25
     outputs:
-      full-image-name: ${{ steps.push-image.outputs.full-image-name }}
+      full-image-name: ${{ steps.export-output.outputs.full-image-name }}
 
     steps:
       - name: Checkout workflow.transition.monitor
@@ -122,7 +122,14 @@ jobs:
 
       - name: Export Outputs
         id: export-outputs
+        env:
+          commit_time: ${{ github.event.pull_request.updated_at }},
+          git_sha: ${{ github.event.pull_request.head.sha }},
         run: |
+          full_image_name="$(echo $DOCKER_METADATA_OUTPUT_JSON | jq .tags.[0])"
+          echo "full-image-name=$full_image_name"
+          echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
+
           mkdir -p /tmp/comment-json
           json_filename=$( \
             echo "comment-json-merge-${{ inputs.image-name }}-build-push.json" | \
@@ -132,15 +139,17 @@ jobs:
           echo "json-filename=$json_filename" >> "$GITHUB_ENV"
           json_file="/tmp/comment-json/$json_filename"
           echo "json-file=$json_file"
-          jq -n '{
-            "commit_time": "${{ github.event.pull_request.updated_at }}",
-            "git_sha": "${{ github.event.pull_request.head.sha }}",
-            "image": "${{ steps.push-image.outputs.full-image-name }}"
-          }' >> $json_file
-
-          full_image_name="$(echo $DOCKER_METADATA_OUTPUT_JSON | jq .tags.[0])"
-          echo "full-image-name=$full_image_name"
-          echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
+          jq \
+            -n \
+            --arg commit_time "$commit_time" \
+            --arg git_sha "$git_sha" \
+            --arg full_image_name "$full_image_name" \
+            '{
+              "commit_time": $commit_time,
+              "git_sha": $git_sha,
+              "image": ("`" + $full_image_name + "`")
+            }' \
+          >> $json_file
 
       - name: Upload comment JSON
         uses: actions/upload-artifact@v4

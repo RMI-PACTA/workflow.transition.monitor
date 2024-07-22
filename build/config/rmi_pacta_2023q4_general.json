@@ -1,14 +1,12 @@
 {
-  "data_share_path": "2023Q4_20240424T120055Z",
+  "data_share_path": "2023Q4_20240718T150252Z",
   "pacta_data_quarter": "2023Q4",
   "project_code": "GENERAL",
   "templates_ref": "",
   "test_matrix": {
-    "language": [
-      "EN"
-    ],
-    "peer_group": [
-      "other"
-    ]
-  }
+    "language": ["EN"],
+    "peer_group": ["other"]
+  },
+  "resultsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full",
+  "reportsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports"
 }

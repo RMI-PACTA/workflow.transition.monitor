@@ -126,7 +126,7 @@ jobs:
           commit_time: ${{ github.event.pull_request.updated_at }},
           git_sha: ${{ github.event.pull_request.head.sha }},
         run: |
-          full_image_name="$(echo $DOCKER_METADATA_OUTPUT_JSON | jq .tags.[0])"
+          full_image_name="$(echo $DOCKER_METADATA_OUTPUT_JSON | jq '.tags.[0]')"
           echo "full-image-name=$full_image_name"
           echo "full-image-name=$full_image_name" >> $GITHUB_OUTPUT
 

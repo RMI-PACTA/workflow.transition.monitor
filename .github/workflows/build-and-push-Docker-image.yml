@@ -37,7 +37,7 @@ jobs:
         id: prepare-environment
         env:
           registry: "ghcr.io"
-          inputs: ${{ inputs.image-name }}
+          image_name: ${{ inputs.image-name }}
         run: |
           NOW="$(date -u +'%Y%m%dT%H%M%SZ')"
           echo "now=$NOW" >> $GITHUB_OUTPUT

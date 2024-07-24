@@ -119,6 +119,7 @@ jobs:
         }}
       data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
       config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
+      artifact-key: ${{ inputs.image-name }}
 
 
   docker-build:

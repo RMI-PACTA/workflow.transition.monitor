@@ -100,3 +100,9 @@ RUN Rscript -e "\
 RUN chmod -R a+rwX $WORKFLOW_DIR && \
     chmod -R a+rwX $PACTA_DATA_DIR && \
     chmod -R a+rwX $TEMPLATES_DIR
+
+# set the build_version environment variable
+ARG image_tag
+ENV build_version=$image_tag
+ARG head_hashes
+ENV head_hashes=$head_hashes

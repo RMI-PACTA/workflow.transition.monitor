@@ -121,7 +121,6 @@ jobs:
       config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
       artifact-key: ${{ inputs.image-name }}
 
-
   docker-build:
     runs-on: ubuntu-latest
     needs: [read-config, prepare-indices]

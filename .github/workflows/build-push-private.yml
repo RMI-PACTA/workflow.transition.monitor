@@ -110,13 +110,11 @@ jobs:
     uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@build/103-check-existing-outputs
     with:
       image-tag: |
-        ${{
-          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+        ${{ github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
           github.event_name == 'schedule' && 'main' ||
           github.event_name == 'push' && github.ref_name ||
           github.event_name == 'workflow_dispatch' && github.ref_name ||
-          github.sha
-        }}
+          github.sha }}
       data-share-path: ${{ needs.read-config.outputs.pacta-data-share-path }}
       config_active: ${{ needs.read-config.outputs.pacta-data-quarter }}
       artifact-key: ${{ inputs.image-name }}

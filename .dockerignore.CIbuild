@@ -7,4 +7,4 @@ workflow.transition.monitor/build
 workflow.transition.monitor/build/**/*
 workflow.transition.monitor/tests
 workflow.transition.monitor/tests/**/*
-workflow.transition.monitor/workflow.workflow.transition.monitor.Rproj
+workflow.transition.monitor/workflow.transition.monitor.Rproj

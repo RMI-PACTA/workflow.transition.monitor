@@ -154,7 +154,7 @@ jobs:
       - name: Download pacta-data
         uses: azure/CLI@v2
         env:
-          index_share_path: ${{ needs.prepare-indices.outputs.timestamp-dir }}
+          index_share_path: ${{ needs.prepare-indices.outputs.results-dir }}
           pacta_data_quarter: ${{ needs.read-config.outputs.pacta-data-quarter }}
           pacta_data_share_path: ${{ needs.read-config.outputs.pacta-data-share-path }}
           peer_results: ${{ needs.read-config.outputs.peer-results }}

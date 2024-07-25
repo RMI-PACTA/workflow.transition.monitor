@@ -43,6 +43,7 @@ Imports:
     pacta.portfolio.import, 
     pacta.portfolio.report, 
     pacta.portfolio.utils, 
+    pacta.workflow.utils,
     readr, 
     rmarkdown, 
     shiny
@@ -52,6 +53,7 @@ Remotes:
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 
     RMI-PACTA/pacta.portfolio.report, 
-    RMI-PACTA/pacta.portfolio.utils
+    RMI-PACTA/pacta.portfolio.utils,
+    RMI-PACTA/pacta.workflow.utils
 Depends: 
     R (>= 3.5.0)

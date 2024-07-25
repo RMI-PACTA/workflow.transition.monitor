@@ -88,17 +88,17 @@ COPY $TEMPLATES_SRC $TEMPLATES_DIR
 
 # Copy DESCRIPTION and install dependencies
 ARG WORKFLOW_DIR="/bound"
+COPY workflow.transition.monitor/DESCRIPTION ${WORKFLOW_DIR}/DESCRIPTION
+
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX $WORKFLOW_DIR && \
     chmod -R a+rwX $PACTA_DATA_DIR && \
     chmod -R a+rwX $TEMPLATES_DIR
 
-COPY workflow.transition.monitor/DESCRIPTION ${WORKFLOW_DIR}/DESCRIPTION
-
 RUN Rscript -e "pak::local_install_deps(root = '$WORKFLOW_DIR')"
 
 FROM base AS install-pacta
-#
+
 # copy in everything from this repo
 COPY workflow.transition.monitor $WORKFLOW_DIR
 

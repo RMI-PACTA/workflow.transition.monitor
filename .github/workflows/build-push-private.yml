@@ -107,7 +107,7 @@ jobs:
     name: Run Index Preparation
     needs: read-config
     secrets: inherit
-    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@install-utils
+    uses: RMI-PACTA/workflow.prepare.pacta.indices/.github/workflows/run-index-preparation.yml@main
     with:
       image-tag: |
         ${{ github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||

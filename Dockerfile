@@ -13,7 +13,7 @@
 
 ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.3.1"
-FROM --platform=$PLATFORM rocker/r-ver:$R_VERS
+FROM --platform=$PLATFORM rocker/r-ver:$R_VERS as base
 
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
 LABEL org.opencontainers.image.description="Docker image to drive the Transition Monitor backend"
@@ -73,6 +73,9 @@ ARG TEX_DEPS="\
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
+# install packages for dependency resolution and installation
+RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"
+
 # copy in PACTA data
 ARG PACTA_DATA_SRC="pacta-data"
 ARG PACTA_DATA_DIR="/pacta-data"
@@ -83,23 +86,25 @@ ARG TEMPLATES_SRC="templates.transition.monitor"
 ARG TEMPLATES_DIR="/templates.transition.monitor"
 COPY $TEMPLATES_SRC $TEMPLATES_DIR
 
-# install packages for dependency resolution and installation
-RUN Rscript -e "install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/')"
-
-# copy in scripts from this repo
+# Copy DESCRIPTION and install dependencies
 ARG WORKFLOW_DIR="/bound"
-COPY workflow.transition.monitor $WORKFLOW_DIR
-
-# install R package dependencies
-RUN Rscript -e "\
-  workflow_pkgs <- pak::local_deps(root = '$WORKFLOW_DIR')[['ref']]; \
-  pak::pak(workflow_pkgs); \
-  "
+COPY workflow.transition.monitor/DESCRIPTION ${WORKFLOW_DIR}/DESCRIPTION
 
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX $WORKFLOW_DIR && \
     chmod -R a+rwX $PACTA_DATA_DIR && \
     chmod -R a+rwX $TEMPLATES_DIR
+
+RUN Rscript -e "pak::local_install_deps(root = '$WORKFLOW_DIR')"
+
+FROM base AS install-pacta
+
+# copy in everything from this repo
+COPY workflow.transition.monitor $WORKFLOW_DIR
+
+# install dependencies in the install-pacta layer (not cached) again, to pick
+# up any recent changes in the GH packages
+RUN Rscript -e "pak::local_install_deps(root = '$WORKFLOW_DIR')"
 
 # set the build_version environment variable
 ARG image_tag

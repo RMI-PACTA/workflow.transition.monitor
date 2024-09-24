@@ -303,13 +303,12 @@ jobs:
         id: prepare-inputs-archive
         env:
           full_image_name: ${{ steps.export-outputs.outputs.full-image-name }}
-        with:
-          inlineScript: |
-            tarfile="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-").tar.gz"
-            tar -cvz -f "$tarfile" pacta-data templates.transition.monitor
-            echo "$tarfile"
-            echo "input-tar=$tarfile"
-            echo "input-tar=$tarfile" >> "$GITHUB_OUTPUT"
+        run: |
+          tarfile="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-").tar.gz"
+          tar -cvz -f "$tarfile" pacta-data templates.transition.monitor
+          echo "$tarfile"
+          echo "input-tar=$tarfile"
+          echo "input-tar=$tarfile" >> "$GITHUB_OUTPUT"
 
 
       - name: Export inputs archive

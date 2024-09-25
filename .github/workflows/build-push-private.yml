@@ -299,16 +299,25 @@ jobs:
           echo "full-image-name=$TAGGED_IMAGE"
           echo "full-image-name=$TAGGED_IMAGE" >> "$GITHUB_OUTPUT"
 
+      - name: Prepare inputs archive
+        id: prepare-inputs-archive
+        env:
+          full_image_name: ${{ steps.export-outputs.outputs.full-image-name }}
+        run: |
+          tarfile="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-").tar.gz"
+          tar -cvz -f "$tarfile" pacta-data templates.transition.monitor
+          echo "$tarfile"
+          echo "input-tar=$tarfile"
+          echo "input-tar=$tarfile" >> "$GITHUB_OUTPUT"
+
+
       - name: Export inputs archive
         uses: azure/CLI@v2
         env:
           full_image_name: ${{ steps.export-outputs.outputs.full-image-name }}
+          tarfile: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
         with:
           inlineScript: |
-            tarfile="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-").tar.gz"
-            echo "$tarfile"
-            tar -cvz -f "$tarfile" pacta-data templates.transition.monitor
-
             upload_container="https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data"
             destination_path="$upload_container/$tarfile"
             echo "$destination_path"

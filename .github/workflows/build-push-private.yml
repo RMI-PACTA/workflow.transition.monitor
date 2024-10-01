@@ -25,6 +25,8 @@ jobs:
 
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload results to blob store
+        env:
+          AZCOPY_AUTO_LOGIN_TYPE: AZCLI
         uses: azure/CLI@v2
         with:
           inlineScript: |

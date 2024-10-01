@@ -40,8 +40,17 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Upload results to blob store using azcopy
+        run: |
+            azcopy \
+              copy \
+              test_dir \
+              https://pactadatadev.dfs.core.windows.net/ghactions-workflow-transition-monitor-results-reports/foo \
+              --recursive
+
+
       # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
-      - name: Upload results to blob store
+      - name: Upload results to blob store using az
         env:
           AZCOPY_AUTO_LOGIN_TYPE: AZCLI
           AZCOPY_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -49,14 +58,6 @@ jobs:
         with:
           inlineScript: |
 
-            echo "Running azcopy"
-            /usr/local/bin/azcopy \
-            copy \
-            test_dir \
-            https://pactadatadev.dfs.core.windows.net/ghactions-workflow-transition-monitor-results-reports/foo \
-            --recursive
-
-            echo "running az storage fs"
             az storage fs directory upload \
               --source "test_dir" \
               --file-system "ghactions-workflow-transition-monitor-results-reports" \

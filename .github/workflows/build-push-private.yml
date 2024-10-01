@@ -480,15 +480,20 @@ jobs:
           test_dir_parent: ${{ env.TEST_DIR_PARENT }}
         with:
           inlineScript: |
-            az storage copy \
+
+            az storage fs directory upload \
               --source "$test_dir_parent" \
-              --destination "$RESULTS_DESTINATION_URL" \
+              --file-system "ghactions-workflow-transition-monitor-results-full" \
+              --account-name "pactadatadev" \
+              --auth-mode "login" \
               --recursive
 
-            az storage copy \
-              --source "$test_dir_parent" \
-              --destination "$REPORTS_DESTINATION_URL" \
-              --include-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
+            az storage fs directory upload \
+              --source "$test_dir_parent/$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
+              --file-system "ghactions-workflow-transition-monitor-results-full" \
+              --destination-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" 
+              --account-name "pactadatadev" \
+              --auth-mode "login" \
               --recursive
 
       - name: Export Outputs

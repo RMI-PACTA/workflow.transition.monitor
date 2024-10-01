@@ -1,30 +1,12 @@
 on:
   workflow_call:
-    inputs:
-      image-name:
-        required: true
-        type: string
-      additional-image-tags:
-        required: false
-        type: string
-      registry:
-        required: false
-        type: string
-        default: transitionmonitordockerregistry.azurecr.io
-
-    # outputs:
-    #   full-image-name:
-    #     description: "Full pushed image name including host/registry, name, and tag"
-    #     value: ${{ jobs.docker-build.outputs.full-image-name }}
-    #   report-url:
-    #     description: "URL to report generated in testing step"
-    #     value: ${{ jobs.test.outputs.report-url }}
 
 jobs:
   test-upload:
-    runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
+    runs-on: ubuntu-latest
     steps:
 
       - name: Prepare Test files

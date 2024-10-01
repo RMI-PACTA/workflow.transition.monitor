@@ -15,6 +15,14 @@ jobs:
           echo "foo" > test_dir/test.txt
           echo "bar" > test_dir/test2.txt
 
+      - name: Install `azcopy`
+        run: |
+          curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          rm packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install azcopy
+
       # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
       - name: Azure Login
         uses: azure/login@v2

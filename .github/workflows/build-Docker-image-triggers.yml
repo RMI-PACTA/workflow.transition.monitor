@@ -12,6 +12,5 @@ jobs:
 
   build_private_docker_image:
     name: "Test File upload"
-    needs: build_docker_image
     uses: ./.github/workflows/build-push-private.yml
     secrets: inherit

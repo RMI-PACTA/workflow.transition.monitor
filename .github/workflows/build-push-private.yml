@@ -478,6 +478,7 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           run_attempt: ${{ github.run_attempt }}
           test_dir_parent: ${{ env.TEST_DIR_PARENT }}
+          AZCOPY_AUTO_LOGIN_TYPE: AZCLI
         with:
           inlineScript: |
 

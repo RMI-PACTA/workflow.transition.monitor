@@ -49,7 +49,7 @@ jobs:
         with:
           inlineScript: |
 
-            azcopy \
+            /usr/local/bin/azcopy \
             copy \
             test_dir \
             https://pactadatadev.dfs.core.windows.net/ghactions-workflow-transition-monitor-results-reports/foo \

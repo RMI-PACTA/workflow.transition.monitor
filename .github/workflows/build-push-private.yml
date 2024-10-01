@@ -478,9 +478,11 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           run_attempt: ${{ github.run_attempt }}
           test_dir_parent: ${{ env.TEST_DIR_PARENT }}
-          AZCOPY_AUTO_LOGIN_TYPE: AZCLI
+          client_id: ${{ secrets.AZURE_CLIENT_ID }}
         with:
           inlineScript: |
+
+            azcopy login --identity --identity-client-id "$client_id"
 
             az storage fs directory upload \
               --source "$test_dir_parent" \

@@ -27,6 +27,7 @@ jobs:
       - name: Upload results to blob store
         env:
           AZCOPY_AUTO_LOGIN_TYPE: AZCLI
+          AZCOPY_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         uses: azure/CLI@v2
         with:
           inlineScript: |

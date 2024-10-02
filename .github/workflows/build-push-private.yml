@@ -25,7 +25,7 @@ jobs:
             --recursive
 
       - name: Download results to blob store using az
-        id: upload-directory
+        id: download-directory
         uses: RMI-PACTA/actions/actions/azure/azcopy-copy@azcopy-actions
         with:
           destination: 'foo/'

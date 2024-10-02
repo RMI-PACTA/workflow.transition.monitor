@@ -32,3 +32,7 @@ jobs:
           source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
           flags: |
             --recursive
+
+      - name: show files
+        run: |
+          ls -laR foo

@@ -30,7 +30,7 @@ jobs:
           source: 'test_dir/'
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
           flags: |
-            --recursive
+            --recursive=true
 
       - name: Download results to blob store using az
         id: download-directory
@@ -39,7 +39,7 @@ jobs:
           destination: 'foo/'
           source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
           flags: |
-            --recursive
+            --recursive=true
 
       - name: show files
         run: |

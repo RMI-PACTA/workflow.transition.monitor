@@ -29,7 +29,7 @@ jobs:
         with:
           source: 'test_dir/'
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
-          flags: |
+          flags: |-
             --recursive=true
 
       - name: Download results to blob store using az
@@ -38,7 +38,7 @@ jobs:
         with:
           destination: 'foo/'
           source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
-          flags: |
+          flags: |-
             --recursive=true
 
       - name: show files

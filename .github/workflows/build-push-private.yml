@@ -15,52 +15,20 @@ jobs:
           echo "foo" > test_dir/test.txt
           echo "bar" > test_dir/test2.txt
 
-      - name: Install `azcopy`
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-          curl -sSL -O https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-          sudo dpkg -i packages-microsoft-prod.deb
-          rm packages-microsoft-prod.deb
-          sudo apt-get update
-          sudo apt-get install -y azcopy
-
-          # Show version
-          echo "azcopy version:"
-          azcopy --version
-          # Show path
-          echo "azcopy path:"
-          type azcopy
-
-      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Upload results to blob store using azcopy
-        env:
-          AZCOPY_AUTO_LOGIN_TYPE: AZCLI
-          AZCOPY_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        run: |
-            azcopy \
-              copy \
-              test_dir \
-              https://pactadatadev.dfs.core.windows.net/ghactions-workflow-transition-monitor-results-reports/foo \
-              --recursive
-
-
-      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
       - name: Upload results to blob store using az
-        uses: azure/CLI@v2
+        id: upload-directory
+        uses: RMI-PACTA/actions/actions/azure/azcopy-copy@azcopy-actions
         with:
-          inlineScript: |
+          source: 'test_dir/'
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
+          flags: |
+            --recursive
 
-            az storage fs directory upload \
-              --source "test_dir" \
-              --file-system "ghactions-workflow-transition-monitor-results-reports" \
-              --account-name "pactadatadev" \
-              --auth-mode "login" \
-              --recursive
+      - name: Download results to blob store using az
+        id: upload-directory
+        uses: RMI-PACTA/actions/actions/azure/azcopy-copy@azcopy-actions
+        with:
+          destination: 'foo/'
+          source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
+          flags: |
+            --recursive

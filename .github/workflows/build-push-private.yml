@@ -27,8 +27,9 @@ jobs:
         id: upload-directory
         uses: RMI-PACTA/actions/actions/azure/azcopy-copy@azcopy-actions
         with:
-          source: 'test_dir/'
-          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
+          local-path: 'test_dir/'
+          blob-url: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
+          direction: upload
           flags: |-
             --recursive=true
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -38,8 +39,9 @@ jobs:
         id: download-directory
         uses: RMI-PACTA/actions/actions/azure/azcopy-copy@azcopy-actions
         with:
-          destination: 'foo/'
-          source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
+          local-path: 'foo/'
+          blob-url: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
+          direction: download
           flags: |-
             --recursive=true
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}

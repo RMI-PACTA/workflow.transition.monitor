@@ -30,7 +30,7 @@ jobs:
           source: 'test_dir/'
           destination: https://pactadatadev.blob.core.windows.net/testing-files/alpha/path/to/file
 
-      - name: Download results to blob store using az
+      - name: Download results from blob store using az
         id: download-directory
         uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:

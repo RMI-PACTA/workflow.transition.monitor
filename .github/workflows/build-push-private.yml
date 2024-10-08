@@ -468,35 +468,21 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
-      - name: Upload results to blob store
-        uses: azure/CLI@v2
-        env:
-          REPORTS_DESTINATION_URL: ${{ needs.read-config.outputs.reports-destination-url }}
-          RESULTS_DESTINATION_URL: ${{ needs.read-config.outputs.results-destination-url }}
-          language: ${{ matrix.language }}
-          peer_group: ${{ matrix.peer_group }}
-          run_attempt: ${{ github.run_attempt }}
-          test_dir_parent: ${{ env.TEST_DIR_PARENT }}
-          AZCOPY_AUTO_LOGIN_TYPE: MSI
-          AZCOPY_MSI_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      - name: Upload results to Blob store 
+        id: upload-results
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
-          inlineScript: |
+          source: ${{ env.TEST_DIR_PARENT }}
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
+          overwrite: false
 
-            az storage fs directory upload \
-              --source "$test_dir_parent" \
-              --file-system "ghactions-workflow-transition-monitor-results-full" \
-              --account-name "pactadatadev" \
-              --auth-mode "login" \
-              --recursive
-
-            az storage fs directory upload \
-              --source "$test_dir_parent/$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
-              --file-system "ghactions-workflow-transition-monitor-results-full" \
-              --destination-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" 
-              --account-name "pactadatadev" \
-              --auth-mode "login" \
-              --recursive
+      - name: Upload report to Blob store 
+        id: upload-report
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
+        with:
+          source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          overwrite: false
 
       - name: Export Outputs
         id: export-outputs

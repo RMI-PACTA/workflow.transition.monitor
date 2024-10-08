@@ -25,14 +25,14 @@ jobs:
 
       - name: Upload results to blob store using az
         id: upload-directory
-        uses: RMI-PACTA/actions/actions/azure/azcopy-copy@blob-copy-python
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
           source: 'test_dir/'
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
 
       - name: Download results to blob store using az
         id: download-directory
-        uses: RMI-PACTA/actions/actions/azure/azcopy-copy@blob-copy-python
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
           destination: 'foo/'
           source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/

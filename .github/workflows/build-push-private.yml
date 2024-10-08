@@ -481,7 +481,7 @@ jobs:
         uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
           source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
-          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full/${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
           overwrite: false
 
       - name: Export Outputs

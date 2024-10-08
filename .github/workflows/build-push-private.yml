@@ -29,6 +29,7 @@ jobs:
         with:
           source: 'test_dir/'
           destination: https://pactadatadev.blob.core.windows.net/testing-files/alpha/path/to/file
+          overwrite: true
 
       - name: Download results from blob store using az
         id: download-directory

@@ -28,14 +28,14 @@ jobs:
         uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
           source: 'test_dir/'
-          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/path/to/file
+          destination: https://pactadatadev.blob.core.windows.net/testing-files/alpha/path/to/file
 
       - name: Download results to blob store using az
         id: download-directory
         uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
           destination: 'foo/'
-          source: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports/alpha/
+          source: https://pactadatadev.blob.core.windows.net/testing-files/alpha/
 
       - name: show files
         run: |

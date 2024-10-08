@@ -516,7 +516,7 @@ jobs:
       - name: Prepare comment artifact
         id: prepare-artifact
         env:
-          blob_dir: ${{ env.blob-dir }}
+          blob_dir: ${{ steps.export-outputs.outputs.blob-dir }}
           commit_time: ${{ github.event.pull_request.updated_at }}
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           git_sha: ${{ github.event.pull_request.head.sha }},
@@ -526,9 +526,9 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
           registry: ${{ inputs.registry }}
-          report_url: ${{ env.report-url }}
+          report_url: ${{ steps.export-outputs.outputs.report-url }}
           run_attempt: ${{ github.run_attempt }}
-          summary_url: ${{ env.summary-url }}
+          summary_url: ${{ steps.export-outputs.outputs.summary-url }}
         run: |
           mkdir -p /tmp/comment-json
           unique_string=

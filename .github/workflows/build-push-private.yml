@@ -468,28 +468,23 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # https://github.com/marketplace/actions/azure-cli-action#workflow-to-execute-an-azure-cli-script-of-a-specific-cli-version
-      - name: Upload results to blob store
-        uses: azure/CLI@v2
-        env:
-          REPORTS_DESTINATION_URL: ${{ needs.read-config.outputs.reports-destination-url }}
-          RESULTS_DESTINATION_URL: ${{ needs.read-config.outputs.results-destination-url }}
-          language: ${{ matrix.language }}
-          peer_group: ${{ matrix.peer_group }}
-          run_attempt: ${{ github.run_attempt }}
-          test_dir_parent: ${{ env.TEST_DIR_PARENT }}
+      - name: Upload results to Blob store 
+        id: upload-results
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          inlineScript: |
-            az storage copy \
-              --source "$test_dir_parent" \
-              --destination "$RESULTS_DESTINATION_URL" \
-              --recursive
+          source: ${{ env.TEST_DIR_PARENT }}
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
+          overwrite: false
+          log_level: debug
 
-            az storage copy \
-              --source "$test_dir_parent" \
-              --destination "$REPORTS_DESTINATION_URL" \
-              --include-path "$language/$peer_group/$run_attempt/working_dir/50_Outputs" \
-              --recursive
+      - name: Upload report to Blob store 
+        id: upload-report
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
+        with:
+          source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports
+          overwrite: false
+          log_level: debug
 
       - name: Export Outputs
         id: export-outputs
@@ -503,27 +498,23 @@ jobs:
           echo "blob-dir=$BLOB_DIR" >> "$GITHUB_OUTPUT"
           echo "blob-dir=$BLOB_DIR" >> "$GITHUB_ENV"
 
-          PUBLIC_BLOB_URL="https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports"
+          REPORT_URL="$BLOB_DIR/report/index.html"
+          echo "report-url=$REPORT_URL"
+          echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+          echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
 
-          if [ "$REPORT_URL" = "$PUBLIC_BLOB_URL" ]; then
-            REPORT_URL="$BLOB_DIR/report/index.html"
-            echo "report-url=$REPORT_URL"
-            echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
-            echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
-
-            SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
-            if [ -f "$SUMMARY_PATH" ]; then
-              SUMMARY_URL="$BLOB_DIR/executive_summary/template.pdf"
-              echo "summary-url=$SUMMARY_URL"
-              echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
-              echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
-            fi
+          SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
+          if [ -f "$SUMMARY_PATH" ]; then
+            SUMMARY_URL="$BLOB_DIR/executive_summary/template.pdf"
+            echo "summary-url=$SUMMARY_URL"
+            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
+            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
           fi
 
       - name: Prepare comment artifact
         id: prepare-artifact
         env:
-          blob_dir: ${{ env.blob-dir }}
+          blob_dir: ${{ steps.export-outputs.outputs.blob-dir }}
           commit_time: ${{ github.event.pull_request.updated_at }}
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           git_sha: ${{ github.event.pull_request.head.sha }},
@@ -533,9 +524,9 @@ jobs:
           peer_group: ${{ matrix.peer_group }}
           project_code: ${{ needs.read-config.outputs.project-code }}
           registry: ${{ inputs.registry }}
-          report_url: ${{ env.report-url }}
+          report_url: ${{ steps.export-outputs.outputs.report-url }}
           run_attempt: ${{ github.run_attempt }}
-          summary_url: ${{ env.summary-url }}
+          summary_url: ${{ steps.export-outputs.outputs.summary-url }}
         run: |
           mkdir -p /tmp/comment-json
           unique_string=

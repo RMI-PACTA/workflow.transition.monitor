@@ -313,7 +313,7 @@ jobs:
 
       - name: Export inputs archive
         id: upload-report
-        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
           source: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data
@@ -460,7 +460,7 @@ jobs:
 
       - name: Upload results to Blob store 
         id: upload-results
-        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
           source: ${{ env.TEST_DIR_PARENT }}
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
@@ -468,7 +468,7 @@ jobs:
 
       - name: Upload report to Blob store 
         id: upload-report
-        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
           source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports

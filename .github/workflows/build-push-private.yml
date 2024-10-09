@@ -312,22 +312,12 @@ jobs:
 
 
       - name: Export inputs archive
-        uses: azure/CLI@v2
-        env:
-          full_image_name: ${{ steps.export-outputs.outputs.full-image-name }}
-          tarfile: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
+        id: upload-report
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@blob-copy-python
         with:
-          inlineScript: |
-            upload_container="https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data"
-            destination_path="$upload_container/$tarfile"
-            echo "$destination_path"
-
-            az storage copy \
-            --source "$tarfile" \
-            --destination "$destination_path" \
-            --recursive
-
-            echo "Archive available at: $destination_path"
+          source: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data
+          overwrite: false
 
   test:
     runs-on: ubuntu-latest

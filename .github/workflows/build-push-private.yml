@@ -482,12 +482,6 @@ jobs:
           test_dir: ${{ env.TEST_DIR }}
         run: |
 
-
-          BLOB_DIR="$REPORTS_DESTINATION_URL/$test_dir/working_dir/50_Outputs/$image_name"
-          echo "blob-dir=$BLOB_DIR"
-          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_OUTPUT"
-          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_ENV"
-
           REPORT_URL="$(
             echo "$REPORT_UPLOADED_FILES" | jq -rc '. [] | match(".*index.html$") | .string'
           )"

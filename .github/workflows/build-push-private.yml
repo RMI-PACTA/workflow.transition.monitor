@@ -475,6 +475,7 @@ jobs:
           source: ${{ env.TEST_DIR_PARENT }}
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
           overwrite: false
+          log_level: debug
 
       - name: Upload report to Blob store 
         id: upload-report
@@ -483,6 +484,7 @@ jobs:
           source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports
           overwrite: false
+          log_level: debug
 
       - name: Export Outputs
         id: export-outputs

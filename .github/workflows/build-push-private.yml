@@ -480,7 +480,7 @@ jobs:
       - name: Export Outputs
         id: export-outputs
         env:
-          REPORT_UPLOADED_FILES: ${{ needs.upload-report.outputs.destination-files }}
+          REPORT_UPLOADED_FILES: ${{ steps.upload-report.outputs.destination-files }}
           image_name: ${{ inputs.image-name }}
           test_dir: ${{ steps.prepare-results-dir.outputs.test-dir }}
         run: |

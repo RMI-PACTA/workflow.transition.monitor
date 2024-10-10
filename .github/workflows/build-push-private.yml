@@ -209,9 +209,6 @@ jobs:
         run: |
           DOCKERFILE_LABELS="$(grep "^LABEL" workflow.transition.monitor/Dockerfile | sed 's/^LABEL[[:space:]]*//')"
           echo "$DOCKERFILE_LABELS"
-          echo "DOCKERFILE_LABELS<<EOF" >> $GITHUB_ENV
-          echo "$DOCKERFILE_LABELS" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
           echo 'dockerfile-labels<<EOF' >> $GITHUB_OUTPUT
           echo "$DOCKERFILE_LABELS" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
@@ -226,9 +223,9 @@ jobs:
         with:
           images: ${{ needs.read-config.outputs.registry-image }}
           annotations:
-            ${{ env.DOCKERFILE_LABELS }}
+            ${{ steps.custom-labels.outputs.DOCKERFILE_LABELS }}
           labels:
-            ${{ env.DOCKERFILE_LABELS }}
+            ${{ steps.custom-labels.outputs.DOCKERFILE_LABELS }}
           tags: |
             type=schedule,enable=true,pattern={{date 'YYYYMMDD[T]HHmmss[Z]' tz='UTC'}}
             type=schedule,enable=true,pattern=nightly,priority=950
@@ -253,6 +250,7 @@ jobs:
 
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
+        id: docker-credentials
         uses: azure/CLI@v2
         env:
           registry: ${{ inputs.registry }}
@@ -260,18 +258,19 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             # Username is not a placeholder. See https://stackoverflow.com/a/73250630
-            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
-            # echo "::add-mask::$DOCKER_USER"
+            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_OUTPUT"
+            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_OUTPUT"
             echo "::add-mask::$DOCKER_TOKEN"
-            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
-            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
+            echo "docker-user=$DOCKER_USER" >> "$GITHUB_OUTPUT"
+            echo "docker-token=$DOCKER_TOKEN" >> "$GITHUB_OUTPUT"
 
       - name: Login to Registry
         env:
-          registry: ${{ inputs.registry }}
+          REGISTRY: ${{ inputs.registry }}
+          DOCKER_TOKEN: ${{ steps.docker-credentials.outputs.docker-token }}
+          DOCKER_USER: ${{ steps.docker-credentials.outputs.docker-user }}
         run: |
-          echo "$DOCKER_TOKEN" | docker login $registry --username "$DOCKER_USER" --password-stdin
+          echo "$DOCKER_TOKEN" | docker login $REGISTRY --username "$DOCKER_USER" --password-stdin
 
       # Actually build the image (for a single architecture)!
       - name: Build
@@ -312,22 +311,12 @@ jobs:
 
 
       - name: Export inputs archive
-        uses: azure/CLI@v2
-        env:
-          full_image_name: ${{ steps.export-outputs.outputs.full-image-name }}
-          tarfile: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
+        id: upload-report
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          inlineScript: |
-            upload_container="https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data"
-            destination_path="$upload_container/$tarfile"
-            echo "$destination_path"
-
-            az storage copy \
-            --source "$tarfile" \
-            --destination "$destination_path" \
-            --recursive
-
-            echo "Archive available at: $destination_path"
+          source: ${{ steps.prepare-inputs-archive.outputs.input-tar }}
+          destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-input-pacta-data
+          overwrite: false
 
   test:
     runs-on: ubuntu-latest
@@ -360,6 +349,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare User and results directories
+        id: prepare-results-dir
         env:
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           image_name: ${{ inputs.image-name }}
@@ -373,13 +363,13 @@ jobs:
           test_dir_parent_name="$(echo $full_image_name | sed 's:.*/::' |  tr ":" "-")"
           TEST_DIR_PARENT="$test_dir_parent_name"
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
-          echo "TEST_DIR_PARENT=$TEST_DIR_PARENT" >> "$GITHUB_ENV"
+          echo "test-dir-parent=$TEST_DIR_PARENT" >> "$GITHUB_OUTPUT"
 
           TEST_DIR="$TEST_DIR_PARENT/$language/$peer_group/$run_attempt"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"
-          echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
+          echo "test-dir=$TEST_DIR" >> "$GITHUB_OUTPUT"
 
           mkdir -p $TEST_DIR/user_dir
           cp -R working_dir $TEST_DIR
@@ -408,7 +398,7 @@ jobs:
         uses: azure/CLI@v2
         env:
           user_results: ${{ matrix.user_results }}
-          test_dir: ${{ env.TEST_DIR }}
+          test_dir: ${{ steps.prepare-results-dir.outputs.test-dir }}
           project_code: ${{ needs.read-config.outputs.project-code }}
         with:
           inlineScript: |
@@ -423,7 +413,9 @@ jobs:
               echo "No User Results defined in config"
             fi
 
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
+        id: docker-credentials
         uses: azure/CLI@v2
         env:
           registry: ${{ inputs.registry }}
@@ -431,24 +423,25 @@ jobs:
           # azcliversion: 2.30.0
           inlineScript: |
             # Username is not a placeholder. See https://stackoverflow.com/a/73250630
-            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_ENV"
-            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_ENV"
-            # echo "::add-mask::$DOCKER_USER"
+            DOCKER_USER="00000000-0000-0000-0000-000000000000" >> "$GITHUB_OUTPUT"
+            DOCKER_TOKEN="$(az acr login -n $registry --expose-token --query 'accessToken' --output tsv)" >> "$GITHUB_OUTPUT"
             echo "::add-mask::$DOCKER_TOKEN"
-            echo "DOCKER_USER=$DOCKER_USER" >> "$GITHUB_ENV"
-            echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> "$GITHUB_ENV"
+            echo "docker-user=$DOCKER_USER" >> "$GITHUB_OUTPUT"
+            echo "docker-token=$DOCKER_TOKEN" >> "$GITHUB_OUTPUT"
 
       - name: Login to Registry
         env:
-          registry: ${{ inputs.registry }}
+          REGISTRY: ${{ inputs.registry }}
+          DOCKER_TOKEN: ${{ steps.docker-credentials.outputs.docker-token }}
+          DOCKER_USER: ${{ steps.docker-credentials.outputs.docker-user }}
         run: |
-          echo "$DOCKER_TOKEN" | docker login $registry --username "$DOCKER_USER" --password-stdin
+          echo "$DOCKER_TOKEN" | docker login $REGISTRY --username "$DOCKER_USER" --password-stdin
 
       - name: Test
         env:
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           image_name: ${{ inputs.image-name }}
-          test_dir: ${{ env.TEST_DIR }}
+          test_dir: ${{ steps.prepare-results-dir.outputs.test-dir }}
           workspace: ${{ github.workspace }}
         run: |
           chmod -R 777 "$test_dir/working_dir"
@@ -472,49 +465,44 @@ jobs:
         id: upload-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          source: ${{ env.TEST_DIR_PARENT }}
+          source: ${{ steps.prepare-results-dir.outputs.test-dir-parent }}
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
           overwrite: false
-          log_level: debug
 
       - name: Upload report to Blob store 
         id: upload-report
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          source: ${{ env.TEST_DIR_PARENT }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          source: ${{ steps.prepare-results-dir.outputs.test-dir-parent }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports
           overwrite: false
-          log_level: debug
 
       - name: Export Outputs
         id: export-outputs
         env:
-          REPORTS_DESTINATION_URL: ${{ needs.read-config.outputs.reports-destination-url }}
+          REPORT_UPLOADED_FILES: ${{ steps.upload-report.outputs.destination-files }}
           image_name: ${{ inputs.image-name }}
-          test_dir: ${{ env.TEST_DIR }}
+          test_dir: ${{ steps.prepare-results-dir.outputs.test-dir }}
         run: |
-          BLOB_DIR="$REPORTS_DESTINATION_URL/$test_dir/working_dir/50_Outputs/$image_name"
-          echo "blob-dir=$BLOB_DIR"
-          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_OUTPUT"
-          echo "blob-dir=$BLOB_DIR" >> "$GITHUB_ENV"
 
-          REPORT_URL="$BLOB_DIR/report/index.html"
+          REPORT_URL="$(
+            echo "$REPORT_UPLOADED_FILES" | jq -rc '. [] | match(".*index.html$") | .string'
+          )"
           echo "report-url=$REPORT_URL"
           echo "report-url=$REPORT_URL" >> "$GITHUB_OUTPUT"
-          echo "report-url=$REPORT_URL" >> "$GITHUB_ENV"
 
           SUMMARY_PATH="${test_dir}/working_dir/50_Outputs/$image_name/executive_summary/template.pdf"
           if [ -f "$SUMMARY_PATH" ]; then
-            SUMMARY_URL="$BLOB_DIR/executive_summary/template.pdf"
+            SUMMARY_URL="$(
+              echo "$REPORT_UPLOADED_FILES" | jq -rc '. [] | match(".*template.pdf$") | .string'
+            )"
             echo "summary-url=$SUMMARY_URL"
             echo "summary-url=$SUMMARY_URL" >> "$GITHUB_OUTPUT"
-            echo "summary-url=$SUMMARY_URL" >> "$GITHUB_ENV"
           fi
 
       - name: Prepare comment artifact
         id: prepare-artifact
         env:
-          blob_dir: ${{ steps.export-outputs.outputs.blob-dir }}
           commit_time: ${{ github.event.pull_request.updated_at }}
           full_image_name: ${{ needs.docker-build.outputs.full-image-name }}
           git_sha: ${{ github.event.pull_request.head.sha }},
@@ -534,8 +522,7 @@ jobs:
             echo "comment-json-merge-$image_name-$registry-$language-$peer_group.json" | \
             tr '/' '-' \
             )
-          echo "json-filename=$json_filename" >> "$GITHUB_ENV"
-          blob_dest="$(basename $blob_dir)-$language-$peer_group"
+          echo "json-filename=$json_filename" >> "$GITHUB_OUTPUT"
           json_file="/tmp/comment-json/$json_filename"
           jq \
             -n \
@@ -548,8 +535,6 @@ jobs:
             --arg report_url "$report_url" \
             --arg summary_url "$summary_url" \
             --arg full_image_name "$full_image_name" \
-            --arg blob_dir "$blob_dir" \
-            --arg blob_dest "$blob_dest" \
             '{
               "commit_time": $commit_time,
               "git_sha": $git_sha,
@@ -559,7 +544,6 @@ jobs:
               "peer_group": $peer_group,
               "report": (if (("" + $report_url) == "") then null else "[Report](" + $report_url + ")" end),
               "summary": (if (("" + $summary_url) == "") then null else "[Summary](" + $summary_url + ")" end),
-              "download_command": ("`az storage copy --recursive --source " + $blob_dir + " --destination " + $blob_dest + "`"),
               "image": ("`" + $full_image_name + "`")
             }' \
           >> $json_file
@@ -568,7 +552,7 @@ jobs:
       - name: Upload comment JSON
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.json-filename }}
+          name: ${{ steps.prepare-artifact.outputs.json-filename }}
           path: /tmp/comment-json/*
           if-no-files-found: error
           retention-days: 1

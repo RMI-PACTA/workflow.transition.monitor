@@ -394,6 +394,15 @@ jobs:
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
 
+      - name: Download User Results from Blob store 
+        id: download-user-results
+        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
+        with:
+          source: ${{ matrix.user_results }}/${{ matrix.user_id }}
+          user_id: ${{ matrix.user_id }}
+          destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
+          overwrite: false
+
       - name: Download User Results from Blob Store
         uses: azure/CLI@v2
         env:

@@ -9,7 +9,7 @@
     "user_id": ["74"],
     "language": ["EN"],
     "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"],
-    "user_results": "https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/user_data",
+    "user_results": ["https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/user_data"],
     "include": [
       {
         "user_id": 128,

@@ -397,6 +397,7 @@ jobs:
       - name: Download User Results from Blob store
         id: download-user-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
+        if: ${{ matrix.user_results }}
         with:
           source: ${{ matrix.user_results }}/${{ matrix.user_id }}
           destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
@@ -404,6 +405,7 @@ jobs:
 
       - name: Move user results to correct location
         shell: sh
+        if: ${{ matrix.user_results }}
         env:
           USER_RESULTS_DIR: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
           USER_ID: ${{ matrix.user_id }}

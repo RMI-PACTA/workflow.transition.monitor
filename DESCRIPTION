@@ -37,7 +37,7 @@ Imports:
     here,
     jsonlite,
     knitr,
-    pacta.executive.summary@update-links, 
+    pacta.executive.summary, 
     pacta.portfolio.allocate,
     pacta.portfolio.audit, 
     pacta.portfolio.import, 
@@ -47,7 +47,7 @@ Imports:
     rmarkdown, 
     shiny
 Remotes: 
-    RMI-PACTA/pacta.executive.summary, 
+    RMI-PACTA/pacta.executive.summary@update-links,
     RMI-PACTA/pacta.portfolio.allocate,
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 

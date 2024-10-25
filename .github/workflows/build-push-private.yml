@@ -398,7 +398,7 @@ jobs:
         id: download-user-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          source: ${{ matrix.user_results }}/${{ matrix.user_id }}/*
+          source: ${{ matrix.user_results }}/${{ matrix.user_id }}
           user_id: ${{ matrix.user_id }}
           destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
           overwrite: false

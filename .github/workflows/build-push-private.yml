@@ -394,14 +394,24 @@ jobs:
           mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
           ls -lR $TEST_DIR
 
-      - name: Download User Results from Blob store 
+      - name: Download User Results from Blob store
         id: download-user-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
           source: ${{ matrix.user_results }}/${{ matrix.user_id }}
-          user_id: ${{ matrix.user_id }}
           destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
           overwrite: false
+
+      - name: Move user results to correct location
+        shell: sh
+        env:
+          USER_RESULTS_DIR: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
+          USER_ID: ${{ matrix.user_id }}
+        run: |
+          mv \
+            --verbose \
+            $USER_RESULTS_DIR/outputs/user_data/$USER_ID/* \
+            $USER_RESULTS_DIR
 
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry
@@ -451,7 +461,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Upload results to Blob store 
+      - name: Upload results to Blob store
         id: upload-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
@@ -459,7 +469,7 @@ jobs:
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
           overwrite: false
 
-      - name: Upload report to Blob store 
+      - name: Upload report to Blob store
         id: upload-report
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:

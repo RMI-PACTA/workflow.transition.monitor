@@ -3,7 +3,7 @@
 [![.github/workflows/build-Docker-image-triggers.yml](https://github.com/RMI-PACTA/workflow.transition.monitor/actions/workflows/build-Docker-image-triggers.yml/badge.svg)](https://github.com/RMI-PACTA/workflow.transition.monitor/actions/workflows/build-Docker-image-triggers.yml)
 <!-- badges: end -->
 
-# Description
+# Derp-scription
 
 The Dockerfile in this repository creates an image containing a freshly cloned copy of workflow.transition.monitor and templates.transition.monitor. It also installs the relevant public PACTA R packages from their respective GitHub repos. It also adds the relevant quarter PACTA data directory under `/pacta-data`.
 

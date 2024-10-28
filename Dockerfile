@@ -71,6 +71,7 @@ ARG TEX_DEPS="\
     tools \
     xcolor \
     zref \
+    babel-german \
     "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 

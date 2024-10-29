@@ -53,6 +53,5 @@ Remotes:
     RMI-PACTA/pacta.portfolio.import, 
     RMI-PACTA/pacta.portfolio.report, 
     RMI-PACTA/pacta.portfolio.utils,
-    RMI-PACTA/workflow.transition.monitor@hodie-patch-2
 Depends: 
     R (>= 3.5.0)

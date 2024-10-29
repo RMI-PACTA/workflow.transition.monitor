@@ -405,15 +405,18 @@ jobs:
 
       - name: Move user results to correct location
         shell: sh
-        if: ${{ matrix.user_results && fromJSON(steps.download-user-results.outputs.destination-files) }}
+        if: ${{ matrix.user_results }}
         env:
           USER_RESULTS_DIR: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
           USER_ID: ${{ matrix.user_id }}
         run: |
-          mv \
-            --verbose \
-            $USER_RESULTS_DIR/outputs/user_data/$USER_ID/* \
-            $USER_RESULTS_DIR
+          TEMP_USER_DIR="$USER_RESULTS_DIR/outputs/user_data/$USER_ID"
+          if [ -d $TEMP_USER_DIR ]; then
+            mv \
+              --verbose \
+              $TEMP_USER_DIR/* \
+              $USER_RESULTS_DIR
+          fi
 
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-masking-a-generated-output-within-a-single-job
       - name: Get credentials for docker registry

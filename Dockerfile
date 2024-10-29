@@ -63,7 +63,6 @@ RUN apt-get update \
 # install tex package dependencies
 ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"
 ARG TEX_DEPS="\
-  babel-german \
   polyglossia \
   geometry \
   hyperref \

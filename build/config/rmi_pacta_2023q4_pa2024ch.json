@@ -6,47 +6,15 @@
   "peer_results": "https://pactadatadev.blob.core.windows.net/project-files/pa2024ch/peer_files",
   "net_zero_targets": "https://pactadatadev.blob.core.windows.net/project-files/pa2024ch/fin_data_net_zero_targets.csv",
   "test_matrix": {
-    "user_id": ["74"],
+    "user_id": 74,
     "language": ["EN"],
-    "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"], 
+    "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"],
     "include": [
-     {
-        "user_id": 74,
-        "language": "DE",
-        "peer_group": "bank",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/bank"
-      },
       {
         "user_id": 74,
         "language": "DE",
-        "peer_group": "other"
-      },
-      {
-        "user_id": 74,
-        "language": "FR",
         "peer_group": "bank",
         "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/bank"
-      },
-      {
-        "user_id": 74,
-        "language": "FR",
-        "peer_group": "other"
-      },
-      {
-        "peer_group": "assetmanager",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/assetmanager"
-      },
-      {
-        "peer_group": "bank",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/bank"
-      },
-      {
-        "peer_group": "insurance",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/insurance"
-      },
-      {
-        "peer_group": "pensionfund",
-        "user_results": "https://pactadatadev.blob.core.windows.net/testing-files/user-results/PA2024CH_peer-test/20240927/pensionfund"
       }
     ]
   },

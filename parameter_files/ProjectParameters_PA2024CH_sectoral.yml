@@ -4,7 +4,7 @@ default:
         data_location_ext: ../pacta-data/2023Q4/
 
     reporting:
-        project_report_name: PA2024CH
+        project_report_name: PA2024CH_sectoral
         display_currency: CHF
         currency_exchange_value: 1.190405
 

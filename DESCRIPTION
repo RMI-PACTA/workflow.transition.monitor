@@ -48,7 +48,7 @@ Imports:
     shiny
 Remotes: 
     RMI-PACTA/pacta.executive.summary@hodie-patch-1, 
-    RMI-PACTA/pacta.portfolio.allocate,
+    RMI-PACTA/pacta.portfolio.allocate, 
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 
     RMI-PACTA/pacta.portfolio.report, 

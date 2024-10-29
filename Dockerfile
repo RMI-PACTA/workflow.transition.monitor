@@ -51,7 +51,7 @@ ARG TEX_APT="\
   texlive-xetex \
   texlive-fonts-recommended \
   texlive-fonts-extra \
-  textlive-lang-german \
+  texlive-lang-german \
   lmodern \
   xz-utils \
   "

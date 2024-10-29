@@ -52,7 +52,6 @@ ARG TEX_APT="\
   texlive-fonts-recommended \
   texlive-fonts-extra \
   texlive-lang-german \
-  texlive-polyglossia \
   lmodern \
   xz-utils \
   "
@@ -65,6 +64,7 @@ RUN apt-get update \
 ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"
 ARG TEX_DEPS="\
   babel-german \
+  polyglossia \
   geometry \
   hyperref \
   l3packages \

@@ -8,7 +8,7 @@
   "test_matrix": {
     "user_id": ["74"],
     "language": ["EN"],
-    "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"], 
+    "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"],
     "include": [
       {
         "user_id": 74,

@@ -405,7 +405,7 @@ jobs:
 
       - name: Move user results to correct location
         shell: sh
-        if: ${{ ${{ matrix.user_results }} && ${{ fromJSON(steps.download-user-results.outputs.destination-files)}} }}
+        if: ${{ matrix.user_results && fromJSON(steps.download-user-results.outputs.destination-files) }}
         env:
           USER_RESULTS_DIR: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
           USER_ID: ${{ matrix.user_id }}

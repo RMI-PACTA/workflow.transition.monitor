@@ -35,42 +35,44 @@ ARG DEBCONF_NOWARNINGS="yes"
 
 # install system dependencies
 ARG SYS_DEPS="\
-    git \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    openssh-client \
-    wget \
-    "
+  git \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  openssh-client \
+  wget \
+  "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $SYS_DEPS \
-    && chmod -R a+rwX /root \
-    && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends $SYS_DEPS \
+  && chmod -R a+rwX /root \
+  && rm -rf /var/lib/apt/lists/*
 
 # install TeX system and fonts
 ARG TEX_APT="\
-    texlive-xetex \
-    texlive-fonts-recommended \
-    texlive-fonts-extra \
-    lmodern \
-    xz-utils \
-    "
+  texlive-xetex \
+  texlive-fonts-recommended \
+  texlive-fonts-extra \
+  textlive-lang-german \
+  lmodern \
+  xz-utils \
+  "
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends $TEX_APT \
-    && tlmgr init-usertree \
-    && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends $TEX_APT \
+  && tlmgr init-usertree \
+  && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
 ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"
 ARG TEX_DEPS="\
-    geometry \
-    hyperref \
-    l3packages \
-    mdframed \
-    needspace \
-    tools \
-    xcolor \
-    zref \
-    "
+  babel-german \
+  geometry \
+  hyperref \
+  l3packages \
+  mdframed \
+  needspace \
+  tools \
+  xcolor \
+  zref \
+  "
 RUN tlmgr --repository $CTAN_REPO install $TEX_DEPS
 
 # install packages for dependency resolution and installation
@@ -92,8 +94,8 @@ COPY workflow.transition.monitor/DESCRIPTION ${WORKFLOW_DIR}/DESCRIPTION
 
 # set permissions for PACTA repos that need local content
 RUN chmod -R a+rwX $WORKFLOW_DIR && \
-    chmod -R a+rwX $PACTA_DATA_DIR && \
-    chmod -R a+rwX $TEMPLATES_DIR
+  chmod -R a+rwX $PACTA_DATA_DIR && \
+  chmod -R a+rwX $TEMPLATES_DIR
 
 RUN Rscript -e "pak::local_install_deps(root = '$WORKFLOW_DIR')"
 

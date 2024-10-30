@@ -6,13 +6,12 @@
   "peer_results": "https://pactadatadev.blob.core.windows.net/project-files/pa2024ch/peer_files",
   "net_zero_targets": "https://pactadatadev.blob.core.windows.net/project-files/pa2024ch/fin_data_net_zero_targets.csv",
   "test_matrix": {
-    "language": ["EN"],
-    "peer_group": ["assetmanager", "bank", "insurance", "other", "pensionfund"],
     "user_results": ["https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/user_data"],
     "include": [
       {
         "user_id": 128,
-        "peer_group": "bank"
+        "peer_group": "bank",
+        "language": "EN"
       },
       {
         "user_id": 128,
@@ -25,24 +24,24 @@
         "language": "FR"
       },
       {
-        "user_id": 128,
-        "peer_group": "bank"
-      },
-      {
         "user_id": 130,
-        "peer_group": "assetmanager"
+        "peer_group": "assetmanager",
+        "language": "EN"
       },
       {
         "user_id": 131,
-        "peer_group": "insurance"
+        "peer_group": "insurance",
+        "language": "EN"
       },
       {
         "user_id": 134,
-        "peer_group": "pensionfund"
+        "peer_group": "pensionfund",
+        "language": "EN"
       },
       {
         "user_id": 135,
-        "peer_group": "other"
+        "peer_group": "other",
+        "language": "EN"
       },
       {
         "user_id": 135,
@@ -54,7 +53,6 @@
         "peer_group": "other",
         "language": "FR"
       }
-
     ]
   },
   "resultsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full",

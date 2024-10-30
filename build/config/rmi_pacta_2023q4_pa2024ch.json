@@ -15,6 +15,20 @@
         "peer_group": "bank"
       },
       {
+        "user_id": 128,
+        "peer_group": "bank",
+        "language": "DE"
+      },
+      {
+        "user_id": 128,
+        "peer_group": "bank",
+        "language": "FR"
+      },
+      {
+        "user_id": 128,
+        "peer_group": "bank"
+      },
+      {
         "user_id": 130,
         "peer_group": "assetmanager"
       },
@@ -29,7 +43,18 @@
       {
         "user_id": 135,
         "peer_group": "other"
+      },
+      {
+        "user_id": 135,
+        "peer_group": "other",
+        "language": "DE"
+      },
+      {
+        "user_id": 135,
+        "peer_group": "other",
+        "language": "FR"
       }
+
     ]
   },
   "resultsDestinationURL": "https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full",

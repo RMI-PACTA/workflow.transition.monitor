@@ -337,16 +337,16 @@ jobs:
 
     steps:
 
-      # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # # https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+      # - name: Azure Login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v4
+      # - name: Checkout workflow.transition.monitor
+      #   uses: actions/checkout@v4
 
       # - name: Prepare User and results directories
       #   id: prepare-results-dir
@@ -401,16 +401,19 @@ jobs:
           USER_RESULTS: ${{ matrix.user_results }}
           USER_ID: ${{ matrix.user_id }}
         run: |
-            echo "$MATRIX" | jq '.'
+            echo "PEER_GROUP: $PEER_GROUP"
+            echo "LANGUAGE: $LANGUAGE"
+            echo "USER_RESULTS: $USER_RESULTS"
+            echo "USER_ID: $USER_ID"
 
-      - name: Download User Results from Blob store
-        id: download-user-results
-        uses: RMI-PACTA/actions/actions/azure/blob-copy@main
-        if: ${{ matrix.user_results }}
-        with:
-          source: ${{ matrix.user_results }}/${{ matrix.user_id }}
-          destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
-          overwrite: false
+      # - name: Download User Results from Blob store
+      #   id: download-user-results
+      #   uses: RMI-PACTA/actions/actions/azure/blob-copy@main
+      #   if: ${{ matrix.user_results }}
+      #   with:
+      #     source: ${{ matrix.user_results }}/${{ matrix.user_id }}
+      #     destination: ${{ steps.prepare-results-dir.outputs.test-dir }}/user_dir
+      #     overwrite: false
 
       - name: Move user results to correct location
         shell: sh

@@ -396,7 +396,10 @@ jobs:
 
       - name: Show Matrix
         env:
-          MATRIX: ${{ matrix }}
+          PEER_GROUP: ${{ matrix.peer_group }}
+          LANGUAGE: ${{ matrix.language}}
+          USER_RESULTS: ${{ matrix.user_results }}
+          USER_ID: ${{ matrix.user_id }}
         run: |
             echo "$MATRIX" | jq '.'
 

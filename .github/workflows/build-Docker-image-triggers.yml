@@ -9,27 +9,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  # build_docker_image:
-  #   name: "Call build and push action"
-  #   uses: ./.github/workflows/build-and-push-Docker-image.yml
-  #   secrets: inherit
-  #   permissions:
-  #     packages: write
-  #     contents: read
-  #   with:
-  #     image-name: ${{ github.event.repository.name }}
-  #     image-tag: |
-  #       ${{
-  #         github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
-  #         github.event_name == 'schedule' && 'nightly' ||
-  #         github.event_name == 'push' && github.ref_name ||
-  #         github.event_name == 'workflow_dispatch' && github.ref_name ||
-  #         github.sha
-  #       }}
+  build_docker_image:
+    name: "Call build and push action"
+    uses: ./.github/workflows/build-and-push-Docker-image.yml
+    secrets: inherit
+    permissions:
+      packages: write
+      contents: read
+    with:
+      image-name: ${{ github.event.repository.name }}
+      image-tag: |
+        ${{
+          github.event_name == 'pull_request' && format('{0}{1}','pr', github.event.pull_request.number) ||
+          github.event_name == 'schedule' && 'nightly' ||
+          github.event_name == 'push' && github.ref_name ||
+          github.event_name == 'workflow_dispatch' && github.ref_name ||
+          github.sha
+        }}
 
   build_private_docker_image:
     name: "Build private docker image"
-    # needs: build_docker_image
+    needs: build_docker_image
     strategy:
       # if one build or test fails, permit the others to run
       fail-fast: false
@@ -44,10 +44,10 @@ jobs:
     with:
       image-name: ${{ matrix.image-name }}
 
-  # add-comment:
-  #   if: ${{ github.event_name == 'pull_request' }}
-  #   uses: RMI-PACTA/actions/.github/workflows/add-comment-table.yml@main
-  #   needs: [build_docker_image, build_private_docker_image]
-  #   with:
-  #     header: "Docker build status"
+  add-comment:
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: RMI-PACTA/actions/.github/workflows/add-comment-table.yml@main
+    needs: [build_docker_image, build_private_docker_image]
+    with:
+      header: "Docker build status"
 

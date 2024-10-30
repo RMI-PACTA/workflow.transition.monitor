@@ -56,9 +56,9 @@ ARG TEX_APT="\
     xz-utils \
     "
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends $TEX_APT \
-  && tlmgr init-usertree \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends $TEX_APT \
+    && tlmgr init-usertree \
+    && rm -rf /var/lib/apt/lists/*
 
 # install tex package dependencies
 ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"

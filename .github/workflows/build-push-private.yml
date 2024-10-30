@@ -394,6 +394,12 @@ jobs:
       #     mv working_dir/20_Raw_Inputs/1234.csv $portfolio_file
       #     ls -lR $TEST_DIR
 
+      - name: Show Matrix
+        env:
+          MATRIX: ${{ matrix }}
+        run: |
+            echo "$MATRIX" | jq '.'
+
       - name: Download User Results from Blob store
         id: download-user-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main

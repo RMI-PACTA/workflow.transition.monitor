@@ -16,6 +16,22 @@
       },
       {
         "language": "FR",
+        "peer_group": "assetmanager"
+      },
+      {
+        "language": "DE",
+        "peer_group": "insurance"
+      },
+      {
+        "language": "FR",
+        "peer_group": "insurance"
+      },
+      {
+        "language": "DE",
+        "peer_group": "pensionfund"
+      },
+      {
+        "language": "FR",
         "peer_group": "pensionfund"
       }
     ],

@@ -48,11 +48,11 @@ RUN apt-get update \
 
 # install TeX system and fonts
 ARG TEX_APT="\
-    texlive-xetex \
-    texlive-fonts-recommended \
-    texlive-fonts-extra \
-    texlive-lang-german \
     lmodern \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-lang-german \
+    texlive-xetex \
     xz-utils \
     "
 RUN apt-get update \
@@ -63,12 +63,12 @@ RUN apt-get update \
 # install tex package dependencies
 ARG CTAN_REPO="https://www.texlive.info/tlnet-archive/2021/12/31/tlnet/"
 ARG TEX_DEPS="\
-    polyglossia \
     geometry \
     hyperref \
     l3packages \
     mdframed \
     needspace \
+    polyglossia \
     tools \
     xcolor \
     zref \

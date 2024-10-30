@@ -51,7 +51,7 @@ Remotes:
     RMI-PACTA/pacta.portfolio.allocate,
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 
-    RMI-PACTA/pacta.portfolio.report, 
+    RMI-PACTA/pacta.portfolio.report@fix-re-links, 
     RMI-PACTA/pacta.portfolio.utils
 Depends: 
     R (>= 3.5.0)

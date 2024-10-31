@@ -49,6 +49,7 @@ RUN apt-get update \
 # install TeX system and fonts
 ARG TEX_APT="\
     texlive-xetex \
+    texlive-lang-german \
     texlive-fonts-recommended \
     texlive-fonts-extra \
     lmodern \
@@ -67,6 +68,7 @@ ARG TEX_DEPS="\
     l3packages \
     mdframed \
     needspace \
+    polyglossia \
     tools \
     xcolor \
     zref \

@@ -2,7 +2,7 @@
   "data_share_path": "2023Q4_20240718T150252Z",
   "pacta_data_quarter": "2023Q4",
   "project_code": "PA2024CH_sectoral",
-  "templates_ref": "",
+  "templates_ref": "update_sectoral_titles",
   "test_matrix": {
     "language": ["EN", "DE", "FR"],
     "peer_group": ["other"]

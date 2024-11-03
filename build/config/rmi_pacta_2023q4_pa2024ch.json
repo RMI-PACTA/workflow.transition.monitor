@@ -10,7 +10,7 @@
     "language": ["EN", "DE", "FR"],
     "user_results": [
       "https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/user_data",
-      "https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/user_data_extra_array"
+      "https://pactadatadev.blob.core.windows.net/pa2024ch/outputs/extra_array/user_data"
     ],
     "exclude": [
       {

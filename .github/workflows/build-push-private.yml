@@ -365,7 +365,7 @@ jobs:
           echo "TEST_DIR_PARENT=$TEST_DIR_PARENT"
           echo "test-dir-parent=$TEST_DIR_PARENT" >> "$GITHUB_OUTPUT"
 
-          TEST_DIR="$TEST_DIR_PARENT/$language/$peer_group/$run_attempt/$RANDOM"
+          TEST_DIR="$TEST_DIR_PARENT/$language/$peer_group/$run_attempt"
           mkdir -p "$TEST_DIR"
           chmod -R 777 "$TEST_DIR"
           echo "TEST_DIR=$TEST_DIR"

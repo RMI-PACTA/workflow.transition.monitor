@@ -474,7 +474,7 @@ jobs:
         id: upload-results
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          source: ${{ steps.prepare-results-dir.outputs.test-dir-parent }}
+          source: ${{ steps.prepare-results-dir.outputs.test-dir }}
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-full
           overwrite: false
 
@@ -482,7 +482,7 @@ jobs:
         id: upload-report
         uses: RMI-PACTA/actions/actions/azure/blob-copy@main
         with:
-          source: ${{ steps.prepare-results-dir.outputs.test-dir-parent }}/${{ matrix.language }}/${{ matrix.peer_group }}/${{ github.run_attempt }}/working_dir/50_Outputs
+          source: ${{ steps.prepare-results-dir.outputs.test-dir }}/working_dir/50_Outputs
           destination: https://pactadatadev.blob.core.windows.net/ghactions-workflow-transition-monitor-results-reports
           overwrite: false
 

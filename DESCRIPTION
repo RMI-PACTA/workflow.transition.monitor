@@ -47,7 +47,7 @@ Imports:
     rmarkdown, 
     shiny
 Remotes: 
-    RMI-PACTA/pacta.executive.summary, 
+    RMI-PACTA/pacta.executive.summary@ADO12085-bug-fix-plot-exposure, 
     RMI-PACTA/pacta.portfolio.allocate,
     RMI-PACTA/pacta.portfolio.audit, 
     RMI-PACTA/pacta.portfolio.import, 

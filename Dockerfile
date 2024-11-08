@@ -13,7 +13,7 @@
 
 ARG PLATFORM="linux/amd64"
 ARG R_VERS="4.3.1"
-FROM --platform=$PLATFORM rocker/r-ver:$R_VERS as base
+FROM --platform=$PLATFORM rocker/r-ver:$R_VERS AS base
 
 LABEL org.opencontainers.image.source=https://github.com/RMI-PACTA/workflow.transition.monitor
 LABEL org.opencontainers.image.description="Docker image to drive the Transition Monitor backend"

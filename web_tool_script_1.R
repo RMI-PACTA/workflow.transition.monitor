@@ -122,7 +122,7 @@ if (inc_emission_factors) {
   )
 }
 
-portfolio_total <- dplyr::filter(portfolio_w_flags, .data[[valid_input]] == TRUE)
+portfolio_total <- dplyr::filter(portfolio_w_flags, .data[["valid_input"]] == TRUE)
 
 
 # Saving -----------------------------------------------------------------------

@@ -162,6 +162,7 @@ jobs:
         with:
           # azcliversion: 2.30.0
           inlineScript: |
+            tdnf install -y azcopy;
             pacta_data_share_url="https://pactadatadev.file.core.windows.net/workflow-data-preparation-outputs"
             az storage copy \
               --source "$pacta_data_share_url/$pacta_data_share_path" \

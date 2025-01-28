@@ -107,20 +107,22 @@ portfolio <-
 
 portfolio <- create_ald_flag(portfolio, comp_fin_data = abcd_flags_equity, debt_fin_data = abcd_flags_bonds)
 
-portfolio_total <- add_portfolio_flags(portfolio, currencies)
+portfolio_w_flags <- add_portfolio_flags(portfolio, currencies)
 
-portfolio_overview <- portfolio_summary(portfolio_total)
+portfolio_overview <- portfolio_summary(portfolio_w_flags)
 
-audit_file <- create_audit_file(portfolio_total, has_revenue)
+audit_file <- create_audit_file(portfolio_w_flags, has_revenue)
 
 if (inc_emission_factors) {
   emissions_totals <- calculate_portfolio_financed_emissions(
-    portfolio_total,
+    portfolio_w_flags,
     entity_info,
     entity_emission_intensities,
     average_sector_emission_intensities
   )
 }
+
+portfolio_total <- dplyr::filter(portfolio_w_flags, .data[["valid_input"]] == TRUE)
 
 
 # Saving -----------------------------------------------------------------------
@@ -142,6 +144,7 @@ if (inc_emission_factors) {
   save_if_exists(emissions_totals, portfolio_name, file.path(proc_input_path_, "emissions.rds"))
 }
 
+remove_if_exists(portfolio_w_flags)
 remove_if_exists(portfolio_total)
 remove_if_exists(portfolio)
 remove_if_exists(audit_file)

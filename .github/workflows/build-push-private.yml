@@ -41,7 +41,7 @@ jobs:
     steps:
 
       - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: workflow.transition.monitor
 
@@ -130,12 +130,12 @@ jobs:
 
     steps:
       - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: workflow.transition.monitor
 
       - name: Checkout templates.transition.monitor
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: RMI-PACTA/templates.transition.monitor
           path: templates.transition.monitor
@@ -346,7 +346,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Checkout workflow.transition.monitor
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Prepare User and results directories
         id: prepare-results-dir

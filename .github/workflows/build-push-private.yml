@@ -216,7 +216,7 @@ jobs:
       # Setup docker metadata, including tags and labels (and annotations)
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         env:
           additional_image_tags: ${{ inputs.additional-image-tags }}
           now: ${{ needs.read-config.outputs.now }}

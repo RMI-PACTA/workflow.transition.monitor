@@ -5,6 +5,10 @@
 
 # Description
 
+[![Project Status: Unsupported](https://www.repostatus.org/badges/latest/unsupported.svg)](https://www.repostatus.org/#unsupported)
+
+**This project is archived for future reference, but no new work is expected in this repository.**
+
 The Dockerfile in this repository creates an image containing a freshly cloned copy of workflow.transition.monitor and templates.transition.monitor. It also installs the relevant public PACTA R packages from their respective GitHub repos. It also adds the relevant quarter PACTA data directory under `/pacta-data`.
 
 The tree of the docker container looks like this:
@@ -143,4 +147,3 @@ docker run -ti --rm --network none \
   $image_name \
   /bound/bin/run-r-scripts "$portfolio_name"
 ```
-
